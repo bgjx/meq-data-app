@@ -1,0 +1,134 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+#map {
+    height: 560px;
+}
+
+/* Side bar for analytics css */
+.sidebar-wrapper{
+    display: flex;
+    flex: 1;
+    height: 100%;    
+}
+
+.sidebar-footer{
+position: relative;
+}
+
+#side-main{
+    margin-left: 70px;
+    flex-grow: 1;
+    padding: 20px;
+    min-height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    transition: all 0.35s ease-in-out;
+}
+
+.sidebar-item{
+    margin: 10px;
+}
+.sidebar-footer{
+    margin: 10px;
+}
+
+
+#sidebar{
+    position: fixed;
+    z-index: 99999;
+    transition: all 0.25s ease-in-out;
+    width: 70px;
+    min-width: 70px;
+    overflow-y: auto;
+    overflow: hidden;
+    flex-direction: column;
+    justify-content: center;
+    height: 100vh;
+}
+
+.sidebar-logo{
+    margin: auto 0;
+    
+    padding: 10px;
+}
+
+.sidebar-logo a{
+    color: #FFF;
+    font-size: 1.25rem;
+    text-decoration: none;
+}
+
+a.sidebar-link {
+    color: #FFF;
+    display: block;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    border-left: 3px solid transparent;
+    text-decoration: none;
+    padding: 10px;
+}
+
+.sidebar-link i {
+    font-size: 1.1rem;
+    margin-right: .75rem;
+}
+
+a.sidebar-link:hover {
+    background-color: rgba(255, 255, 255, .075);
+    border-left: 3px solid #3b7ddd;
+}
+
+
+#sidebar.expand {
+    width: 260px;
+    min-width: 260px;
+}
+
+#side-main.expand{
+    margin-left: 260px;
+}
+
+#toggle-btn {
+    background-color: transparent;
+    cursor: pointer;
+    border: 0;
+    padding: 1rem 1.5rem ;
+}
+
+#toggle-btn i{
+    font-size: 1.5rem;
+    color:#FFF
+}
+
+#sidebar:not(.expand) .sidebar-logo,
+#sidebar:not(.expand) a.sidebar-link span,
+#sidebar:not(.expand) .sidebar-copyright span{
+    display:none !important;
+}
+
+.sidebar-nav{
+    padding: 2rem 0;
+    flex: 1 1 auto;
+}
+
+.search-item{
+    margin: 10px;
+}
+
+.search-button{
+    margin: 10px;
+}
+
+ul.search-input{
+    list-style-type: none;
+    padding-left: 0px;
+}
+
+.sidebar-copyright{
+    color: #FFF;
+    display: block;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    border-left: 3px solid transparent;
+    text-decoration: none;
+    padding: 10px;
+}

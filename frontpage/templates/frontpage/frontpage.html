@@ -1,0 +1,82 @@
+
+{% extends "./base.html" %}
+
+{% load static %}
+
+
+{% block content %}
+
+    <section class = "py-4 container">
+
+        <div class="row py-lg-3">
+            <div class = 'col'>
+                <h3>
+                    A Microearthquake Data Analytics Dashboard
+                </h3>
+                <p>
+                    Data analytics and visualization of continuous Microearthquake monitoring at PT Supreme Energy Muara Laboh (SEML) and 
+                    PT Supreme Energy Rantau Dedap (SERD) geothermal assets. Visit the project site for more details...
+                </p>
+            </div>
+
+            <div class = 'col-lg-3'>
+                <!-- <img class="img-fluid mx-auto d-block" alt="seismogram" src="{% static 'media/image/seismogram.png' %}" > -->
+            </div>
+        </div>
+        <div class = "row py-lg-3">
+
+            <div class = 'col'>
+
+                <div class="card">
+                    <div class="card-header">
+                        Project Locations
+                    </div>
+                    <div class="card-body">
+                        <div id = "map">                    
+                            <script>
+                                mapboxgl.accessToken = '{{mapbox_access_token}}';
+                                var map = new mapboxgl.Map({
+                                    container: 'map', // container ID
+                                    style: 'mapbox://styles/mapbox/navigation-night-v1', // style URL
+                                    center: [ 104.651539, -1.792698], // starting position [lng, lat]
+                                    zoom: 5, // starting zoom
+                                });
+                                // Create a new marker.
+                                {% for site in all_sites %}
+                                    var marker = new mapboxgl.Marker()
+                                        .setLngLat([{{site.longitude}}, {{site.latitude}}])
+                                        .setPopup(new mapboxgl.Popup().setHTML("<a href='{{site.get_absolute_url}}'> PT.{{site.name | upper }} </a> <p>{{site.address}}</p>"))
+                                        .addTo(map);
+                                    console.log(marker.getPopup());
+                                {% endfor %}
+                            </script>
+                            
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class = 'col-lg-3'>
+                <div class="card">
+                    <div class="card-header">
+                        Latest Updates
+                    </div>
+                    <div class="card-body">
+                        <div id="updates">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+
+{% endblock %}
