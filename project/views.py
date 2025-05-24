@@ -17,7 +17,7 @@ def project_site(request, site_slug = None):
     catalog_type = request.GET.get('catalog_type', 'wcc')
 
 
-    # find the spesific models matching the site_slug and type of catalog
+    # find the specific models matching the site_slug and type of catalog
     db_table_wcc, model_wcc = utl.get_model(mdl, site_slug, "wcc")
     db_table_nll, model_nll = utl.get_model(mdl, site_slug, "nll")
 
@@ -80,7 +80,7 @@ def download_csv_nll(request, site_slug = None):
 
 
 def get_meq_data(request, site_slug = None):
-    # find the spesific models matching the site_slug and type of catalog
+    # find the specific models matching the site_slug and type of catalog
     db_table_wcc, model_wcc = utl.get_model(mdl, site_slug, "wcc")
     db_table_nll, model_nll = utl.get_model(mdl, site_slug, "nll")
     db_station = utl.get_station(mdl, site_slug)
@@ -101,7 +101,7 @@ def get_meq_data(request, site_slug = None):
     df_meq_nll = pd.DataFrame(list(db_table_nll.values()))
     df_meq_nll = df_meq_nll[['event_id', 'lat', 'lon', 'depth_m', 'elev_m', 'mw_mag']]
 
-    # do normalizaiton data
+    # do normalization data
     average_mw_nll = df_meq_nll.mw_mag.mean()
     df_meq_nll['mw_mag'] = df_meq_nll['mw_mag'].fillna(average_mw_nll) # fill empty magnitude column
     min_mag_nll = df_meq_nll.mw_mag.min()
