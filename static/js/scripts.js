@@ -17,14 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// // Table functionality
-// document.addEventListener('DOMContentLoaded', function(){
-//     let tables = document.querySelectorAll(".table-container table")
-//     tables.forEach(function(table) {
-//         $(table).DataTable();
-//     });
-// });
-
+// Table functionalities
 document.addEventListener('DOMContentLoaded', function(){
     // Tabs functionality 
     let tabs = document.querySelectorAll(".nav-tabs li button");
@@ -58,7 +51,6 @@ document.addEventListener('DOMContentLoaded', function(){
             });
         });
     });
-
 });
 
 
