@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // function for scatter map
     function createScatterMap(data, elementId, datasetKey){
+        // Get scatter data
         const scatterData = {
             type : 'scattermapbox',
             lat: data[datasetKey].map(item => item.lat),
@@ -48,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function() {
             text : data[datasetKey].map(item => `Depth: ${item.depth_m}<br>Mag: ${item.mw_mag}`),
             hoverinfo: 'text' 
         };
-
+        // Get station data
         const stationData = {
             type: 'scattermapbox',
             mode: 'markers+text',
@@ -64,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             hoverinfo: 'text',
         };
-
+        // Set map layout
         const layout = {
             title: ' MEQ Scatter Map',
             mapbox: {
@@ -85,6 +86,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function for density map
     function createDensityMap(data, elementId, datasetKey) {
+        // Get density data
         const densityData = {
             type : 'densitymapbox',
             lat: data[datasetKey].map(item => item.lat),
@@ -95,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 title: 'Density',
             },
         };
-
+        // Get station data
         const stationData = {
             type: 'scattermapbox',
             mode: 'markers+text',
@@ -111,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             hoverinfo: 'text',
         };
-
+        // Set map layout
         const layout = {
             title: 'MEQ Density Map',
             mapbox :{
@@ -183,7 +185,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    //  Optionally trigger the first tab click to load the initial map
+    // Optionally trigger the first tab click to load the initial map
     if (tabs.length > 0) {
         tabs[0].click();
     }

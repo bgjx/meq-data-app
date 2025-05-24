@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // function for scatter map
     function createScatterMap(data, elementId, datasetKey){
+        //  Get scatter data
         const scatterData = {
             type : 'scattermapbox',
             lat: data[datasetKey].map(item => item.lat),
@@ -28,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
             text : data[datasetKey].map(item => `Depth: ${item.depth_m}<br>Mag: ${item.mw_mag}`),
             hoverinfo: 'text' 
         };
-
+        // Get station data
         const stationData = {
             type: 'scattermapbox',
             mode: 'markers+text',
