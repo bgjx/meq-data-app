@@ -1,11 +1,6 @@
 //  Maps functionality
 document.addEventListener('DOMContentLoaded', function() {
-    // check global variable
-    if (typeof window.absUrl == 'undefined' || typeof window.mapboxToken == 'undefined') {
-        console.error("Missing required global variables: site_slug and mapbox token");
-        return;
-    }
-
+    
     async function fetchMeqData(){
         const response = await fetch(`${window.absUrl}get-meq-data`);
         const data = await response.json();

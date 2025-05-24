@@ -6,10 +6,25 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
+    // cache for fetched data
+    let cacheData = null;
+    
+    //  function to fetch MEQ data
     async function fetchMeqData(){
-        const response = await fetch(`${window.absUrl}get-meq-data`);
-        const data = await response.json();
-        return data;
+        if (cacheData) {
+            return cacheData;
+        }
+        try {
+            const response = await fetch(`${window.absUrl}get-meq-data`);
+            if (!response.ok) {
+                throw new Error(`Http error! status: ${response.status}`);
+            }
+            cacheData = await response.json();
+            return cacheData;
+        } catch (error) {
+            console.error("Error fetching MEQ data:", error);
+            return null;
+        }
     }
 
     // function for scatter map
@@ -117,23 +132,49 @@ document.addEventListener('DOMContentLoaded', function() {
         Plotly.newPlot(elementId, [densityData, stationData], layout, config);
     }
 
+    // Initialized tabs to prevent re-rendering
+    const InitializedTabs = {
+        'scatter-map-wcc': false,
+        'density-map-wcc': false,
+        'scatter-map-nll': false,
+        'density-map-nll': false
+    };
+
     // Tabs functionality 
     let tabs = document.querySelectorAll(".nav-tabs li button");
     let tabContent = document.querySelectorAll(".tab-contents-map .tab-content");
 
     tabs.forEach((tab, index) => {
-        tab.addEventListener("click", () => {
-            tabContent.forEach(content => {
-                content.classList.remove('active')
-            });
-            tabs.forEach(tab =>{
-                tab.classList.remove("active")
-            });
+        tab.addEventListener("click", async () => {
+            //  Update active tab and content
+            tabContent.forEach(content => content.classList.remove('active'));
+            tabs.forEach(tab => tab.classList.remove("active"));
             tabContent[index].classList.add("active");
             tabs[index].classList.add("active");
 
-            // Resizing the Plotly charts in the active tab
-            let activeTabPlots = tabContent[index].querySelectorAll('.maps-meq');
+            // Get the map elements in the active tab
+            const activeTabPlots = tabContent[index].querySelectorAll('.maps-meq');
+            const mapIds = Array.from(activeTabPlots).map(plot => plot.id)
+
+            // Fetch data and create maps for uninitialized tabs
+            for (const mapId of mapIds) {
+                if (!InitializedTabs[mapId]) {
+                    const data = await fetchMeqData();
+                    if (!data) {
+                        console.error(`Failed to fetch data for map ${mapId}`)
+                        continue;
+                    }
+
+                    if (mapId.includes('scatter')) {
+                        createScatterMap(data, mapId, mapId.includes('wcc') ? 'meq_wcc' : 'meq_nll');
+                    } else if (mapId.includes('density')) {
+                        createDensityMap(data, mapId, mapId.includes('wcc') ? 'meq_wcc': 'meq_nll');
+                    }
+                    InitializedTabs[mapId] = true;
+                }
+            }
+
+            // Resize Plotly charts in the active tab
             activeTabPlots.forEach(plot => {
                 if (plot && typeof Plotly !== 'undefined' && plot._fullLayout) {
                     Plotly.Plots.resize(plot);
@@ -142,12 +183,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    //  call the function once the page is loaded
-    fetchMeqData().then(data => {
-        createScatterMap(data, 'scatter-map-wcc', 'meq_wcc');
-        createDensityMap(data, 'density-map-wcc', 'meq_wcc');
-        createScatterMap(data, 'scatter-map-nll', 'meq_nll');
-        createDensityMap(data, 'density-map-nll', 'meq_nll');
-    });
-
+    //  Optionally trigger the first tab click to load the initial map
+    if (tabs.length > 0) {
+        tabs[0].click();
+    }
 });
