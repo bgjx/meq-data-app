@@ -1,0 +1,49 @@
+{% extends './base-project.html' %}
+{% load static %}
+{% block content %}
+    <section class="py-4 container">
+        <div class="row py-lg-3">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="py-lg-3">
+                            <h4 style="font-weight: 500;">
+                                MEQ Distribution Maps in PT.{{site.name | upper}} Site Project
+                            </h4>
+                        </div>               
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <button  class="nav-link active">
+                                    hypoDD + WCC
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <button  class="nav-link">
+                                    NonLinLoc
+                                </button>
+                            </li>
+                        </ul>
+
+                        <div class="tab-contents">
+                            <div class="tab-content active" id="wcc">
+                                <div class="maps-meq" id="scatter-map-wcc"></div>
+                                <div class="maps-meq" id="density-map-wcc"></div>
+                            </div>
+                            <div class="tab-content" id="nll">
+                                <div class="maps-meq" id="scatter-map-nll"></div>
+                                <div class="maps-meq" id="density-map-nll"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+    <script src="{% static 'js/maps-plotly.js' %}"> </script>
+    <script>
+        // the site slug and the mapbox
+        window.absUrl = '{{site.get_absolute_url}}';
+        window.mapboxToken = '{{MAPBOX_TOKEN}}';
+    </script>
+{% endblock %}

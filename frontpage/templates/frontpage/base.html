@@ -10,7 +10,6 @@
 
         <!-- CSS -->
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
-        <link rel="stylesheet" href="{% static 'css/bootstrap-2.css' %}">
         <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
         <link rel="stylesheet" href="{% static 'css/custom-style.css' %}">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -34,9 +33,6 @@
         <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
         <!-- Custom JavaScript -->
         <script src="{% static 'js/scripts.js' %}"></script>
-        <script src="{% static 'js/chart-area-demo.js'  %}"></script>
-        <script src="{% static 'js/chart-bar-demo.js' %}"></script>
-        <script src="{% static 'js/datatables-simple-demo.js' %}"></script>
 
         <!-- Fonts -->
         <link href='https://fonts.googleapis.com/css?family=Raleway:400,800,300' rel='stylesheet' type='text/css'>
@@ -77,9 +73,9 @@
                                     <li>        
                                         <a class="dropdown-item" href="{% url 'frontpage' %}"> All </a>     
                                     </li>
-                                    {% for site in all_sites %}
+                                    {% for project in all_projects %}
                                         <li>
-                                            <a class="dropdown-item" href="{{site.get_absolute_url}}"> {{site.name | capfirst }} </a>
+                                            <a class="dropdown-item" href="{{project.get_absolute_url}}"> {{project.name | capfirst }} </a>
                                         </li>
                                     {% endfor %}
                                 </ul>
@@ -89,16 +85,20 @@
 
                     <div class="collapse navbar-collapse text-center" id="navbarNavDropdown">
                         <ul class="navbar-nav ms-auto">
-                            <li class="nav-item">
-                                <a class="btn btn-alert navbar-btn text-white" type="button"  href="/"> Register </a>
-                            </li>
-                            <li class="nav-item">
+                            <!-- <li class="nav-item">
+                                <a class="btn btn-alert navbar-btn text-white" type="button"  href="/"> 
+                                    <span> Developer </span>
+                                    <i class="fa fa-github"></i>
+                                </a>
+                            </li> -->
+                            <!-- <li class="nav-item">
                                 <a class="btn btn-alert navbar-btn text-white" type="button"  href="/"> Login </a>
-                            </li>
+                            </li> -->
                             &nbsp; &nbsp; &nbsp;
                             <li class="nav-item">
-                                <a type="button" role="button" href="/" class="btn btn-outline-secondary"> 
-                                    <i class="fa fa-shopping-cart" aria-hidden="true"> </i>
+                                <a type="button" role="button" href="https://github.com/bgjx" target="_blank" class="btn btn-outline-secondary">
+                                    <span> Developer </span> 
+                                    <i class="fa fa-github" aria-hidden="true"> </i>
                                 </a>
                             </li>
                             &nbsp; &nbsp; &nbsp;
@@ -127,9 +127,9 @@
                             <h5 class="text-uppercase">Projects</h5>
                     
                             <ul class="list-unstyled mb-0">
-                                {% for site in all_sites %}
+                                {% for project in all_projects %}
                                     <li>
-                                        <a class="dropdown-item" href="{{site.get_absolute_url}}"> {{site.name | capfirst }} </a>
+                                        <a class="dropdown-item" href="{{project.get_absolute_url}}"> {{project.name | capfirst }} </a>
                                     </li>
                                 {% endfor %}
                             </ul>

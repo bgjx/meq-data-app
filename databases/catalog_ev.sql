@@ -1,4 +1,4 @@
-CREATE TABLE seml_cat_wcc (
+CREATE TABLE serd_cat_wcc (
     id INT,
     lat DOUBLE PRECISION,
     lon DOUBLE PRECISION,

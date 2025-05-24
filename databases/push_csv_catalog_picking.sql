@@ -1,4 +1,4 @@
-COPY seml_cat_pick
-FROM 'F:\SEML\CATALOG HYPOCENTER\catalog\catalog_picking.csv'
+COPY serd_cat_pick
+FROM 'E:\BACK UP KERJA\SUPREME ENERGY\SERD\SERD Catalog\for pushing into database\catalog_picking.csv'
 DELIMITER ';'
 CSV HEADER;

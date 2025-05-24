@@ -11,6 +11,16 @@
     <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
     <link rel="stylesheet" href="{% static 'css/custom-style.css' %}">
 
+    <!-- Css Table Styling -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.bootstrap5.css">
+
+    <!-- Fonts -->
+    <link href='https://fonts.googleapis.com/css?family=Raleway:400,800,300' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
     <!-- Map links -->
     <!-- leaflet maps -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
@@ -26,25 +36,23 @@
 
     <!-- JavaScript Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
-    <!-- Bootstrap Max CDN --> 
+    <!-- Bootstrap Map CDN --> 
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <!-- Plotly Render -->
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script defer src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
 
-    <!-- Fonts -->
-    <link href='https://fonts.googleapis.com/css?family=Raleway:400,800,300' rel='stylesheet' type='text/css'>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;700;900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-
+    <!-- Table Script styling -->
+    <script defer src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script defer src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+    <script defer src="https://cdn.datatables.net/2.1.8/js/dataTables.bootstrap5.js"></script>
 </head>
+
 <body>
     <!-- Main Wrapper -->
     <div class="sidebar-wrapper">
         <!-- Sidebar -->
-        <aside id = "sidebar" class="bg-primary">
+        <aside id="sidebar" class="bg-primary">
             <div class="d-flex">
                 <button id = "toggle-btn" type="button">
                     <i class="fa-duotone fa-solid fa-grip-vertical"></i>
@@ -58,13 +66,13 @@
 
             <ul class="sidebar-nav">
                 <li class="sidebar-item">
-                    <a href="#" class="sidebar-link">
+                    <a href="{% url 'project-page' site_slug=site.slug %}" class="sidebar-link">
                         <i class="fa-solid fa-magnifying-glass"></i>
                         <span> Explore Catalog </span>
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a href="#" class="sidebar-link">
+                    <a href="{% url 'meq-maps' site_slug=site.slug %}" class="sidebar-link">
                         <i class="fa-solid fa-earth-europe"></i>
                         <span> Events Distribution </span>
                     </a>
@@ -81,11 +89,28 @@
                         <span> 3D Modelling </span>
                     </a>
                 </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="#" data-bs-toggle="collapse" data-bs-target="#projects" aria-expanded="false" aria-controls="projects">
+                        <i class="fa-solid fa-diagram-project"></i>
+                        <span> Project Links</span>
+                    </a>
+                    <ul id="projects" class="collapse" data-bs-parent="#sidebar">
+                        {% for project in all_projects %}
+                            <li >
+                                <a class="sidebar-link" href="{{project.get_absolute_url}}"> 
+                                    <i class="fa-solid fa-location-dot"></i>
+                                    <span>{{project.name | capfirst }}</span>
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            </ul>
             <!-- Footer -->
             <footer class="sidebar-footer bg-primary">
                 <a href="{% url 'frontpage'%}" class="sidebar-link">
-                    <i class="fa-solid fa-door-open"></i>
-                    <span>Back to Home</span>
+                    <i class="fa-solid fa-left-long"></i>
+                    <span>Back to Homepage</span>
                 </a>
                 <div class="sidebar-copyright">
                     <i class="fa-regular fa-copyright"></i>
@@ -93,16 +118,12 @@
                 </div>
             </footer>
         </aside>
-
         <!-- Main content -->
         <main id="side-main" class="p-3">
             {% block content %}
                 
             {% endblock %}
         </main>
-   
-
      </div>
-
 </body>
 </html>

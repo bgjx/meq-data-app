@@ -26,6 +26,7 @@ position: relative;
 
 .sidebar-item{
     margin: 10px;
+    position: relative;
 }
 .sidebar-footer{
     margin: 10px;
@@ -132,3 +133,54 @@ ul.search-input{
     text-decoration: none;
     padding: 10px;
 }
+
+
+
+/* table styling */
+.table-container{
+    max-height: 75vh;
+    overflow-y: auto;
+    display: block;
+    font-family: sans-serif;
+    font-size: 0.9rem;
+}
+.table-right-aligned{
+    text-align: right;
+}
+
+.table-center-aligned{
+    text-align: center;
+}
+
+/* Form explorer class */
+.filter-parameter{
+    display: flex;
+}
+
+.filter-parameter input{
+    margin-right: 20px;
+}
+
+
+/* Tab  */
+.tab-contents-map .tab-content{
+    padding: 10px;
+    margin-top: 20px;
+    display: none;
+}
+
+.tab-contents-tab .tab-content{
+    padding: 10px;
+    margin-top: 20px;
+    display: none;
+}
+
+.tab-contents-map  .active{
+    display: block;
+}
+
+.tab-contents-tab  .active{
+    display: block;
+}
+
+/* maps meq */

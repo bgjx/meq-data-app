@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,9 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # frontpage app
+    'django_filters',
     'frontpage',
-    # project app 
     'project',
 ]
 
@@ -66,6 +66,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'frontpage.views.projects'
             ],
         },
     },
@@ -74,12 +75,14 @@ TEMPLATES = [
 WSGI_APPLICATION = 'webapp.wsgi.application'
 
 
+
+
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': 'seml_database',
         'USER': 'postgres',
         'PASSWORD': 'Teras4040',
@@ -130,3 +133,7 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# GDAL library path
+GDAL_LIBRARY_PATH = "C:/Users/superuser/envs/django-project/Library/bin/gdal.dll"
+os.environ['GDAL_LIBRARY_PATH'] = GDAL_LIBRARY_PATH 

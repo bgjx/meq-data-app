@@ -1,4 +1,4 @@
-CREATE TABLE seml_cat_pick(
+CREATE TABLE serd_cat_pick(
     id INT,
     station VARCHAR(255),
     year INT,
