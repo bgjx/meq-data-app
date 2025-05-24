@@ -137,7 +137,6 @@ def meq_maps(request, site_slug = None):
         'site': site,
         'MAPBOX_TOKEN': mapbox_access_token,
     }
-
     return render(request, 'project/event-distributions.html', context=context)
 
 
