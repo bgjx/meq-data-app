@@ -8,13 +8,14 @@
                     <div class="card-body">
                         <div class="py-lg-3">
                             <h4 style="font-weight: 500;">
-                                MEQ Distribution Maps in PT.{{site.name | upper}} Site Project
+                                MEQ Data Analysis in PT.{{site.name | upper}} Site Project
                             </h4>
-                        </div>               
+                        </div>
+                        <!-- tabs navigation  -->
                         <ul class="nav nav-tabs">
                             <li class="nav-item">
                                 <button  class="nav-link active">
-                                    hypoDD + WCC
+                                    Real Time Status
                                 </button>
                             </li>
                             <li class="nav-item">
@@ -23,7 +24,7 @@
                                 </button>
                             </li>
                         </ul>
-
+                        <!-- tabs content -->
                         <div class="tab-contents">
                             <div class="tab-content active" id="wcc">
                                 <div class="maps-meq" id="scatter-map-wcc"></div>
@@ -40,7 +41,7 @@
         </div>
 
     </section>
-    <script src="{% static 'js/maps-plotly.js' %}"> </script>
+    <script src="{% static 'js/data-analysis.js' %}"> </script>
     <script>
         // the site slug and the mapbox
         window.absUrl = '{{site.get_absolute_url}}';
