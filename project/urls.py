@@ -10,6 +10,8 @@ urlpatterns = [
 
     path('<slug:site_slug>/maps', views.meq_maps, name='meq-maps'),
 
+    path('<slug:site_slug>/data-analysis', views.data_analysis, name='data-analysis'),
+
     path('<slug:site_slug>/get-meq-data', views.get_meq_data, name='get-meq-data'),
 
 ]

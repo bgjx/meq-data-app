@@ -13,10 +13,6 @@ import csv
 def project_site(request, site_slug = None):
     site = get_object_or_404(Site, slug=site_slug)
 
-    # Get catalog type by request GET method
-    catalog_type = request.GET.get('catalog_type', 'wcc')
-
-
     # find the specific models matching the site_slug and type of catalog
     db_table_wcc, model_wcc = utl.get_model(mdl, site_slug, "wcc")
     db_table_nll, model_nll = utl.get_model(mdl, site_slug, "nll")
@@ -38,6 +34,7 @@ def project_site(request, site_slug = None):
         'table_nll': db_table_nll,
         'date_filter_nll': date_filter_nll
     }
+
     return render(request, 'project/data-explore.html', context)
 
 
@@ -142,3 +139,31 @@ def meq_maps(request, site_slug = None):
     }
 
     return render(request, 'project/event-distributions.html', context=context)
+
+
+def data_analysis(request, site_slug = None):
+    site = get_object_or_404(Site, slug=site_slug)
+
+    # find the specific models matching the site_slug and type of catalog
+    db_table_wcc, model_wcc = utl.get_model(mdl, site_slug, "wcc")
+    db_table_nll, model_nll = utl.get_model(mdl, site_slug, "nll")
+
+    # apply filter wcc
+    filter_wcc = dynamic_filter(model_wcc)
+    date_filter_wcc = filter_wcc(request.GET, queryset=db_table_wcc)
+    db_table_wcc = date_filter_wcc.qs
+
+    # apply filter nll
+    filter_nll = dynamic_filter(model_nll)
+    date_filter_nll = filter_nll(request.GET, queryset=db_table_nll)
+    db_table_nll = date_filter_nll.qs
+
+    context = {
+        'site': site,
+        'table_wcc': db_table_wcc,
+        'date_filter_wcc':date_filter_wcc,
+        'table_nll': db_table_nll,
+        'date_filter_nll': date_filter_nll
+    }
+    
+    return render(request, 'project/data-analysis.html', context)
