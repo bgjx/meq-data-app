@@ -1,0 +1,49 @@
+{% load static %}
+<div class="tab-content {% if active %}active{% endif %}" id="tab-{{ catalog_type }}">
+    <!-- Date range picker form -->
+    <form method="get" class="form-explorer py-lg-3">
+        <h5>Explore events in specific date range</h5>
+        <div class="filter-parameter">
+            {{ date_filter.form }}
+        </div>
+        <button class="btn btn-primary" type="submit">Filter</button>
+    </form>
+
+    <div class="table-container">
+        <table class="table table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    <th>source_id</th>
+                    <th>source_latitude</th>
+                    <th>source_longitude</th>
+                    <th>source_depth_m</th>
+                    <th>source_origin_dt</th>
+                    <th>source_err_rms_s</th> <!-- Unified header name -->
+                    <th>magnitude</th>
+                    <th>remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ev in table_data %}
+                    <tr>
+                        <td>{{ ev.source_id }}</td>
+                        <td>{{ ev.source_lat | floatformat:7 }}</td>
+                        <td>{{ ev.source_lon | floatformat:7 }}</td>
+                        <td>{{ ev.source_depth_m | floatformat:3 }}</td>
+                        <td>{{ ev.source_origin_dt | date:"Y-m-d H:i:s.u" }}</td>
+                        <td>{{ ev.source_err_rms_s | floatformat:3 }}</td>
+                        <td>{{ ev.magnitude | floatformat:3 }}</td>
+                        <td>{{ ev.remarks }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="download-csv py-lg-3">
+        <p>Or you can download the full catalog in CSV file below</p>
+        <a href="{% url download_url site_slug=site.slug %}" class="btn btn-primary">
+            Download full CSV
+        </a>
+    </div>
+</div>
