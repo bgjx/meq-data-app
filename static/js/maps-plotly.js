@@ -32,12 +32,12 @@ document.addEventListener('DOMContentLoaded', function() {
         // Get scatter data
         const scatterData = {
             type : 'scattermapbox',
-            lat: data[datasetKey].map(item => item.lat),
-            lon: data[datasetKey].map(item => item.lon),
+            lat: data[datasetKey].map(item => item.source_lat),
+            lon: data[datasetKey].map(item => item.source_lon),
             mode: 'markers',
             marker :{
-                color: data[datasetKey].map(item => item.depth_m),
-                size : data[datasetKey].map(item => item.norm_mw * 10),
+                color: data[datasetKey].map(item => item.source_depth_m),
+                size : data[datasetKey].map(item => item.norm_magnitude * 10),
                 colorscale: 'IceFire',
                 opacity: 0.9,
                 colorbar: {
@@ -46,16 +46,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     ticktext: ['8000', '6000', '4000', '2000', '0', '-2000'], 
                 },
             },
-            text : data[datasetKey].map(item => `Depth: ${item.depth_m}<br>Mag: ${item.mw_mag}`),
+            text : data[datasetKey].map(item => `Depth: ${item.source_depth_m}<br>Mag: ${item.magnitude}`),
             hoverinfo: 'text' 
         };
         // Get station data
         const stationData = {
             type: 'scattermapbox',
             mode: 'markers+text',
-            lat: data.station.map(item => item.lat),
-            lon: data.station.map(item => item.lon),
-            text : data.station.map(item => item.sta),
+            lat: data.station.map(item => item.station_lat),
+            lon: data.station.map(item => item.station_lon),
+            text : data.station.map(item => item.station_code),
             textposition: 'top center',
             marker: {
                 symbol: 'triangle',
@@ -89,8 +89,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Get density data
         const densityData = {
             type : 'densitymapbox',
-            lat: data[datasetKey].map(item => item.lat),
-            lon: data[datasetKey].map(item => item.lon),
+            lat: data[datasetKey].map(item => item.source_lat),
+            lon: data[datasetKey].map(item => item.source_lon),
             radius: 10,
             colorscale : 'Viridis',
             colorbar:{
@@ -101,9 +101,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const stationData = {
             type: 'scattermapbox',
             mode: 'markers+text',
-            lat: data.station.map(item => item.lat),
-            lon: data.station.map(item => item.lon),
-            text : data.station.map(item => item.sta),
+            lat: data.station.map(item => item.station_lat),
+            lon: data.station.map(item => item.station_lon),
+            text : data.station.map(item => item.station_code),
             textposition: 'top center',
             marker: {
                 symbol: 'triangle',
@@ -136,10 +136,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialized tabs to prevent re-rendering
     const InitializedTabs = {
-        'scatter-map-wcc': false,
-        'density-map-wcc': false,
-        'scatter-map-nll': false,
-        'density-map-nll': false
+        'scatter-map-relocated': false,
+        'density-map-relocated': false,
+        'scatter-map-initial': false,
+        'density-map-initial': false
     };
 
     // Tabs functionality 
@@ -168,9 +168,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
 
                     if (mapId.includes('scatter')) {
-                        createScatterMap(data, mapId, mapId.includes('wcc') ? 'meq_wcc' : 'meq_nll');
+                        createScatterMap(data, mapId, mapId.includes('relocated') ? 'meq_relocated' : 'meq_initial');
                     } else if (mapId.includes('density')) {
-                        createDensityMap(data, mapId, mapId.includes('wcc') ? 'meq_wcc': 'meq_nll');
+                        createDensityMap(data, mapId, mapId.includes('relocated') ? 'meq_relocated': 'meq_initial');
                     }
                     InitializedTabs[mapId] = true;
                 }

@@ -14,96 +14,96 @@ def project_site(request, site_slug = None):
     site = get_object_or_404(Site, slug=site_slug)
 
     # find the specific models matching the site_slug and type of catalog
-    db_table_wcc, model_wcc = utl.get_model(mdl, site_slug, "wcc")
-    db_table_nll, model_nll = utl.get_model(mdl, site_slug, "nll")
+    db_table_relocated, model_relocated = utl.get_model(mdl, site_slug, "relocated")
+    db_table_initial, model_initial = utl.get_model(mdl, site_slug, "initial")
 
-    # apply filter wcc
-    filter_wcc = dynamic_filter(model_wcc)
-    date_filter_wcc = filter_wcc(request.GET, queryset=db_table_wcc)
-    db_table_wcc = date_filter_wcc.qs
+    # apply filter on relocated catalog
+    filter_relocated = dynamic_filter(model_relocated)
+    date_filter_relocated = filter_relocated(request.GET, queryset=db_table_relocated)
+    db_table_relocated = date_filter_relocated.qs
 
-    # apply filter nll
-    filter_nll = dynamic_filter(model_nll)
-    date_filter_nll = filter_nll(request.GET, queryset=db_table_nll)
-    db_table_nll = date_filter_nll.qs
+    # apply filter on relocated catalog
+    filter_initial = dynamic_filter(model_initial)
+    date_filter_initial = filter_initial(request.GET, queryset=db_table_initial)
+    db_table_initial = date_filter_initial.qs
 
     context = {
         'site': site,
-        'table_wcc': db_table_wcc,
-        'date_filter_wcc':date_filter_wcc,
-        'table_nll': db_table_nll,
-        'date_filter_nll': date_filter_nll
+        'table_relocated': db_table_relocated,
+        'date_filter_relocated':date_filter_relocated,
+        'table_initial': db_table_initial,
+        'date_filter_initial': date_filter_initial
     }
 
     return render(request, 'project/data-explore.html', context)
 
 
-def download_csv_wcc(request, site_slug = None):
-    db_table_wcc, model_wcc = utl.get_model(mdl, site_slug, "wcc")
-    get_model_wcc = apps.get_model('project', model_wcc)
+def download_csv_reloc(request, site_slug = None):
+    db_table_relocated, model_relocated = utl.get_model(mdl, site_slug, "relocated")
+    get_model_relocated = apps.get_model('project', model_relocated)
 
     response = HttpResponse(
         content_type = "text/csv",
-        headers={"Content-Disposition": 'attachment; filename="catalog_wcc.csv"'}
+        headers={"Content-Disposition": 'attachment; filename="catalog_relocated.csv"'}
     )
 
     writer = csv.writer(response)
-    headers = [field.name for field in get_model_wcc._meta.fields]
+    headers = [field.name for field in get_model_relocated._meta.fields]
     writer.writerow(headers)
 
     # writing data
-    for data in db_table_wcc:
-        writer.writerow([getattr(data, field.name) for field in get_model_wcc._meta.fields])
+    for data in db_table_relocated:
+        writer.writerow([getattr(data, field.name) for field in get_model_relocated._meta.fields])
     
     return response
 
-def download_csv_nll(request, site_slug = None):
-    db_table_nll, model_nll = utl.get_model(mdl, site_slug, "nll")
-    get_model_nll = apps.get_model('project', model_nll)
+def download_csv_initial(request, site_slug = None):
+    db_table_initial, model_initial = utl.get_model(mdl, site_slug, "initial")
+    get_model_initial = apps.get_model('project', model_initial)
 
     response = HttpResponse(
         content_type = "text/csv",
-        headers={"Content-Disposition": 'attachment; filename="catalog_nll.csv"'}
+        headers={"Content-Disposition": 'attachment; filename="catalog_initial.csv"'}
     )
 
     writer = csv.writer(response)
-    headers = [field.name for field in get_model_nll._meta.fields]
+    headers = [field.name for field in get_model_initial._meta.fields]
     writer.writerow(headers)
 
     # writing data
-    for data in db_table_nll:
-        writer.writerow([getattr(data, field.name) for field in get_model_nll._meta.fields])
+    for data in db_table_initial:
+        writer.writerow([getattr(data, field.name) for field in get_model_initial._meta.fields])
     return response
 
 
 def get_meq_data(request, site_slug = None):
     # find the specific models matching the site_slug and type of catalog
-    db_table_wcc, model_wcc = utl.get_model(mdl, site_slug, "wcc")
-    db_table_nll, model_nll = utl.get_model(mdl, site_slug, "nll")
+    db_table_relocated, model_relocated = utl.get_model(mdl, site_slug, "relocated")
+    db_table_initial, model_initial = utl.get_model(mdl, site_slug, "initial")
     db_station = utl.get_station(mdl, site_slug)
 
-    # initialize dataframe wcc
-    df_meq_wcc = pd.DataFrame(list(db_table_wcc.values()))
-    df_meq_wcc = df_meq_wcc[['event_id', 'lat', 'lon', 'depth_m', 'elev_m', 'mw_mag']]
+    # initialize dataframe for relocated earthquake
+    df_meq_relocated = pd.DataFrame(list(db_table_relocated.values()))
+    df_meq_relocated = df_meq_relocated[['source_id', 'source_lat', 'source_lon', 'source_depth_m', 'magnitude']]
    
     # do normalization data
-    average_mw_wcc = df_meq_wcc.mw_mag.mean()
-    df_meq_wcc['mw_mag'] = df_meq_wcc['mw_mag'].fillna(average_mw_wcc) # fill empty magnitude column
+    average_mw_relocated = df_meq_relocated.magnitude.mean()
+    df_meq_relocated['magnitude'] = df_meq_relocated['magnitude'].fillna(average_mw_relocated) # fill empty magnitude column
 
-    min_mag_wcc = df_meq_wcc.mw_mag.min()
-    normalize_mag_wcc = [1*((-1*min_mag_wcc)+data) for data in list(df_meq_wcc.mw_mag)]
-    df_meq_wcc['norm_mw'] = normalize_mag_wcc
+    min_mag_relocated = df_meq_relocated.magnitude.min()
+    normalize_mag_relocated = [1*((-1*min_mag_relocated)+data) for data in list(df_meq_relocated.magnitude)]
+    df_meq_relocated['norm_magnitude'] = normalize_mag_relocated
 
-    # Initialize dataframe nll
-    df_meq_nll = pd.DataFrame(list(db_table_nll.values()))
-    df_meq_nll = df_meq_nll[['event_id', 'lat', 'lon', 'depth_m', 'elev_m', 'mw_mag']]
+    # Initialize dataframe for initial earthquake
+    df_meq_initial = pd.DataFrame(list(db_table_initial.values()))
+    df_meq_initial = df_meq_initial[['source_id', 'source_lat', 'source_lon', 'source_depth_m', 'magnitude']]
 
     # do normalization data
-    average_mw_nll = df_meq_nll.mw_mag.mean()
-    df_meq_nll['mw_mag'] = df_meq_nll['mw_mag'].fillna(average_mw_nll) # fill empty magnitude column
-    min_mag_nll = df_meq_nll.mw_mag.min()
-    normalize_mag_nll = [1*((-1*min_mag_nll)+data) for data in list(df_meq_wcc.mw_mag)]
-    df_meq_nll['norm_mw'] = normalize_mag_nll
+    average_mw_initial = df_meq_initial.magnitude.mean()
+    df_meq_initial['magnitude'] = df_meq_initial['magnitude'].fillna(average_mw_initial) # fill empty magnitude column
+    min_mag_initial = df_meq_initial.magnitude.min()
+    normalize_mag_initial = [1*((-1*min_mag_initial)+data) for data in list(df_meq_initial.magnitude)]
+    df_meq_initial['norm_magnitude'] = normalize_mag_initial
 
     # station dataframe
     df_station = pd.DataFrame(list(db_station.values()))
@@ -123,8 +123,8 @@ def get_meq_data(request, site_slug = None):
         pass
 
     data = {
-        'meq_wcc': df_meq_wcc.to_dict(orient='records'),
-        'meq_nll': df_meq_nll.to_dict(orient='records'),
+        'meq_relocated': df_meq_relocated.to_dict(orient='records'),
+        'meq_initial': df_meq_initial.to_dict(orient='records'),
         'station': df_station.to_dict(orient='records'),
         'center_map': center_map,
     }
@@ -144,25 +144,19 @@ def data_analysis(request, site_slug = None):
     site = get_object_or_404(Site, slug=site_slug)
 
     # find the specific models matching the site_slug and type of catalog
-    db_table_wcc, model_wcc = utl.get_model(mdl, site_slug, "wcc")
-    db_table_nll, model_nll = utl.get_model(mdl, site_slug, "nll")
+    db_table_relocated, model_relocated = utl.get_model(mdl, site_slug, "relocated")
+    db_table_initial, model_initial = utl.get_model(mdl, site_slug, "initial")
 
-    # apply filter wcc
-    filter_wcc = dynamic_filter(model_wcc)
-    date_filter_wcc = filter_wcc(request.GET, queryset=db_table_wcc)
-    db_table_wcc = date_filter_wcc.qs
+    # get the DataFrame
+    relocated_df = pd.DataFrame(list(db_table_relocated.values()))
+    initial_df = pd.DataFrame(list(db_table_initial.values()))
 
-    # apply filter nll
-    filter_nll = dynamic_filter(model_nll)
-    date_filter_nll = filter_nll(request.GET, queryset=db_table_nll)
-    db_table_nll = date_filter_nll.qs
-
+    # get total earthquake and total phases
+    
     context = {
         'site': site,
-        'table_wcc': db_table_wcc,
-        'date_filter_wcc':date_filter_wcc,
-        'table_nll': db_table_nll,
-        'date_filter_nll': date_filter_nll
+        'table_wcc': db_table_relocated,
+        'table_nll': db_table_initial
     }
     
     return render(request, 'project/data-analysis.html', context)

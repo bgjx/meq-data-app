@@ -8,11 +8,11 @@ def dynamic_filter(model_name):
     picked_model = apps.get_model('project', model_name)
 
     # get the data time scope
-    min_date = picked_model.objects.all().aggregate(min_date=Min('dt_origin'))['min_date']
-    max_date = picked_model.objects.all().aggregate(max_date=Max('dt_origin'))['max_date']
+    min_date = picked_model.objects.all().aggregate(min_date=Min('source_origin_dt'))['min_date']
+    max_date = picked_model.objects.all().aggregate(max_date=Max('source_origin_dt'))['max_date']
 
     class MyFilter(django_filters.FilterSet):
-        start_date = DateFilter(field_name="dt_origin", 
+        start_date = DateFilter(field_name="source_origin_dt", 
                                 lookup_expr="gte", 
                                 label="Start Date",
                                 widget = forms.DateInput(
@@ -22,7 +22,7 @@ def dynamic_filter(model_name):
                                         'max': max_date.strftime('%Y-%m-%d') if max_date else ''
                                     }
                                 ))
-        end_date = DateFilter(field_name="dt_origin",
+        end_date = DateFilter(field_name="source_origin_dt",
                               lookup_expr="lte", 
                               label="End Date",
                               widget = forms.DateInput(
@@ -37,6 +37,11 @@ def dynamic_filter(model_name):
             fields = []
     return MyFilter
 
+
+def slider_filter(model_name):
+    picked_model = apps.get_model('project', model_name)
+
+    # Get the min and max years from 
 
 
 

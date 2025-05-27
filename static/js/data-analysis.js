@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             hoverinfo: 'text',
         };
-
+        
         const layout = {
             title: ' MEQ Scatter Map',
             mapbox: {

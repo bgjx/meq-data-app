@@ -14,23 +14,23 @@
                         <ul class="nav nav-tabs">
                             <li class="nav-item">
                                 <button  class="nav-link active">
-                                    hypoDD + WCC
+                                    Relocated Catalog
                                 </button>
                             </li>
                             <li class="nav-item">
                                 <button  class="nav-link">
-                                    NonLinLoc
+                                    Initial Catalog
                                 </button>
                             </li>
                         </ul>
 
                         <div class="tab-contents-tab">
-                            <div class="tab-content active" id="tab-wcc">
+                            <div class="tab-content active" id="tab-relocated">
                                 <!-- Date range picker form -->
                                 <form method="get" class="form-explorer py-lg-3">
                                     <h5> Explore events in specific date range</h5>
                                     <div class="filter-parameter">
-                                        {{date_filter_wcc.form}} 
+                                        {{date_filter_relocated.form}} 
                                     </div>
                                     <button class="btn btn-primary" type = "submit">
                                         Filter
@@ -40,29 +40,27 @@
                                     <table class="table table-striped" style="width:100%">
                                         <thead>
                                             <tr>
-                                                <th>Id</th>
-                                                <th>Latitude</th>
-                                                <th>Longitude</th>
-                                                <th>Depth (m)</th>
-                                                <th>Origin Time</th>
-                                                <th>RMS_e</th>
-                                                <th>Ml Mag</th>
-                                                <th>Mw Mag</th>
-                                                <th>Remarks</th>
+                                                <th>source_id</th>
+                                                <th>source_latitude</th>
+                                                <th>source_longitude</th>
+                                                <th>source_depth_m</th>
+                                                <th>source_origin_dt</th>
+                                                <th>source_err_rms_s</th>
+                                                <th>magnitude</th>
+                                                <th>remarks</th>
                                             </tr>
                                         </thead>
 
                                         <tbody>
-                                            {% for ev in table_wcc %}
+                                            {% for ev in table_relocated %}
                                                 <tr >
-                                                    <td>{{ev.event_id}}</td>
-                                                    <td>{{ev.lat | floatformat:7}}</td>
-                                                    <td>{{ev.lon | floatformat:7}}</td>
-                                                    <td>{{ev.depth_m | floatformat:3}}</td>
-                                                    <td>{{ev.dt_origin | date:"Y-m-d H:i:s.u"}}</td>
-                                                    <td>{{ev.rms_error | floatformat:3}}</td>
-                                                    <td>{{ev.ml_mag |floatformat:3}}</td>
-                                                    <td>{{ev.mw_mag | floatformat:3}}</td>
+                                                    <td>{{ev.source_id}}</td>
+                                                    <td>{{ev.source_lat | floatformat:7}}</td>
+                                                    <td>{{ev.source_lon | floatformat:7}}</td>
+                                                    <td>{{ev.source_depth_m | floatformat:3}}</td>
+                                                    <td>{{ev.source_origin_dt | date:"Y-m-d H:i:s.u"}}</td>
+                                                    <td>{{ev.source_err_rms_s | floatformat:3}}</td>
+                                                    <td>{{ev.magnitude | floatformat:3}}</td>
                                                     <td>{{ev.remarks}}</td>
                                                 </tr>
                                             {% endfor %}
@@ -74,18 +72,18 @@
                                     <p>
                                         Or you can download the full catalog in csv file below
                                     </p>
-                                    <a href="{% url 'download-wcc' site_slug=site.slug %}" class="btn btn-primary">
+                                    <a href="{% url 'download-relocated' site_slug=site.slug %}" class="btn btn-primary">
                                         Download full CSV
                                     </a>
                                 </div>
                             </div>
 
-                            <div class="tab-content" id="tab-nll">
+                            <div class="tab-content" id="tab-initial">
                                 <!-- Date range picker form -->
                                 <form method="get" class="form-explorer py-lg-3">
                                     <h5> Explore events in specific date range</h5>
                                     <div class="filter-parameter">
-                                        {{date_filter_nll.form}} 
+                                        {{date_filter_initial.form}} 
                                     </div>
                                     <button class="btn btn-primary" type = "submit">
                                         Filter
@@ -96,29 +94,27 @@
                                     <table class="table table-striped" style="width:100%">
                                         <thead>
                                             <tr>
-                                                <th>Id</th>
-                                                <th>Latitude</th>
-                                                <th>Longitude</th>
-                                                <th>Depth (m)</th>
-                                                <th>Origin Time</th>
-                                                <th>RMS_e</th>
-                                                <th>Ml Mag</th>
-                                                <th>Mw Mag</th>
-                                                <th>Remarks</th>
+                                                <th>source_id</th>
+                                                <th>source_latitude</th>
+                                                <th>source_longitude</th>
+                                                <th>source_depth_m</th>
+                                                <th>source_origin_dt</th>
+                                                <th>source_error_rms_s</th>
+                                                <th>magnitude</th>
+                                                <th>remarks</th>
                                             </tr>
                                         </thead>
 
                                         <tbody>
-                                            {% for ev in table_nll %}
+                                            {% for ev in table_initial %}
                                                 <tr >
-                                                    <td>{{ev.event_id}}</td>
-                                                    <td>{{ev.lat | floatformat:7}}</td>
-                                                    <td>{{ev.lon | floatformat:7}}</td>
-                                                    <td>{{ev.depth_m | floatformat:3}}</td>
-                                                    <td>{{ev.dt_origin | date:"Y-m-d H:i:s.u"}}</td>
-                                                    <td>{{ev.rms_error | floatformat:3}}</td>
-                                                    <td>{{ev.ml_mag |floatformat:3}}</td>
-                                                    <td>{{ev.mw_mag | floatformat:3}}</td>
+                                                    <td>{{ev.source_id}}</td>
+                                                    <td>{{ev.source_lat | floatformat:7}}</td>
+                                                    <td>{{ev.source_lon | floatformat:7}}</td>
+                                                    <td>{{ev.source_depth_m | floatformat:3}}</td>
+                                                    <td>{{ev.source_origin_dt | date:"Y-m-d H:i:s.u"}}</td>
+                                                    <td>{{ev.source_err_rms_s | floatformat:3}}</td>
+                                                    <td>{{ev.magnitude | floatformat:3}}</td>
                                                     <td>{{ev.remarks}}</td>
                                                 </tr>
                                             {% endfor %}
@@ -129,7 +125,7 @@
                                     <p>
                                         Or you can download the full catalog in csv file below
                                     </p>
-                                    <a href="{% url 'download-nll' site_slug=site.slug %}" class="btn btn-primary">
+                                    <a href="{% url 'download-initial' site_slug=site.slug %}" class="btn btn-primary">
                                         Download full CSV
                                     </a>
                                 </div>

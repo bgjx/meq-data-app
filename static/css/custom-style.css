@@ -184,3 +184,8 @@ ul.search-input{
 }
 
 /* maps meq */
+
+/* Font Setting */
+.stats-headline{
+    font-weight: 300;
+}

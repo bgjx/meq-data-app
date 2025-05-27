@@ -12,7 +12,7 @@ mapbox_access_token = 'pk.eyJ1IjoiZWRlbG8iLCJhIjoiY20zNG1zN3F5MDFjdzJsb3N4ZDJ1ZT
 def get_model(model, slug, cat_type):
     for model_name, model_value in model.__dict__.items():
         if isinstance(model_value, type) and issubclass(model_value, models.Model):
-            if f"{slug}_cat_{cat_type}" in str(model_value._meta.db_table):
+            if f"{slug}_{cat_type}_catalog" in str(model_value._meta.db_table):
                 all_objects = model_value.objects.all()
                 model_name = model_value.__name__
                 break
