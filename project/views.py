@@ -13,66 +13,47 @@ import csv
 def project_site(request, site_slug = None):
     site = get_object_or_404(Site, slug=site_slug)
 
-    # find the specific models matching the site_slug and type of catalog
-    db_table_relocated, model_relocated = utl.get_model(mdl, site_slug, "relocated")
-    db_table_initial, model_initial = utl.get_model(mdl, site_slug, "initial")
+    # Define catalog types and their download URLs
+    catalog_types = [
+        {'type': 'relocated', 'download_url':'download-relocated'},
+        {'type': 'initial', 'download_url': 'download-initial'}
+    ]
 
-    # apply filter on relocated catalog
-    filter_relocated = dynamic_filter(model_relocated)
-    date_filter_relocated = filter_relocated(request.GET, queryset=db_table_relocated)
-    db_table_relocated = date_filter_relocated.qs
-
-    # apply filter on relocated catalog
-    filter_initial = dynamic_filter(model_initial)
-    date_filter_initial = filter_initial(request.GET, queryset=db_table_initial)
-    db_table_initial = date_filter_initial.qs
-
-    context = {
-        'site': site,
-        'table_relocated': db_table_relocated,
-        'date_filter_relocated':date_filter_relocated,
-        'table_initial': db_table_initial,
-        'date_filter_initial': date_filter_initial
-    }
+    #  Process each catalog
+    context = {'site': site}
+    for catalog in catalog_types:
+        catalog_type = catalog['type']
+        # Get model
+        db_table, model = utl.get_model(mdl, site_slug, catalog_type)
+        # apply filter
+        filter_class = dynamic_filter(model)
+        date_filter = filter_class(request.GET, queryset=db_table)
+        # update context
+        context[f'table_{catalog_type}'] = date_filter.qs
+        context[f'date_filter_{catalog_type}'] = date_filter
 
     return render(request, 'project/data-explore.html', context)
 
 
-def download_csv_reloc(request, site_slug = None):
-    db_table_relocated, model_relocated = utl.get_model(mdl, site_slug, "relocated")
-    get_model_relocated = apps.get_model('project', model_relocated)
+def download_catalog(request, site_slug, catalog_type):
+    db_table, model = utl.get_model(mdl, site_slug, catalog_type)
+    get_model = apps.get_model('project', model)
 
+    # http response
     response = HttpResponse(
         content_type = "text/csv",
-        headers={"Content-Disposition": 'attachment; filename="catalog_relocated.csv"'}
+        headers={"Content-Disposition": 'attachment; filename="catalog_download.csv"'}
     )
 
+    # write header
     writer = csv.writer(response)
-    headers = [field.name for field in get_model_relocated._meta.fields]
+    headers = [field.name for field in get_model._meta.fields]
     writer.writerow(headers)
 
     # writing data
-    for data in db_table_relocated:
-        writer.writerow([getattr(data, field.name) for field in get_model_relocated._meta.fields])
+    for data in db_table:
+        writer.writerow([getattr(data, field.name) for field in get_model._meta.fields])
     
-    return response
-
-def download_csv_initial(request, site_slug = None):
-    db_table_initial, model_initial = utl.get_model(mdl, site_slug, "initial")
-    get_model_initial = apps.get_model('project', model_initial)
-
-    response = HttpResponse(
-        content_type = "text/csv",
-        headers={"Content-Disposition": 'attachment; filename="catalog_initial.csv"'}
-    )
-
-    writer = csv.writer(response)
-    headers = [field.name for field in get_model_initial._meta.fields]
-    writer.writerow(headers)
-
-    # writing data
-    for data in db_table_initial:
-        writer.writerow([getattr(data, field.name) for field in get_model_initial._meta.fields])
     return response
 
 

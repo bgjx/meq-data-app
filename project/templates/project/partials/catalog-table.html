@@ -42,7 +42,7 @@
 
     <div class="download-csv py-lg-3">
         <p>Or you can download the full catalog in CSV file below</p>
-        <a href="{% url download_url site_slug=site.slug %}" class="btn btn-primary">
+        <a href="{% url 'download-catalog' site_slug=site.slug catalog_type=catalog_type %}" class="btn btn-primary">
             Download full CSV
         </a>
     </div>
