@@ -111,6 +111,7 @@ def get_meq_data(request, site_slug = None):
     }
     return JsonResponse(data)
 
+
 def meq_maps(request, site_slug = None):
     site = get_object_or_404(Site, slug=site_slug)
     mapbox_access_token = 'pk.eyJ1IjoiZWRlbG8iLCJhIjoiY20zNG1zN3F5MDFjdzJsb3N4ZDJ1ZTR1byJ9.bgl0vpixXnhDKJ8SnW4PYA'

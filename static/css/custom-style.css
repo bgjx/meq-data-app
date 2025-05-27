@@ -159,6 +159,8 @@ ul.search-input{
 
 .filter-parameter input{
     margin-right: 20px;
+    font-size: small;
+    color: gray;
 }
 
 
@@ -189,3 +191,5 @@ ul.search-input{
 .stats-headline{
     font-weight: 300;
 }
+
+/* Form Styling */
