@@ -34,6 +34,7 @@ REQUIRED_STATION_COLUMNS = [
 
 # get hypocenter catalog
 def get_hypocenter_catalog(app_label, slug, catalog_type):
+    'Get hypocenter catalog from model.'
     for model in apps.get_app_config(app_label).get_models():
         if f"{slug}_{catalog_type}_catalog" in str(model._meta.db_table):
             all_objects = model.objects.all()
@@ -41,9 +42,10 @@ def get_hypocenter_catalog(app_label, slug, catalog_type):
             break
     return all_objects, model_name
 
+
 # get full merge catalog including detail picking data and station
 def get_full_catalog(app_label, slug, catalog_type):
-
+    'Get full catalog by merging hypocenter, picking, and station.'
     def _to_frame(dict_object:dict ):
         df = pd.DataFrame(list(dict_object.values()))
         return df
@@ -98,14 +100,17 @@ def get_full_catalog(app_label, slug, catalog_type):
 
 
 def get_station(app_label, slug):
+    'Get station data from station model'
     for model in apps.get_app_config(app_label).get_models():
         if f"{slug}_station" in model._meta.db_table:
             all_objects = model.objects.all()
             break
     return all_objects
 
-# plotting table
+
+
 def plot_table(dataframe):
+    'Plo table from dataframe'
     fig = go.Figure(data=[go.Table(
     header=dict(values=list(dataframe.columns),
                 fill_color='gray',
