@@ -1,9 +1,10 @@
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from frontpage.models import Site
-import project.models as mdl
 import pandas as pd
-import project.utils as utl
+from project.utils import (get_hypocenter_catalog, 
+                           get_station,
+                           get_full_catalog)
 from . filters import dynamic_filter
 from django.http import HttpResponse, JsonResponse
 from django.apps import apps
@@ -24,7 +25,7 @@ def project_site(request, site_slug = None):
     for catalog in catalog_types:
         catalog_type = catalog['type']
         # Get model
-        db_table, model = utl.get_model(mdl, site_slug, catalog_type)
+        db_table, model = get_hypocenter_catalog('project', site_slug, catalog_type)
         # apply filter
         filter_class = dynamic_filter(model)
         date_filter = filter_class(request.GET, queryset=db_table)
@@ -36,7 +37,7 @@ def project_site(request, site_slug = None):
 
 
 def download_catalog(request, site_slug, catalog_type):
-    db_table, model = utl.get_model(mdl, site_slug, catalog_type)
+    db_table, model = get_hypocenter_catalog('project', site_slug, catalog_type)
     get_model = apps.get_model('project', model)
 
     # http response
@@ -58,57 +59,45 @@ def download_catalog(request, site_slug, catalog_type):
 
 
 def get_meq_data(request, site_slug = None):
-    # find the specific models matching the site_slug and type of catalog
-    db_table_relocated, model_relocated = utl.get_model(mdl, site_slug, "relocated")
-    db_table_initial, model_initial = utl.get_model(mdl, site_slug, "initial")
-    db_station = utl.get_station(mdl, site_slug)
+    # map center
+    center_map = {
+        'seml': {'lat': -1.616487, 'lon':101.137171},
+        'serd': {'lat': -4.220185, 'lon': 103.379187}
+    }
 
-    # initialize dataframe for relocated earthquake
-    df_meq_relocated = pd.DataFrame(list(db_table_relocated.values()))
-    df_meq_relocated = df_meq_relocated[['source_id', 'source_lat', 'source_lon', 'source_depth_m', 'magnitude']]
-   
-    # do normalization data
-    average_mw_relocated = df_meq_relocated.magnitude.mean()
-    df_meq_relocated['magnitude'] = df_meq_relocated['magnitude'].fillna(average_mw_relocated) # fill empty magnitude column
-
-    min_mag_relocated = df_meq_relocated.magnitude.min()
-    normalize_mag_relocated = [1*((-1*min_mag_relocated)+data) for data in list(df_meq_relocated.magnitude)]
-    df_meq_relocated['norm_magnitude'] = normalize_mag_relocated
-
-    # Initialize dataframe for initial earthquake
-    df_meq_initial = pd.DataFrame(list(db_table_initial.values()))
-    df_meq_initial = df_meq_initial[['source_id', 'source_lat', 'source_lon', 'source_depth_m', 'magnitude']]
-
-    # do normalization data
-    average_mw_initial = df_meq_initial.magnitude.mean()
-    df_meq_initial['magnitude'] = df_meq_initial['magnitude'].fillna(average_mw_initial) # fill empty magnitude column
-    min_mag_initial = df_meq_initial.magnitude.min()
-    normalize_mag_initial = [1*((-1*min_mag_initial)+data) for data in list(df_meq_initial.magnitude)]
-    df_meq_initial['norm_magnitude'] = normalize_mag_initial
-
-    # station dataframe
+    # define catalog type
+    catalog_types = [
+        {'type': 'relocated'},
+        {'type': 'initial'}
+    ]
+    
+    # get station dataframe
+    db_station = get_station('project', site_slug)
     df_station = pd.DataFrame(list(db_station.values()))
 
-    # find center of the maps
-    if site_slug == 'seml':
-        center_map = dict(
-            lat = -1.616487, 
-            lon = 101.137171 
-        )
-    elif site_slug == 'serd':
-        center_map = dict(
-            lat = -4.220185, 
-            lon = 103.379187 
-        )
-    else:
-        pass
-
     data = {
-        'meq_relocated': df_meq_relocated.to_dict(orient='records'),
-        'meq_initial': df_meq_initial.to_dict(orient='records'),
         'station': df_station.to_dict(orient='records'),
-        'center_map': center_map,
+        'center_map': center_map[site_slug]
     }
+
+    # get hypocenter dataframe and normalize magnitude 
+    for catalog in catalog_types:
+        catalog_type = catalog['type']
+        db_table, model = get_hypocenter_catalog('project', site_slug, catalog_type)
+        df_meq = pd.DataFrame(list(db_table.values()))
+        df_meq = df_meq[['source_id', 'source_lat', 'source_lon', 'source_depth_m', 'magnitude']]
+        
+        # magnitude normalization
+        average_magnitude = df_meq.magnitude.median()
+        df_meq['magnitude'] = df_meq['magnitude'].fillna(average_magnitude)
+
+        min_magnitude = df_meq.magnitude.min()
+        normalized_magnitude = [1 * (( -1 * min_magnitude) + data) for data in list(df_meq.magnitude)]
+        df_meq['norm_magnitude'] = normalized_magnitude
+
+        # update data object
+        data[f'meq_{catalog_type}'] = df_meq.to_dict(orient='records')
+
     return JsonResponse(data)
 
 
@@ -125,20 +114,16 @@ def meq_maps(request, site_slug = None):
 def data_analysis(request, site_slug = None):
     site = get_object_or_404(Site, slug=site_slug)
 
-    # find the specific models matching the site_slug and type of catalog
-    db_table_relocated, model_relocated = utl.get_model(mdl, site_slug, "relocated")
-    db_table_initial, model_initial = utl.get_model(mdl, site_slug, "initial")
+    # define catalog type
+    catalog_types = [
+        {'type': 'relocated', 'download_url':'download-relocated'},
+        {'type': 'initial', 'download_url': 'download-initial'}
+    ]
 
-    # get the DataFrame
-    relocated_df = pd.DataFrame(list(db_table_relocated.values()))
-    initial_df = pd.DataFrame(list(db_table_initial.values()))
-
-    # get total earthquake and total phases
-    
-    context = {
-        'site': site,
-        'table_wcc': db_table_relocated,
-        'table_nll': db_table_initial
-    }
+    context = {'site': site}
+    for catalog in catalog_types:
+        catalog_type = catalog['type']
+        full_merge_catalog = get_full_catalog('project', site_slug, catalog_type)
+        context[f'merged_table_{catalog_type}'] = full_merge_catalog
     
     return render(request, 'project/data-analysis.html', context)
