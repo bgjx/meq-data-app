@@ -12,6 +12,7 @@ import csv
 
 
 def project_site(request, site_slug = None):
+    'View function for data explorer page.'
     site = get_object_or_404(Site, slug=site_slug)
 
     # Define catalog types and their download URLs
@@ -37,6 +38,7 @@ def project_site(request, site_slug = None):
 
 
 def download_catalog(request, site_slug, catalog_type):
+    'Download catalog according to the site slug and catalog type.'
     db_table, model = get_hypocenter_catalog('project', site_slug, catalog_type)
     get_model = apps.get_model('project', model)
 
@@ -59,6 +61,7 @@ def download_catalog(request, site_slug, catalog_type):
 
 
 def get_meq_data(request, site_slug = None):
+    'Get meq hypocenter data, define the center of map, and normalized the magnitude.'
     # map center
     center_map = {
         'seml': {'lat': -1.616487, 'lon':101.137171},
@@ -102,6 +105,7 @@ def get_meq_data(request, site_slug = None):
 
 
 def meq_maps(request, site_slug = None):
+    'Generate map frame for meq distributions map'
     site = get_object_or_404(Site, slug=site_slug)
     mapbox_access_token = 'pk.eyJ1IjoiZWRlbG8iLCJhIjoiY20zNG1zN3F5MDFjdzJsb3N4ZDJ1ZTR1byJ9.bgl0vpixXnhDKJ8SnW4PYA'
     context = {
@@ -112,6 +116,7 @@ def meq_maps(request, site_slug = None):
 
 
 def data_analysis(request, site_slug = None):
+    'Generate views for data analysis page.'
     site = get_object_or_404(Site, slug=site_slug)
 
     # define catalog type
