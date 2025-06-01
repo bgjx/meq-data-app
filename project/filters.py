@@ -11,7 +11,7 @@ def dynamic_filter(model_name):
     min_date = picked_model.objects.all().aggregate(min_date=Min('source_origin_dt'))['min_date']
     max_date = picked_model.objects.all().aggregate(max_date=Max('source_origin_dt'))['max_date']
 
-    class MyFilter(django_filters.FilterSet):
+    class TableFilter(django_filters.FilterSet):
         start_date = DateFilter(field_name="source_origin_dt", 
                                 lookup_expr="gte", 
                                 label="Start Date",
@@ -35,7 +35,7 @@ def dynamic_filter(model_name):
         class Meta:
             model = picked_model
             fields = []
-    return MyFilter
+    return TableFilter
 
 
 def slider_filter(model_name):
