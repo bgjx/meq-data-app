@@ -17,9 +17,10 @@ def dynamic_filter(model_name):
                                 label="Start Date",
                                 widget = forms.DateInput(
                                     attrs={
-                                        'type': 'date',
-                                        'min': min_date.strftime('%Y-%m-%d') if min_date else '',
-                                        'max': max_date.strftime('%Y-%m-%d') if max_date else ''
+                                        'type': 'text',
+                                        'min': min_date.strftime('%Y-%m-%d %H:%M:%S') if min_date else '',
+                                        'max': max_date.strftime('%Y-%m-%d %H:%M:%S') if max_date else '',
+                                        'placeholder':  min_date.strftime('%Y-%m-%d %H:%M:%S') if min_date else ''
                                     }
                                 ))
         end_date = DateFilter(field_name="source_origin_dt",
@@ -27,9 +28,10 @@ def dynamic_filter(model_name):
                               label="End Date",
                               widget = forms.DateInput(
                                   attrs={
-                                        'type': 'date',
-                                        'min': min_date.strftime('%Y-%m-%d') if min_date else '',
-                                        'max': max_date.strftime('%Y-%m-%d') if max_date else ''
+                                        'type': 'text',
+                                        'min': min_date.strftime('%Y-%m-%d %H:%M:%S') if min_date else '',
+                                        'max': max_date.strftime('%Y-%m-%d %H:%M:%S') if max_date else '',
+                                        'placeholder': max_date.strftime('%Y-%m-%d %H:%M:%S') if max_date else ''
                                   }
                               ))
         class Meta:

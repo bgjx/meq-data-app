@@ -152,18 +152,6 @@ ul.search-input{
     text-align: center;
 }
 
-/* Form explorer class */
-.filter-parameter{
-    display: flex;
-}
-
-.filter-parameter input{
-    margin-right: 20px;
-    font-size: small;
-    color: gray;
-}
-
-
 /* Tab  */
 .tab-contents-map .tab-content{
     padding: 10px;
@@ -193,3 +181,26 @@ ul.search-input{
 }
 
 /* Form Styling */
+form.form-explorer{
+    display: flex;
+    flex-wrap: wrap;
+    background-color: var(--bs-body-bg);
+    border-radius: 12px;
+    padding: 1.2rem;
+    justify-content: space-between;
+}
+
+.form-input {
+    margin-left: auto;
+    font-size: small;
+}
+
+.form-input input{
+    padding: 0.2rem;
+    color: gray;
+}
+
+.form-explorer label{
+    font-weight: 500;
+}
+

@@ -2,10 +2,24 @@
 <div class="tab-content {% if active %}active{% endif %}" id="tab-{{ catalog_type }}">
     <!-- Date range picker form -->
     <form method="get" class="form-explorer py-lg-3">
-        <div class="filter-parameter">
-            {{ date_filter.form }}
+        <h5 style="font-weight: 500;"> Filter Console</h5>
+        <!-- Start date label  -->
+        <div class="form-input ">
+            <div class="col">
+                <label for="starttime" class="form-label"> Start (UTC)</label>
+                <div class="input">
+                    {{date_filter.form.start_date}}
+                </div>
+            </div>
+            <div class="col py-lg-3">
+                <label for="endtime" class="form-label"> End (UTC)</label>
+                <div class="input">
+                    {{date_filter.form.end_date}}
+                </div>
+            </div>
+            <!-- Submit button  -->
+            <button class="btn btn-primary " type="submit">Apply Filter</button>
         </div>
-        <button class="btn btn-primary" type="submit">Filter</button>
     </form>
 
     <div class="table-container">
