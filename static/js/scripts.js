@@ -1,56 +1,77 @@
-//  Sidebar expander
 document.addEventListener('DOMContentLoaded', function() {
+    // Sidebar expander
     const hamburger = document.querySelector("#toggle-btn");
-
     if (hamburger) {
         hamburger.addEventListener("click", function() {
             const sidebar = document.querySelector("#sidebar");
             const mainContent = document.querySelector("#side-main");
-
             if (sidebar && mainContent) {
                 sidebar.classList.toggle("expand");
                 mainContent.classList.toggle("expand");
+            } else {
+                console.log('Sidebar or main content not found!');
             }
         });
     } else {
         console.log('Hamburger button not found!');
     }
-});
 
-// Table functionalities
-document.addEventListener('DOMContentLoaded', function(){
-    // Tabs functionality 
-    let tabs = document.querySelectorAll(".nav-tabs li button");
-    let tabContent = document.querySelectorAll(".tab-contents-tab .tab-content");
+    // Toggle collapsible
+    const filterCollapse = document.getElementById('filterCollapse');
+    if (filterCollapse) {
+        const chevronIcon = document.querySelector('.bi-chevron-down, .bi-chevron-up');
+        if (chevronIcon) {
+            filterCollapse.addEventListener('show.bs.collapse', function() {
+                if (chevronIcon.classList.contains('bi-chevron-up')) {
+                    chevronIcon.classList.replace('bi-chevron-up', 'bi-chevron-down');
+                }
+            });
+            filterCollapse.addEventListener('hide.bs.collapse', function() {
+                if (chevronIcon.classList.contains('bi-chevron-down')) {
+                    chevronIcon.classList.replace('bi-chevron-down', 'bi-chevron-up');
+                }
+            });
+        } else {
+            console.log('Chevron icon not found!');
+        }
+    } else {
+        console.log('Filter collapse element not found!');
+    }
+
+    // Table functionalities
+    const tabs = document.querySelectorAll(".nav-tabs li button");
+    const tabContent = document.querySelectorAll(".tab-contents-tab .tab-content");
 
     // Initialize DataTables for the tables in the active tab on load
-    let activeTab = document.querySelector(".nav-tabs li button.active");
+    const activeTab = document.querySelector(".nav-tabs li button.active");
     if (activeTab) {
-        let activeIndex = Array.from(tabs).indexOf(activeTab);
-        let activeTables = tabContent[activeIndex].querySelectorAll(".table-container table");
-        activeTables.forEach(function (table) {
-            new DataTable(table);
-        });
+        const activeIndex = Array.from(tabs).indexOf(activeTab);
+        if (tabContent[activeIndex]) {
+            const activeTables = tabContent[activeIndex].querySelectorAll(".table-container table");
+            activeTables.forEach(function(table) {
+                new DataTable(table);
+            });
+        }
     }
 
     tabs.forEach((tab, index) => {
         tab.addEventListener("click", () => {
             tabContent.forEach(content => {
-                content.classList.remove('active')
+                content.classList.remove('active');
             });
-            tabs.forEach(tab =>{
-                tab.classList.remove("active")
+            tabs.forEach(t => {
+                t.classList.remove("active");
             });
-            tabContent[index].classList.add("active");
-            tabs[index].classList.add("active");
+            if (tabContent[index]) {
+                tabContent[index].classList.add("active");
+                tabs[index].classList.add("active");
 
-            //  Restyling the tables
-            let activeTables = tabContent[index].querySelectorAll(".table-container table")
-            activeTables.forEach(function(table) {
-                new DataTable(table);
-            });
+                // Restyling the tables
+                const activeTables = tabContent[index].querySelectorAll(".table-container table");
+                activeTables.forEach(function(table) {
+                    new DataTable(table);
+                });
+            }
         });
     });
 });
-
-
