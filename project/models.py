@@ -130,3 +130,60 @@ class SerdStation(models.Model):
     class Meta:
         managed = False
         db_table = 'serd_station'
+
+
+# Merged view model
+class SemlCatalogMergedView(models.Model):
+    source_id = models.IntegerField(blank=True, null=True)
+    source_lat_reloc = models.FloatField(blank=True, null=True)
+    source_lon_reloc = models.FloatField(blank=True, null=True)
+    source_depth_m_reloc = models.FloatField(blank=True, null=True)
+    source_origin_dt_reloc = models.DateTimeField(blank=True, null=True)
+    source_lat_init = models.FloatField(blank=True, null=True)
+    source_lon_init = models.FloatField(blank=True, null=True)
+    source_depth_m_init = models.FloatField(blank=True, null=True)
+    source_origin_dt_init = models.DateTimeField(blank=True, null=True)
+    network_code = models.CharField(max_length=10, blank=True, null=True)
+    station_code = models.CharField(max_length=10, blank=True, null=True)
+    station_lat = models.FloatField(blank=True, null=True)
+    station_lon = models.FloatField(blank=True, null=True)
+    station_elev_m = models.FloatField(blank=True, null=True)
+    p_arrival_dt = models.DateTimeField(blank=True, null=True)
+    s_arrival_dt = models.DateTimeField(blank=True, null=True)
+    coda_dt = models.DateTimeField(blank=True, null=True)
+    n_phases = models.IntegerField(blank=True, null=True)
+    magnitude = models.FloatField(blank=True, null=True)
+    reloc_remarks = models.CharField(max_length=10, blank=True, null=True)
+    init_remarks = models.CharField(max_length=10, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'seml_catalog_merged_view'
+
+
+class SerdCatalogMergedView(models.Model):
+    source_id = models.IntegerField(blank=True, null=True)
+    source_lat_reloc = models.FloatField(blank=True, null=True)
+    source_lon_reloc = models.FloatField(blank=True, null=True)
+    source_depth_m_reloc = models.FloatField(blank=True, null=True)
+    source_origin_dt_reloc = models.DateTimeField(blank=True, null=True)
+    source_lat_init = models.FloatField(blank=True, null=True)
+    source_lon_init = models.FloatField(blank=True, null=True)
+    source_depth_m_init = models.FloatField(blank=True, null=True)
+    source_origin_dt_init = models.DateTimeField(blank=True, null=True)
+    network_code = models.CharField(max_length=10, blank=True, null=True)
+    station_code = models.CharField(max_length=10, blank=True, null=True)
+    station_lat = models.FloatField(blank=True, null=True)
+    station_lon = models.FloatField(blank=True, null=True)
+    station_elev_m = models.FloatField(blank=True, null=True)
+    p_arrival_dt = models.DateTimeField(blank=True, null=True)
+    s_arrival_dt = models.DateTimeField(blank=True, null=True)
+    coda_dt = models.DateTimeField(blank=True, null=True)
+    n_phases = models.IntegerField(blank=True, null=True)
+    magnitude = models.FloatField(blank=True, null=True)
+    reloc_remarks = models.CharField(max_length=10, blank=True, null=True)
+    init_remarks = models.CharField(max_length=10, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'serd_catalog_merged_view'
