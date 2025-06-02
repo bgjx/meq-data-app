@@ -4,7 +4,7 @@ from frontpage.models import Site
 import pandas as pd
 from project.utils import (get_hypocenter_catalog, 
                            get_station,
-                           get_full_catalog)
+                           get_merged_catalog)
 from . filters import dynamic_filter
 from django.http import HttpResponse, JsonResponse
 from django.apps import apps
@@ -119,16 +119,10 @@ def data_analysis(request, site_slug = None):
     'Generate views for data analysis page.'
     site = get_object_or_404(Site, slug=site_slug)
 
-    # define catalog type
-    catalog_types = [
-        {'type': 'relocated', 'download_url':'download-relocated'},
-        {'type': 'initial', 'download_url': 'download-initial'}
-    ]
-
-    context = {'site': site}
-    for catalog in catalog_types:
-        catalog_type = catalog['type']
-        full_merge_catalog = get_full_catalog('project', site_slug, catalog_type)
-        context[f'merged_table_{catalog_type}'] = full_merge_catalog
+    # Get merged catalog model
+    full_merged_catalog = get_merged_catalog('project', site_slug)
+    context = {
+                'site': site,
+                'full_merged_catalog': full_merged_catalog}
     
     return render(request, 'project/data-analysis.html', context)

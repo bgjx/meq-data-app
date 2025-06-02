@@ -43,60 +43,16 @@ def get_hypocenter_catalog(app_label, slug, catalog_type):
     return all_objects, model_name
 
 
-# get full merge catalog including detail picking data and station
-def get_full_catalog(app_label, slug, catalog_type):
+# get merged catalog view for complete data analysis
+def get_merged_catalog(app_label, slug):
     'Get full catalog by merging hypocenter, picking, and station.'
-    def _to_frame(dict_object:dict ):
-        df = pd.DataFrame(list(dict_object.values()))
-        return df
-    
-    # define db structure
-    db_structure = {
-            'picking': f'{slug}_picking_catalog',
-            'hypocenter': f'{slug}_{catalog_type}_catalog',   
-            'station': f'{slug}_station'
-            }
-    
-    # initialize db_table for query
-    db_tables = {
-        'picking': None,
-        'hypocenter': None,
-        'station': None
-    }
-
     # get all the tables
     for model in apps.get_app_config(app_label).get_models():
-        db_name = model._meta.db_table
-        for key, table_name in db_structure.items():
-            if db_name == table_name:
-                db_tables[key] = _to_frame(model.objects.all())
-                break
-
-    # validate the completeness of table
-    missing_tables = [key for key, df in db_tables.items() if df is None]
-    if missing_tables:
-        raise ValueError(f"Missing tables: {', '.join(missing_tables)}")
-    
-    # validate required columns
-    required_columns = {
-        'picking': REQUIRED_PICKING_CATALOG_COLUMNS,
-        'hypocenter': REQUIRED_HYPO_CATALOG_COLUMNS,
-        'station': REQUIRED_STATION_COLUMNS
-    }
-    for table_key, df in db_tables.items():
-        missing_cols = [col for col in required_columns[table_key] if col not in df.columns]
-        if missing_cols:
-            raise ValueError(f"Missing columns in {table_key} table: {', '.join(missing_cols)}")
-
-    # merging databases
-    result = (
-        db_tables['hypocenter']
-        .merge(db_tables['picking'], on='source_id', how='inner')
-        .merge(db_tables['station'], on='station_code', how='inner')
-        .reset_index()
-    )
-
-    return result
+        if f"{slug}_catalog_merged_view" in str(model._meta.db_table):
+            all_objects = model.objects.all()
+            model_name = model.__name__ 
+            break
+    return all_objects, model_name
 
 
 def get_station(app_label, slug):
@@ -106,7 +62,6 @@ def get_station(app_label, slug):
             all_objects = model.objects.all()
             break
     return all_objects
-
 
 
 def plot_table(dataframe):
