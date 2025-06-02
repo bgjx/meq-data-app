@@ -120,9 +120,11 @@ def data_analysis(request, site_slug = None):
     site = get_object_or_404(Site, slug=site_slug)
 
     # Get merged catalog model
-    full_merged_catalog = get_merged_catalog('project', site_slug)
+    db_merged_table, model = get_merged_catalog('project', site_slug)
+
+    # Apply filter
     context = {
                 'site': site,
-                'full_merged_catalog': full_merged_catalog}
+                'full_merged_catalog': db_merged_table}
     
     return render(request, 'project/data-analysis.html', context)
