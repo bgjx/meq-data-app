@@ -5,7 +5,7 @@ import pandas as pd
 from project.utils import (get_hypocenter_catalog, 
                            get_station,
                            get_merged_catalog)
-from . filters import table_filter
+from . filters import table_filter, spatial_filter
 from django.http import HttpResponse, JsonResponse
 from django.apps import apps
 import csv
@@ -121,10 +121,15 @@ def data_analysis(request, site_slug = None):
 
     # Get merged catalog model
     db_merged_table, model = get_merged_catalog('project', site_slug)
+    
+    # apply filter
+    filter_class = spatial_filter(model)
+    spatial_filter = filter_class(request.GET, queryset=db_merged_table)
 
-    # Apply filter
     context = {
                 'site': site,
-                'full_merged_catalog': db_merged_table}
+                'full_merged_catalog': spatial_filter.qs,
+                'spatial_filter': spatial_filter
+            }
     
     return render(request, 'project/data-analysis.html', context)
