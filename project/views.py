@@ -5,7 +5,7 @@ import pandas as pd
 from project.utils import (get_hypocenter_catalog, 
                            get_station,
                            get_merged_catalog)
-from . filters import dynamic_filter
+from . filters import table_filter
 from django.http import HttpResponse, JsonResponse
 from django.apps import apps
 import csv
@@ -28,7 +28,7 @@ def project_site(request, site_slug = None):
         # Get model
         db_table, model = get_hypocenter_catalog('project', site_slug, catalog_type)
         # apply filter
-        filter_class = dynamic_filter(model)
+        filter_class = table_filter(model)
         date_filter = filter_class(request.GET, queryset=db_table)
         # update context
         context[f'table_{catalog_type}'] = date_filter.qs
