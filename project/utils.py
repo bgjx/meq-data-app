@@ -6,32 +6,6 @@ from django.apps import apps
 
 mapbox_access_token = 'pk.eyJ1IjoiZWRlbG8iLCJhIjoiY20zNG1zN3F5MDFjdzJsb3N4ZDJ1ZTR1byJ9.bgl0vpixXnhDKJ8SnW4PYA'
 
-# detail database requirements
-REQUIRED_HYPO_CATALOG_COLUMNS = [
-    'source_id',
-    'source_lat',
-    'source_lon',
-    'source_depth_m',
-    'source_origin_dt',
-    'n_phases',
-    'magnitude'
-]
-
-REQUIRED_PICKING_CATALOG_COLUMNS = [
-    'source_id',
-    'station_code',
-    'p_arrival_dt',
-    's_arrival_dt',
-]
-
-REQUIRED_STATION_COLUMNS = [
-    'station_code',
-    'network_code',
-    'station_lat',
-    'station_lon',
-    'station_elev_m'
-]
-
 # get hypocenter catalog
 def get_hypocenter_catalog(app_label, slug, catalog_type):
     'Get hypocenter catalog from model.'
