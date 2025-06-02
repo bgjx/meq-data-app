@@ -50,3 +50,6 @@ def plot_table(dataframe):
                     ])
     return to_html(fig, full_html = False, include_plotlyjs='cdn')
 
+def data_analysis(dataframe):
+    'Do data preprocessing and return the data to feed the plotly plots'
+

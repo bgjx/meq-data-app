@@ -1,13 +1,17 @@
-from django.shortcuts import render
-from django.shortcuts import get_object_or_404
-from frontpage.models import Site
-import pandas as pd
-from project.utils import (get_hypocenter_catalog, 
-                           get_station,
-                           get_merged_catalog)
-from . filters import table_filter, spatial_filter
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.apps import apps
+from django.core.serializers import serialize
+
+from frontpage.models import Site
+from project.utils import (get_hypocenter_catalog, 
+                           get_station,
+                           get_merged_catalog,
+                           analysis_engine)
+from . filters import table_filter, spatial_filter
+
+import json
+import pandas as pd
 import csv
 
 
@@ -125,6 +129,18 @@ def data_analysis(request, site_slug = None):
     # apply filter
     filter_class = spatial_filter(model)
     spatial_filter = filter_class(request.GET, queryset=db_merged_table)
+    queryset = spatial_filter.qs 
+    
+    # Create pandas DataFrame as input for Data Analysis
+    df = pd.DataFrame.from_records(queryset.values())
+
+    # Perform data analysis with data analysis engine
+    processed_dict = analysis_engine(df)
+
+    # Parse the data to desire structure
+    formatted_data = {
+
+    }
 
     context = {
                 'site': site,

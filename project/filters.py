@@ -5,7 +5,7 @@ from django.apps import apps
 from django.db.models import Min, Max
 
 from django.contrib.gis.db.models.functions import Distance
-from django.contrib.gis.geos import point
+from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
 
 import numpy as np
@@ -68,7 +68,6 @@ def spatial_filter(model_name):
     else:
         median_lat, median_lon = 0, 0
     
-
 
     class SpatialFilter(django_filters.FilterSet):
         # Date Range Filters
@@ -133,7 +132,38 @@ def spatial_filter(model_name):
         class Meta:
             model = picked_model
             fields = ['start_date', 'end_date', 'latitude', 'longitude', 'radius']
-    
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.filters['latitude'].required = False
+            self.filters['longitude'].required = False
+            self.filters['radius'].required = False
+        
+        def filter_queryset(self, queryset):
+            queryset =  super().filter_queryset(queryset)
+
+            is_latitude = self.form.cleaned_data.get('latitude')
+            is_longitude = self.form.cleaned_data.get('longitude')
+            is_radius = self.form.cleaned_data.get('radius')
+        
+            if is_latitude is not None and is_longitude is not None and is_radius is not None:
+                try:
+                    # create central point for reference
+                    center_point = Point(is_longitude, is_latitude, srid=4326)
+
+                    queryset = queryset.annotate(
+                        distance = Distance(
+                            'location',
+                            center_point
+                        ).filter(
+                            location__dwithin = (center_point, D(km=is_radius))
+                        )
+                    )
+                except (ValueError, TypeError):
+                    pass 
+
+            return queryset
+        
     return SpatialFilter
 
 
