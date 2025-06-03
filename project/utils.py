@@ -50,6 +50,20 @@ def plot_table(dataframe):
                     ])
     return to_html(fig, full_html = False, include_plotlyjs='cdn')
 
-def data_analysis(dataframe):
-    'Do data preprocessing and return the data to feed the plotly plots'
+
+def analysis_engine(df: pd.DataFrame):
+    'Do data preprocessing and return the data to feed the plotly plots'  
+
+    # Statistic in number
+    total_events = len(df['source_id'].drop_duplicates())
+    total_phases = len(df['p_arrival_dt']) + len(df['s_arrival_dt'])
+    total_stations = len(df['station_code'].drop_duplicates())
+
+    result  = {
+        'total_events': total_events,
+        'total_phases': total_phases,
+        'total_stations': total_stations
+    }
+
+    return result
 

@@ -27,30 +27,59 @@
                                 <!-- Collapsible card body -->
                                 <div id='filterCollapse' class="collapse show">
                                     <div class="card-body">
-                                        <form method="get" class="form-explorer py-lg-3">
-                                            <!-- Start date label  -->
-                                            <div class="form-input ">
-                                                <div class="col">
-                                                    <label for="starttime" class="form-label"> Start (UTC)</label>
-                                                    <div class="input">
-                                                        {{date_filter.form.start_date}}
+                                        <form method="get" class="py-lg-3">
+                                            <div class="form-explorer">
+                                                <!-- Other filter -->
+                                                <div class="form-input"></div>
+                                                <div class="form-input"></div>
+                                                <!-- spatial filter -->
+                                                <div class="form-input ">
+                                                    <div class="filter-type"> Radius Filter </div>
+                                                    <div class="filter-item">
+                                                        <label for="center-latitude" class="form-label"> Center latitude </label>
+                                                        <div class="input">
+                                                            {{filter.form.latitude}}
+                                                        </div>
+                                                    </div>
+                                                    <div class="filter-item">
+                                                        <label for="center-longitude" class="form-label"> Center longitude </label>
+                                                        <div class="input">
+                                                            {{filter.form.longitude}}
+                                                        </div>
+                                                    </div>
+                                                    <div class="filter-item">
+                                                        <label for="radius" class="form-label"> Radius (km) </label>
+                                                        <div class="input">
+                                                            {{filter.form.radius}}
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <div class="col py-lg-3">
-                                                    <label for="endtime" class="form-label"> End (UTC)</label>
-                                                    <div class="input">
-                                                        {{date_filter.form.end_date}}
+                                                <!-- date filter -->
+                                                <div class="form-input ">
+                                                    <div class="filter-type"> Time Filter </div>
+                                                    <div class="filter-item">
+                                                        <label for="starttime" class="form-label"> Start (UTC)</label>
+                                                        <div class="input">
+                                                            {{filter.form.start_date}}
+                                                        </div>
                                                     </div>
+                                                    <div class="filter-item">
+                                                        <label for="endtime" class="form-label"> End (UTC)</label>
+                                                        <div class="input">
+                                                            {{filter.form.end_date}}
+                                                        </div>
+                                                    </div>
+
                                                 </div>
-                                                <!-- Submit button  -->
-                                                <button class="btn btn-primary " type="submit">Apply Filter</button>
                                             </div>
+                                            <!-- Submit button  -->
+                                            <button class="btn btn-primary " type="submit">Apply Filter</button>
                                         </form>
                                     </div>
                                 </div>
                             </div>
                         </div>  
-                                              
+
                     </div>
                 </div>
             </div>
@@ -62,7 +91,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="py-lg-3">
-                            <div> ??? </div>
+                            <div class="head-stats" id = 'station-count'> 0 </div>
                             <h5 class="stats-headline">
                                 Stations
                             </h5>
@@ -74,6 +103,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="py-lg-3">
+                            <div class="head-stats" id = 'event-count'> 0 </div>
                             <h5 class="stats-headline">
                                 Events
                             </h5>
@@ -85,6 +115,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="py-lg-3">
+                            <div class="head-stats" id = 'phase-count'> 0 </div>
                             <h5 class="stats-headline">
                                 Phases
                             </h5>
@@ -120,4 +151,10 @@
             </div>
         </div>
     </section>
+
+    <!-- Embed the JSON data and Mapbox token -->
+    <script>
+        window.data = '{{ data | safe }}';
+    </script>
+    <script src = "{% static 'js/data-analysis.js' %}"> </script>
 {% endblock %}

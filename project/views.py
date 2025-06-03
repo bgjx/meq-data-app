@@ -14,7 +14,6 @@ import json
 import pandas as pd
 import csv
 
-
 def project_site(request, site_slug = None):
     'View function for data explorer page.'
     site = get_object_or_404(Site, slug=site_slug)
@@ -33,10 +32,10 @@ def project_site(request, site_slug = None):
         db_table, model = get_hypocenter_catalog('project', site_slug, catalog_type)
         # apply filter
         filter_class = table_filter(model)
-        date_filter = filter_class(request.GET, queryset=db_table)
+        filter_instance = filter_class(request.GET, queryset=db_table)
         # update context
-        context[f'table_{catalog_type}'] = date_filter.qs
-        context[f'date_filter_{catalog_type}'] = date_filter
+        context[f'table_{catalog_type}'] = filter_instance.qs
+        context[f'date_filter_{catalog_type}'] = filter_instance
 
     return render(request, 'project/data-explore.html', context)
 
@@ -125,11 +124,11 @@ def data_analysis(request, site_slug = None):
 
     # Get merged catalog model
     db_merged_table, model = get_merged_catalog('project', site_slug)
-    
+
     # apply filter
     filter_class = spatial_filter(model)
-    spatial_filter = filter_class(request.GET, queryset=db_merged_table)
-    queryset = spatial_filter.qs 
+    filter_instance = filter_class(request.GET, queryset=db_merged_table)
+    queryset = filter_instance.qs 
     
     # Create pandas DataFrame as input for Data Analysis
     df = pd.DataFrame.from_records(queryset.values())
@@ -137,15 +136,15 @@ def data_analysis(request, site_slug = None):
     # Perform data analysis with data analysis engine
     processed_dict = analysis_engine(df)
 
-    # Parse the data to desire structure
+    # restructured data
     formatted_data = {
-
+        'general_statistics': processed_dict
     }
 
     context = {
                 'site': site,
-                'full_merged_catalog': spatial_filter.qs,
-                'spatial_filter': spatial_filter
+                'data': json.dumps(formatted_data),
+                'filter': filter_instance,
             }
     
     return render(request, 'project/data-analysis.html', context)

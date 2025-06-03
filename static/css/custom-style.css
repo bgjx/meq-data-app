@@ -182,10 +182,11 @@ ul.search-input{
 
 /* Form Styling */
 
-form.form-explorer{
+.form-explorer{
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    align-items: center;
 }
 
 .form-input {
@@ -199,6 +200,23 @@ form.form-explorer{
 }
 
 .form-explorer label{
+    font-weight: 500;
+}
+
+.filter-type{
+    font-weight: 500;
+    font-size: 16px;
+    margin-bottom: 1rem;
+}
+
+.filter-item {
+    margin-bottom: 1rem;
+}
+
+
+/* Data Analysis CSS */
+.head-stats{
+    font-size: 45px;
     font-weight: 500;
 }
 

@@ -134,6 +134,7 @@ class SerdStation(models.Model):
 
 # Merged view model
 class SemlCatalogMergedView(models.Model):
+    id = models.IntegerField(primary_key=True)
     source_id = models.IntegerField(blank=True, null=True)
     source_lat_reloc = models.FloatField(blank=True, null=True)
     source_lon_reloc = models.FloatField(blank=True, null=True)
@@ -162,6 +163,7 @@ class SemlCatalogMergedView(models.Model):
 
 
 class SerdCatalogMergedView(models.Model):
+    id = models.IntegerField(primary_key=True)
     source_id = models.IntegerField(blank=True, null=True)
     source_lat_reloc = models.FloatField(blank=True, null=True)
     source_lon_reloc = models.FloatField(blank=True, null=True)

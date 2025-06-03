@@ -52,11 +52,12 @@ def table_filter(model_name):
 
 
 def spatial_filter(model_name):
-    picked_model = apps.get_model('projects', model_name)
+    'Spatial filter, differ from table filter it uses view merged catalog in database'
+    picked_model = apps.get_model('project', model_name)
 
     # get the data time scope
-    min_date = picked_model.objects.all().aggregate(min_date=Min('source_origin_dt'))['min_date']
-    max_date = picked_model.objects.all().aggregate(max_date=Max('source_origin_dt'))['max_date']
+    min_date = picked_model.objects.all().aggregate(min_date=Min('source_origin_dt_init'))['min_date']
+    max_date = picked_model.objects.all().aggregate(max_date=Max('source_origin_dt_init'))['max_date']
 
     # get the data spacial scope by calculating the median
     lat_lon = picked_model.objects.values('source_id', 'source_lat_init', 'source_lon_init').distinct()
