@@ -9,6 +9,9 @@ from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
 
 import numpy as np
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def table_filter(model_name):
@@ -72,7 +75,7 @@ def spatial_filter(model_name):
 
     class SpatialFilter(django_filters.FilterSet):
         # Date Range Filters
-        start_date = DateFilter(field_name="source_origin_dt", 
+        start_date = DateFilter(field_name="source_origin_dt_init", 
                                 lookup_expr="gte", 
                                 label="Start Date",
                                 widget = forms.DateInput(
@@ -85,7 +88,7 @@ def spatial_filter(model_name):
                                 )
                     )
         
-        end_date = DateFilter(field_name="source_origin_dt",
+        end_date = DateFilter(field_name="source_origin_dt_init",
                               lookup_expr="lte", 
                               label="End Date",
                               widget = forms.DateInput(
@@ -104,6 +107,8 @@ def spatial_filter(model_name):
             widget = forms.NumberInput(
                 attrs={
                     'placeholder': f'latitude: {median_lat}',
+                    'min': -90,
+                    'max': 90,
                     'step': 'any'
                 }
             )
@@ -114,6 +119,8 @@ def spatial_filter(model_name):
             widget = forms.NumberInput(
                 attrs={
                     'placeholder': f'longitude: {median_lon}',
+                    'min': -180,
+                    'max': 180,
                     'step': 'any'
                 }
             )
@@ -124,7 +131,7 @@ def spatial_filter(model_name):
             widget = forms.NumberInput(
                 attrs={
                     'placeholder': 'Radius in kilometers',
-                    'min': '0',
+                    'min': 0,
                     'step':'any'
                 }
             )
@@ -143,26 +150,35 @@ def spatial_filter(model_name):
         def filter_queryset(self, queryset):
             queryset =  super().filter_queryset(queryset)
 
-            is_latitude = self.form.cleaned_data.get('latitude')
-            is_longitude = self.form.cleaned_data.get('longitude')
-            is_radius = self.form.cleaned_data.get('radius')
+            latitude = self.form.cleaned_data.get('latitude')
+            longitude = self.form.cleaned_data.get('longitude')
+            radius = self.form.cleaned_data.get('radius')
         
-            if is_latitude is not None and is_longitude is not None and is_radius is not None:
+            if all (v is not None for v in [latitude, longitude, radius]):
                 try:
+                    # validate form filter input
+                    if not (-90 <= latitude <=90 ):
+                        logger.error(f"Invalid latitude: {latitude}")
+                        return queryset
+                    if not(-180 <= longitude <=180):
+                        logger.error(f"Invalid longitude: {longitude}")
+                    if radius < 0:
+                        logger.error(f"Invalid radius: {radius}")
+                        return queryset
+                    
                     # create central point for reference
-                    center_point = Point(is_longitude, is_latitude, srid=4326)
+                    center_point = Point(longitude, latitude, srid=4326)
 
-                    queryset = queryset.annotate(
-                        distance = Distance(
-                            'location',
-                            center_point
+                    queryset = queryset.filter(
+                        location_init_isnull = False
                         ).filter(
-                            location__dwithin = (center_point, D(km=is_radius))
+                            location_init_dwithin = (center_point, D(km=radius))
+                        ).annotate(
+                            distance = Distance('location_init', center_point)
                         )
-                    )
-                except (ValueError, TypeError):
-                    pass 
 
+                except Exception as e:
+                    logger.error(f"Spatial filter error: {str(e)}")
             return queryset
         
     return SpatialFilter
