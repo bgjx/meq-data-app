@@ -27,7 +27,7 @@
                                 <!-- Collapsible card body -->
                                 <div id='filterCollapse' class="collapse show">
                                     <div class="card-body">
-                                        <form method="get" class="py-lg-3">
+                                        <form id = "filter-form" method="get" class="py-lg-3">
                                             <div class="form-explorer">
                                                 <!-- Other filter -->
                                                 <div class="form-input"></div>
@@ -87,6 +87,9 @@
                 </div>
             </div>
         </div>
+
+        <!-- Loading Spinner -->
+        <div id = 'loading-spinner' style="display: none;"> Preparing data... </div>
 
         <!-- Stats preview -->
         <div class="row py-lg-3">

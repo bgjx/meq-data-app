@@ -1,7 +1,7 @@
 //  Maps functionality
 document.addEventListener('DOMContentLoaded', function() {
     // check global variable
-    if (typeof window.absUrl == 'undefined' || typeof window.mapboxToken == 'undefined') {
+    if (typeof window.absUrl === 'undefined' || typeof window.mapboxToken == 'undefined') {
         console.error("Missing required global variables: site_slug and mapbox token");
         return;
     }

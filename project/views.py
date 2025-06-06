@@ -110,7 +110,7 @@ def get_meq_data(request, site_slug = None):
     return JsonResponse(data)
 
 
-def get_data_analysis( request, site_slug=None):
+def get_analysis_data( request, site_slug=None):
     'API endpoint to fetch analysis data with spatial filters.'
 
     site = get_object_or_404(Site, slug= site_slug)

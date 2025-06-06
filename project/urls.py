@@ -12,6 +12,6 @@ urlpatterns = [
 
     path('<slug:site_slug>/data-analysis', views.data_analysis, name='data-analysis'),
 
-    path('<slug:site_slug>/get-data-analysis', views.get_data_analysis, name='get-data-analysis'),
+    path('<slug:site_slug>/get-data-analysis', views.get_analysis_data, name='get-data-analysis'),
 
 ]
