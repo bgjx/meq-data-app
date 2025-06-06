@@ -14,6 +14,7 @@ import json
 import pandas as pd
 import csv
 
+# Function for page view renderer
 def project_site(request, site_slug = None):
     'View function for data explorer page.'
     site = get_object_or_404(Site, slug=site_slug)
@@ -40,31 +41,33 @@ def project_site(request, site_slug = None):
     return render(request, 'project/data-explore.html', context)
 
 
-def download_catalog(request, site_slug, catalog_type):
-    'Download catalog according to the site slug and catalog type.'
-    db_table, model = get_hypocenter_catalog('project', site_slug, catalog_type)
-    get_model = apps.get_model('project', model)
+def meq_maps(request, site_slug = None):
+    'Generate map frame for meq distributions map'
+    site = get_object_or_404(Site, slug=site_slug)
+    mapbox_access_token = 'pk.eyJ1IjoiZWRlbG8iLCJhIjoiY20zNG1zN3F5MDFjdzJsb3N4ZDJ1ZTR1byJ9.bgl0vpixXnhDKJ8SnW4PYA'
+    context = {
+        'site': site,
+        'MAPBOX_TOKEN': mapbox_access_token,
+    }
+    return render(request, 'project/event-distributions.html', context=context)
 
-    # http response
-    response = HttpResponse(
-        content_type = "text/csv",
-        headers={"Content-Disposition": 'attachment; filename="catalog_download.csv"'}
-    )
 
-    # write header
-    writer = csv.writer(response)
-    headers = [field.name for field in get_model._meta.fields]
-    writer.writerow(headers)
+def data_analysis(request, site_slug = None):
+    'Generate views for data analysis page.'
+    site = get_object_or_404(Site, slug=site_slug)
 
-    # writing data
-    for data in db_table:
-        writer.writerow([getattr(data, field.name) for field in get_model._meta.fields])
+    context = {
+                'site': site
+    }
     
-    return response
+    return render(request, 'project/data-analysis.html', context)
 
 
+#  API End function
 def get_meq_data(request, site_slug = None):
-    'Get meq hypocenter data, define the center of map, and normalized the magnitude.'
+    'API endpoint to get hypocenter data and calculate the center point'
+
+    site = get_object_or_404(Site, slug=site_slug)    
     # map center
     center_map = {
         'seml': {'lat': -1.616487, 'lon':101.137171},
@@ -107,44 +110,52 @@ def get_meq_data(request, site_slug = None):
     return JsonResponse(data)
 
 
-def meq_maps(request, site_slug = None):
-    'Generate map frame for meq distributions map'
-    site = get_object_or_404(Site, slug=site_slug)
-    mapbox_access_token = 'pk.eyJ1IjoiZWRlbG8iLCJhIjoiY20zNG1zN3F5MDFjdzJsb3N4ZDJ1ZTR1byJ9.bgl0vpixXnhDKJ8SnW4PYA'
-    context = {
-        'site': site,
-        'MAPBOX_TOKEN': mapbox_access_token,
-    }
-    return render(request, 'project/event-distributions.html', context=context)
+def get_data_analysis( request, site_slug=None):
+    'API endpoint to fetch analysis data with spatial filters.'
 
-
-def data_analysis(request, site_slug = None):
-    'Generate views for data analysis page.'
-    site = get_object_or_404(Site, slug=site_slug)
+    site = get_object_or_404(Site, slug= site_slug)
 
     # Get merged catalog model
     db_merged_table, model = get_merged_catalog('project', site_slug)
 
-    # apply filter
+    # Apply spatial filter 
     filter_class = spatial_filter(model)
     filter_instance = filter_class(request.GET, queryset=db_merged_table)
     queryset = filter_instance.qs 
-    
-    # Create pandas DataFrame as input for Data Analysis
+
+    # Create pandas DataFrame as input for data analysis
     df = pd.DataFrame.from_records(queryset.values())
 
-    # Perform data analysis with data analysis engine
+    # Perform data analysis
     processed_dict = analysis_engine(df)
 
-    # restructured data
+    # Restructured data
     formatted_data = {
         'general_statistics': processed_dict
     }
 
-    context = {
-                'site': site,
-                'data': json.dumps(formatted_data),
-                'filter': filter_instance,
-            }
+    return JsonResponse(formatted_data)
+
+
+# Function for data download client
+def download_catalog(request, site_slug, catalog_type):
+    'Download catalog according to the site slug and catalog type.'
+    db_table, model = get_hypocenter_catalog('project', site_slug, catalog_type)
+    get_model = apps.get_model('project', model)
+
+    # http response
+    response = HttpResponse(
+        content_type = "text/csv",
+        headers={"Content-Disposition": 'attachment; filename="catalog_download.csv"'}
+    )
+
+    # write header
+    writer = csv.writer(response)
+    headers = [field.name for field in get_model._meta.fields]
+    writer.writerow(headers)
+
+    # writing data
+    for data in db_table:
+        writer.writerow([getattr(data, field.name) for field in get_model._meta.fields])
     
-    return render(request, 'project/data-analysis.html', context)
+    return response

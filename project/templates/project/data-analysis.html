@@ -155,9 +155,9 @@
         </div>
     </section>
 
-    <!-- Embed the JSON data and Mapbox token -->
+    <!-- Embed absUrl for API calls -->
     <script>
-        window.data = '{{ data | safe }}';
+        window.absUrl = '{{site.get_absolute_url}}';
     </script>
     <script src = "{% static 'js/data-analysis.js' %}"> </script>
 {% endblock %}

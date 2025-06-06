@@ -14,6 +14,4 @@ urlpatterns = [
 
     path('<slug:site_slug>/get-data-analysis', views.get_data_analysis, name='get-data-analysis'),
 
-    
-
 ]
