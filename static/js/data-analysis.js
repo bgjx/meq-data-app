@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
+
     //  setup cache for fetched data (by creating new map object) 
     let cacheData = new Map();
 

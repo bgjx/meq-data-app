@@ -10,6 +10,7 @@ from project.utils import (get_hypocenter_catalog,
                            analysis_engine)
 from . filters import table_filter, spatial_filter
 
+from datetime import datetime, timedelta
 import json
 import pandas as pd
 import csv
@@ -56,14 +57,24 @@ def data_analysis(request, site_slug = None):
     'Generate views for data analysis page.'
     site = get_object_or_404(Site, slug=site_slug)
 
+    # get current datetime
+    now = datetime.now()
+    now_str = now.strftime("%Y-%m-%d %H:%M:%S")
+
+    w_before = now - timedelta(days=7)
+    w_before_str = w_before.strftime("%Y-%m-%d %H:%M:%S") 
+
+
     context = {
-                'site': site
+                'site': site,
+                'now_time': now_str,
+                'week_before_time': w_before_str
     }
     
     return render(request, 'project/data-analysis.html', context)
 
 
-#  API End function
+#  API endpoint function
 def get_meq_data(request, site_slug = None):
     'API endpoint to get hypocenter data and calculate the center point'
 

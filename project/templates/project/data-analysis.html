@@ -38,19 +38,19 @@
                                                     <div class="filter-item">
                                                         <label for="center-latitude" class="form-label"> Center latitude </label>
                                                         <div class="input">
-                                                            {{filter.form.latitude}}
+                                                            <input type="number" name="latitude" id="latitude" placeholder="0.00" min="-90" max="90" step="any">
                                                         </div>
                                                     </div>
                                                     <div class="filter-item">
                                                         <label for="center-longitude" class="form-label"> Center longitude </label>
                                                         <div class="input">
-                                                            {{filter.form.longitude}}
+                                                            <input type="number" name="longitude" id="longitude" placeholder="90.00" min="-180" max="180" step="any">
                                                         </div>
                                                     </div>
                                                     <div class="filter-item">
                                                         <label for="radius" class="form-label"> Radius (km) </label>
                                                         <div class="input">
-                                                            {{filter.form.radius}}
+                                                            <input type="number" name="radius" id="radius" placeholder="5" min="0" step="any"/>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -58,15 +58,15 @@
                                                 <div class="form-input ">
                                                     <div class="filter-type"> Time Filter </div>
                                                     <div class="filter-item">
-                                                        <label for="starttime" class="form-label"> Start (UTC)</label>
+                                                        <label for="start_date" class="form-label"> Start (UTC)</label>
                                                         <div class="input">
-                                                            {{filter.form.start_date}}
+                                                            <input type="text" name="start_date", id="start_date" placeholder={{week_before_time}}/>
                                                         </div>
                                                     </div>
                                                     <div class="filter-item">
-                                                        <label for="endtime" class="form-label"> End (UTC)</label>
+                                                        <label for="end_date" class="form-label"> End (UTC)</label>
                                                         <div class="input">
-                                                            {{filter.form.end_date}}
+                                                            <input type="text" name="end_date", id="end_date" placeholder={{now_time}}/>
                                                         </div>
                                                     </div>
 
