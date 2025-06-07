@@ -138,14 +138,9 @@ def get_analysis_data( request, site_slug=None):
     df = pd.DataFrame.from_records(queryset.values())
 
     # Perform data analysis
-    processed_dict = analysis_engine(df)
-
-    # Restructured data
-    formatted_data = {
-        'general_statistics': processed_dict
-    }
-
-    return JsonResponse(formatted_data)
+    processed_data = analysis_engine(df)
+    
+    return JsonResponse(processed_data)
 
 
 # Function for data download client

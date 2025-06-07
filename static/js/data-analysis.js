@@ -58,7 +58,9 @@ document.addEventListener('DOMContentLoaded', function() {
         return cookieValue;
     }
 
-    // Function to animate counting
+    // List of functions for plots and animation
+
+    //  1. Function to animate counting
     function animateCount(id, endValue, duration=1000) {
         const element = document.getElementById(id);
         if (!element) {
@@ -82,20 +84,67 @@ document.addEventListener('DOMContentLoaded', function() {
         requestAnimationFrame(step);
     }
 
+    // 2. Function for overall plot intensities
+    function intensitiesOverallPlot(id, data){
+
+        // Create hover text array
+        const hoverText = data.x_values.map((x, i) =>
+            `Date: ${x}<br> Events: ${data.y_bar[i]}`
+        )
+
+        const barData = {
+            name: 'Daily Intensities',
+            type: 'bar',
+            x: data.x_values,
+            y: data.y_bar,
+            marker: {
+                    color: 'indianred'
+                },
+            text: hoverText,
+            hoverinfo: 'text',
+        };
+
+        // set plot layout
+        const layout = {
+            title: 'Daily Intensity of Recorded Events',
+            showlegend: true,
+            template: 'plotly_white',
+            legend: {
+                yanchor : "top",
+                y : 0.99,
+                xanchor : "right",
+                x : 0.99,             
+                bgcolor : "rgba(255,255,255,0.5)"
+            },
+            height: 600,
+            autosize:true,
+            xaxis : {
+                tickangle: -45
+            }
+        };
+
+        // Plotly plot call
+        Plotly.newPlot(id, [barData], layout);
+    }
+
+
     // Function to update UI with fetched data
     function updateUI(data) {
-        if (!data || !data.general_statistics) {
+        if (!data || !data.general_statistics || !data.overall_daily_intensities) {
             console.error('Invalid or missing data')
             return;
         }
 
-        const event_stats = data.general_statistics;
+        const gen_stats = data.general_statistics;
+        const daily_intensities = data.overall_daily_intensities;
 
         // call animateCount for each statistic
-        animateCount('station-count', event_stats.total_stations);
-        animateCount('event-count', event_stats.total_events);
-        animateCount('phase-count', event_stats.total_phases);
+        animateCount('station-count', gen_stats.total_stations, 2000);
+        animateCount('event-count', gen_stats.total_events, 2000);
+        animateCount('phase-count', gen_stats.total_phases, 2000);
 
+        // create plot for daily overall intensities
+        intensitiesOverallPlot('daily-overall-intensities', daily_intensities)
     }
 
     // Debounce function to limit frequent API calls

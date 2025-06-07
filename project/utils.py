@@ -1,10 +1,20 @@
-from django.db import models
-import plotly.graph_objects as go
-from plotly.io import to_html
-import pandas as pd
 from django.apps import apps
 
+import pandas as pd
+import numpy as np
+
+
 mapbox_access_token = 'pk.eyJ1IjoiZWRlbG8iLCJhIjoiY20zNG1zN3F5MDFjdzJsb3N4ZDJ1ZTR1byJ9.bgl0vpixXnhDKJ8SnW4PYA'
+
+REQUIRED_COLUMNS_NAME = [
+    "id", "source_id", 
+    "source_lat_reloc", "source_lon_reloc", "location_reloc", "source_depth_m_reloc", "source_origin_dt_reloc",
+    "source_lat_init", "source_lon_init", "location_init", "source_depth_m_init", "source_origin_dt_init",
+    "network_code", "station_code", "station_lat", "station_lon", "station_elev_m",
+    "p_arrival_dt", "s_arrival_dt", "coda_dt",
+    "n_phases", "magnitude",
+    "reloc_remarks", "init_remarks"
+]
 
 # get hypocenter catalog
 def get_hypocenter_catalog(app_label, slug, catalog_type):
@@ -38,31 +48,61 @@ def get_station(app_label, slug):
     return all_objects
 
 
-def plot_table(dataframe):
-    'Plo table from dataframe'
-    fig = go.Figure(data=[go.Table(
-    header=dict(values=list(dataframe.columns),
-                fill_color='gray',
-                align='center'),
-    cells=dict(values=[dataframe[col] for col in dataframe.columns.to_list()],
-               fill_color='lavender',
-               align='left'))
-                    ])
-    return to_html(fig, full_html = False, include_plotlyjs='cdn')
-
-
 def analysis_engine(df: pd.DataFrame):
-    'Do data preprocessing and return the data to feed the plotly plots'  
+    'Do data preprocessing and return the data to feed the plotly plots'
 
+    # Check DataFrame integrity
+    if df.empty:
+        raise ValueError('DataFrame cannot be empty')
+    
+    missing_columns = [col for col in REQUIRED_COLUMNS_NAME if col not in df.columns]
+    if missing_columns:
+        raise ValueError(f"Missing these required columns {', '.join(missing_columns)}")
+
+    # Drop duplication for specific columns
+    unique_df = df[[
+        "source_id", "source_lat_reloc", "source_lon_reloc", "location_reloc", "source_depth_m_reloc", "source_origin_dt_reloc",
+        "source_lat_init", "source_lon_init", "location_init", "source_depth_m_init", "source_origin_dt_init",
+        "n_phases", "magnitude"]].drop_duplicates(subset='source_id')
+    
     # Statistic in number
-    total_events = len(df['source_id'].drop_duplicates())
+    total_events = len(unique_df['source_id'])
     total_phases = len(df['p_arrival_dt']) + len(df['s_arrival_dt'])
-    total_stations = len(df['station_code'].drop_duplicates())
+    total_stations = len(df['station_code'].unique())
 
-    result  = {
+    general_statistics = {
         'total_events': total_events,
         'total_phases': total_phases,
         'total_stations': total_stations
+    }
+
+    # Overall Daily intensities
+    # get date series from data
+    date_series = pd.to_datetime(unique_df['source_origin_dt_init'])
+    grouped_daily_data = (date_series
+                          .groupby(
+                              [
+                                date_series.dt.year,
+                                date_series.dt.month,
+                                date_series.dt.day
+                            ]
+                          )
+                          .size()
+                        )
+    x_values = [f"{year}/{month:02d}/{day:02d}" for year, month, day in grouped_daily_data.index]
+    y_array = grouped_daily_data.values
+    y_bar  = y_array.tolist()
+    y_cumulative =  np.ndarray.tolist(np.cumsum(y_array))
+
+    overall_daily_intensities = {
+        'x_values':x_values,
+        'y_bar': y_bar,
+        'y_cum': y_cumulative
+    }
+
+    result  = {
+        'general_statistics': general_statistics,
+        'overall_daily_intensities': overall_daily_intensities
     }
 
     return result
