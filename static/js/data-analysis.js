@@ -88,21 +88,43 @@ document.addEventListener('DOMContentLoaded', function() {
     function intensitiesOverallPlot(id, data){
 
         // Create hover text array
-        const hoverText = data.x_values.map((x, i) =>
+        const hoverTextDaily = data.x_values.map((x, i) =>
             `Date: ${x}<br> Events: ${data.y_bar[i]}`
         )
 
+        const hoverTextCumulative = data.x_values.map((x, i) =>
+            `Date: ${x}<br> Events: ${data.y_bar[i]}`
+        )
+
+        // bar plot
         const barData = {
             name: 'Daily Intensities',
             type: 'bar',
             x: data.x_values,
             y: data.y_bar,
             marker: {
-                    color: 'indianred'
+                    color: 'indianred',
+                    opacity: 0.8
                 },
-            text: hoverText,
+            text: hoverTextDaily,
             hoverinfo: 'text',
+            yaxis: 'y'
         };
+
+        // line plot
+        const lineData = {
+            name: 'Cumulative Intensities',
+            type: 'line',
+            x: data.x_values,
+            y: data.y_cum,
+            marker : {
+                color: '#FF9900',
+                opacity: 0.8
+            },
+            text: hoverTextCumulative,
+            hoverinfo: 'text',
+            yaxis: 'y2'
+        }
 
         // set plot layout
         const layout = {
@@ -113,18 +135,37 @@ document.addEventListener('DOMContentLoaded', function() {
                 yanchor : "top",
                 y : 0.99,
                 xanchor : "right",
-                x : 0.99,             
+                x : 0.20,             
                 bgcolor : "rgba(255,255,255,0.5)"
             },
             height: 600,
             autosize:true,
             xaxis : {
+                title: 'Date',
                 tickangle: -45
+            },
+            yaxis: {
+                title: 'Daily Counts',
+                side: screenLeft,
+                showgrid: true
+            },
+            yaxis2: {
+                title: 'Cumulative Counts',
+                side: 'right',
+                overlaying: 'y',
+                showgrid:false,
+                rangemode: 'tozero', 
+                range: [0, Math.max(...data.y_cum) * 1.1], 
+                anchor: 'x'
+            },
+            margin: {
+                r: 100,
+                b: 100
             }
         };
 
         // Plotly plot call
-        Plotly.newPlot(id, [barData], layout);
+        Plotly.newPlot(id, [barData, lineData], layout);
     }
 
 
