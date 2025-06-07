@@ -65,10 +65,15 @@ def analysis_engine(df: pd.DataFrame):
         "source_lat_init", "source_lon_init", "location_init", "source_depth_m_init", "source_origin_dt_init",
         "n_phases", "magnitude"]].drop_duplicates(subset='source_id')
     
+    # get list of source_id and station
+    source_id = df['source_id'].unique()
+    stations = df['station_code'].unique()
+    
+    
     # Statistic in number
     total_events = len(unique_df['source_id'])
     total_phases = len(df['p_arrival_dt']) + len(df['s_arrival_dt'])
-    total_stations = len(df['station_code'].unique())
+    total_stations =  len(stations)
 
     general_statistics = {
         'total_events': total_events,
@@ -100,9 +105,20 @@ def analysis_engine(df: pd.DataFrame):
         'y_cum': y_cumulative
     }
 
+    # Station performance
+    station_performance = {}
+    for sta in stations:
+        # select P and S phase data recorded by this station
+        phases = df[df['station_code'] == sta][['p_arrival_dt', 's_arrival_dt']] 
+        station_performance[f'{sta}'] = {
+            'p_phase': len(phases['p_arrival_dt']),
+            's_phase': len(phases['s_arrival_dt'])
+        }
+
     result  = {
         'general_statistics': general_statistics,
-        'overall_daily_intensities': overall_daily_intensities
+        'overall_daily_intensities': overall_daily_intensities,
+        'station_performance': station_performance
     }
 
     return result

@@ -165,19 +165,113 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         // Plotly plot call
-        Plotly.newPlot(id, [barData, lineData], layout);
-    }
+        try {
+            Plotly.newPlot(id, [barData, lineData], layout);
+        } catch (error) {
+            console.error('Plotly.newPlot failed:', error)
+        }
+        
+    };
 
+    // 3. Function for station performances (Bar plots)
+    function stationPerformanceBar(id, data){
+        // get the list of stations and the phases
+        const stations = Object.keys(data);
+        const p_phase =  stations.map(station => data[station].p_phase);
+        const s_phase =  stations.map(station => data[station].s_phase);
+
+        // Data validation
+        if (stations.length === 0 || p_phase.length !== stations.length || s_phase.length !== stations.length) {
+            console.log('Invalid data: stations, p_phase, and s_phase must have valid lengths', {stations, p_phase, s_phase});
+            return;
+        }
+
+        // Create hovertext for each phases
+        const hoverTextP = stations.map((station, i) =>
+            `Station: ${station}<br>P_phase: ${p_phase[i]}` 
+        );
+
+        const hoverTextS = stations.map((station, i) =>
+            `Station: ${station}<br>S_phase: ${s_phase[i]}`
+        );
+
+        // P_phase bar plot
+        const pPhaseData = {
+            name: 'P_phase',
+            type: 'bar',
+            x: stations,
+            y: p_phase,
+            marker: {
+                color: 'indianred',
+                opacity: 0.8
+            },
+            text: hoverTextP,
+            hoverinfo: 'text'
+        };
+
+        // S_phase bar plot
+        const sPhaseData = {
+            name: 'S_phase',
+            type: 'bar',
+            x: stations,
+            y: s_phase,
+            marker: {
+                color: '#1F77B4',
+                opacity: 0.8
+            },
+            text: hoverTextS,
+            hoverinfo: 'text'
+        };
+
+        // Set plot layout
+        const layout = {
+            title: 'Phases Counts by Station',
+            showlegend: true, 
+            template: 'plotly_white',
+            barmode: 'group',
+            legend: {
+                yanchor : "top",
+                y : 0.99,
+                xanchor : "right",
+                x : 0.25,             
+                bgcolor : "rgba(255,255,255,0.5)"
+            },
+            height: 400,
+            autosize: true,
+            xaxis: {
+                title: 'Station',
+                tickangle: -45
+            },
+            yaxis: {
+                title: 'Counts',
+                rangemode: 'tozero',
+                range: [0, Math.max(...p_phase, ...s_phase)*1.1]
+            },
+            margin: {
+                r: 100,
+                b: 100
+            }
+        };
+
+        // Plotly plot call
+        try {
+            Plotly.newPlot(id, [pPhaseData, sPhaseData], layout);
+        } catch (error) {
+            console.error('Plotly.newPlot failed:', error)
+        }
+    
+    };
 
     // Function to update UI with fetched data
     function updateUI(data) {
-        if (!data || !data.general_statistics || !data.overall_daily_intensities) {
+        if (!data || !data.general_statistics || !data.overall_daily_intensities || !data.station_performance) {
             console.error('Invalid or missing data')
             return;
         }
 
         const gen_stats = data.general_statistics;
         const daily_intensities = data.overall_daily_intensities;
+        const station_performance = data.station_performance;
 
         // call animateCount for each statistic
         animateCount('station-count', gen_stats.total_stations, 2000);
@@ -185,7 +279,10 @@ document.addEventListener('DOMContentLoaded', function() {
         animateCount('phase-count', gen_stats.total_phases, 2000);
 
         // create plot for daily overall intensities
-        intensitiesOverallPlot('daily-overall-intensities', daily_intensities)
+        intensitiesOverallPlot('daily-overall-intensities', daily_intensities);
+
+        // create plot for station performance
+        stationPerformanceBar('station-performance', station_performance);
     }
 
     // Debounce function to limit frequent API calls

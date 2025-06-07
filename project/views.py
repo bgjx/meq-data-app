@@ -139,7 +139,7 @@ def get_analysis_data( request, site_slug=None):
 
     # Perform data analysis
     processed_data = analysis_engine(df)
-    
+
     return JsonResponse(processed_data)
 
 
