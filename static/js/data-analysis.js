@@ -258,9 +258,113 @@ document.addEventListener('DOMContentLoaded', function() {
             Plotly.newPlot(id, [pPhaseData, sPhaseData], layout);
         } catch (error) {
             console.error('Plotly.newPlot failed:', error)
-        }
+        };
     
     };
+
+    // 4. Wadati Profile plot
+    function WadatiProfile(id, data){
+        // calculate the linear regression 
+        const n = data.p_travel.length;
+        let sumX = 0, sumY=0, sumXY = 0, sumXX = 0;
+        for (let i=0; i < n; i++) {
+            sumX += data.p_travel[i];
+            sumY += data.ts_tp[i];
+            sumXY += data.p_travel[i] * data.ts_tp[i];
+            sumXX += data.p_travel[i] * data.p_travel[i];
+        }
+        const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+        const intercept = (sumY - slope * sumX)/n;
+
+        // Generate points for regression line
+        const xMin = Math.min(...data.p_travel);
+        const xMax = Math.max(...data.p_travel);
+        const regressionLine = {
+            name: 'Linear Fit',
+            type: 'scatter',
+            mode: 'line',
+            x: [xMin, xMax],
+            y: [slope * xMin  + intercept, slope * xMax + intercept],
+            line: {
+                color: '#1F77B4',
+                width: 2,
+                opacity: 0.8
+            }
+        };
+
+
+        // Scatter plot
+        const ScatterWadati = {
+            name: 'Data Point',
+            type: 'scatter',
+            mode: 'markers',
+            x: data.p_travel,
+            y: data.ts_tp,
+            marker : {
+                color: 'indianred',
+                opacity: 0.8
+            }
+        };
+
+        //  Equation to display
+        const equation = `y = ${slope.toFixed(2)}x + ${intercept.toFixed(2)}<br> Vp/Vs: ${(1 + slope).toFixed(2)}`;
+
+        const layout = {
+            title: 'Wadati Profile',
+            showlegend: true,
+            template: 'plotly-white',
+            legend: {
+                yanchor : "top",
+                y : 0.99,
+                xanchor : "right",
+                x : 0.25,             
+                bgcolor : "rgba(255,255,255,0.5)"
+            },
+            height: 400,
+            autosize: true,
+            xaxis: {
+                title: 'P travel (s)',
+                tickangle: 0
+            },
+            yaxis: {
+                title: 'Ts - Tp (s)',
+                rangemode: 'tozero',
+                range: [0, Math.max(...data.ts_tp) * 1.1],
+                anchor: 'x'
+            },
+            margin: {
+                r:100,
+                b:100
+            },
+
+            // Add annotation for the equation
+            annotations: [
+                {
+                    x: xMin + (xMax - xMin) * 0.9,
+                    y: Math.max(...data.ts_tp) * 0.2,
+                    xref: 'x',
+                    yref: 'y',
+                    text: equation,
+                    showarrow: false,
+                    font: {
+                        size: 12,
+                        color: '#1F77B4'
+                    },
+                    bgcolor: "rgba(255,255,255,0.5)",
+                    bordercolor: '#1F77B4',
+                    borderwidth: 1
+                }
+            ]
+        };
+
+        try {
+            Plotly.newPlot(id, [ScatterWadati, regressionLine], layout);
+        } catch (error) {
+            console.error('Plolty.NewPlot failed:', error)
+        };
+    }
+    
+
 
     // Function to update UI with fetched data
     function updateUI(data) {
@@ -269,9 +373,12 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+        // Get data
         const gen_stats = data.general_statistics;
         const daily_intensities = data.overall_daily_intensities;
         const station_performance = data.station_performance;
+        const wadati_profile =  data.wadati_profile;
+
 
         // call animateCount for each statistic
         animateCount('station-count', gen_stats.total_stations, 2000);
@@ -283,6 +390,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // create plot for station performance
         stationPerformanceBar('station-performance', station_performance);
+
+        // create plot for wadati profile
+        WadatiProfile('wadati-profile', wadati_profile);
     }
 
     // Debounce function to limit frequent API calls

@@ -2,6 +2,7 @@ from django.apps import apps
 
 import pandas as pd
 import numpy as np
+from datetime import datetime, timedelta
 
 
 mapbox_access_token = 'pk.eyJ1IjoiZWRlbG8iLCJhIjoiY20zNG1zN3F5MDFjdzJsb3N4ZDJ1ZTR1byJ9.bgl0vpixXnhDKJ8SnW4PYA'
@@ -59,6 +60,9 @@ def analysis_engine(df: pd.DataFrame):
     if missing_columns:
         raise ValueError(f"Missing these required columns {', '.join(missing_columns)}")
 
+    # calculate Ts_Tp for Wadati Profile calculation
+    df['Ts_Tp'] = (df['s_arrival_dt'] - df['p_arrival_dt']).dt.total_seconds()
+    
     # Drop duplication for specific columns
     unique_df = df[[
         "source_id", "source_lat_reloc", "source_lon_reloc", "location_reloc", "source_depth_m_reloc", "source_origin_dt_reloc",
@@ -68,7 +72,6 @@ def analysis_engine(df: pd.DataFrame):
     # get list of source_id and station
     source_id = df['source_id'].unique()
     stations = df['station_code'].unique()
-    
     
     # Statistic in number
     total_events = len(unique_df['source_id'])
@@ -81,7 +84,8 @@ def analysis_engine(df: pd.DataFrame):
         'total_stations': total_stations
     }
 
-    # Overall Daily intensities
+
+    ## Overall Daily intensities
     # get date series from data
     date_series = pd.to_datetime(unique_df['source_origin_dt_init'])
     grouped_daily_data = (date_series
@@ -105,9 +109,10 @@ def analysis_engine(df: pd.DataFrame):
         'y_cum': y_cumulative
     }
 
-    # Station performance
+
+    ## Station performance
     station_performance = {}
-    for sta in stations:
+    for sta in sorted(stations):
         # select P and S phase data recorded by this station
         phases = df[df['station_code'] == sta][['p_arrival_dt', 's_arrival_dt']] 
         station_performance[f'{sta}'] = {
@@ -115,10 +120,57 @@ def analysis_engine(df: pd.DataFrame):
             's_phase': len(phases['s_arrival_dt'])
         }
 
+    ## Wadati profile
+    # Get subset df for faster calculation
+    subset_df = df[['source_id', 'p_arrival_dt', 'Ts_Tp']]
+    epoch = datetime(1970, 1, 1)
+
+    origin_time = {
+        'source_id':[],
+        'origin_time': []
+    }
+
+    for id in source_id:
+        phase_df = subset_df[subset_df['source_id'] == id]
+        phase_df = phase_df.copy()
+
+        # calculate total seconds (epoch as reference)
+        phase_df['epoch_delta'] = phase_df['p_arrival_dt'].apply(
+            lambda x : (x - epoch).total_seconds()
+        )
+        
+        # calculate t_0 with np.polyfit
+        z = np.polyfit(phase_df['epoch_delta'], phase_df['Ts_Tp'], 1)
+        t_0 = (-1*z[1])/z[0]
+
+        # convert t_0 to datetime object again
+        t_0_dt = epoch + timedelta(seconds=t_0)
+
+        origin_time['source_id'].append(id) 
+        origin_time['origin_time'].append(t_0_dt)
+    
+    # calculate P_travel time
+    origin_time_df = pd.DataFrame.from_dict(origin_time)
+
+    # merged with the subset_df
+    merged = (
+                subset_df
+                .merge(origin_time_df, on='source_id', how='inner' )
+              )
+    
+    merged['p_travel'] = (merged['p_arrival_dt'] - merged['origin_time']).dt.total_seconds()
+
+    wadati_data = {
+        'p_travel': merged['p_travel'].tolist(),
+        'ts_tp': merged['Ts_Tp'].tolist()
+    }
+
+    # create result objects
     result  = {
         'general_statistics': general_statistics,
         'overall_daily_intensities': overall_daily_intensities,
-        'station_performance': station_performance
+        'station_performance': station_performance,
+        'wadati_profile': wadati_data,
     }
 
     return result
