@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function() {
         )
 
         const hoverTextCumulative = data.x_values.map((x, i) =>
-            `Date: ${x}<br> Events: ${data.y_bar[i]}`
+            `Date: ${x}<br> Events: ${data.y_cum[i]}`
         )
 
         // bar plot
@@ -420,6 +420,159 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
 
+    // 6. 2D hypocenters plots
+    function Plot2dHypocenter(id, data) {
+        // Create hover text for station
+        const hoverTextStation = data.station.station_code.map((x, i) =>
+            `Station: ${x}<br> Latitude: ${data.station.latitude[i]}<br> Longitude: ${data.station.longitude[i]}<br> ELev (m): ${data.station.elev[i]}`
+        )
+
+        const initHypo = {
+            name: 'Initial Hypocenter',
+            type: 'scatter',
+            mode: 'markers',
+            x: data.initial.longitude,
+            y: data.initial.latitude,
+            marker: {
+                color: 'indianred',
+                opacity: 0.8
+            }
+        };
+
+        const relocHypo = {
+            name: 'Relocated Hypocenter',
+            type: 'scatter',
+            mode: 'markers',
+            x: data.reloc.longitude,
+            y: data.reloc.latitude,
+            marker: {
+                color: '#1F77B4',
+                opacity: 0.8
+            }
+        };
+
+        
+        const station = {
+            name: 'Stations',
+            type: 'scatter',
+            mode: 'markers',
+            x: data.station.longitude,
+            y: data.station.latitude,
+            marker: {
+                color: '#FF9900',
+                symbol: 'triangle-up', 
+                opacity: 0.8,
+                size: 14
+            },
+            text: hoverTextStation,
+            hoverinfo: 'text'
+        };
+        
+
+        const layout = {
+            title: '2D Hypocenter Plots',
+            showlegend: true,
+            template: 'plotly_white',
+            legend: {
+                yanchor : "top",
+                y : 0.99,
+                xanchor : "right",
+                x : 0.99,             
+                bgcolor : "rgba(255,255,255,0.5)"
+            },
+            height: 400,
+            autosize: true,
+            xaxis: {
+                title: 'Longitude',
+                tickangle: 0
+            },
+            yaxis: {
+                title: 'Latitude',
+                scaleanchor: "x", 
+                scaleratio: 1    
+            },
+            margin: {
+                r: 100,
+                b: 100
+            }
+        }
+
+        // Plotly plot call
+        try {
+            Plotly.newPlot(id, [initHypo, relocHypo, station], layout);
+        } catch (error) {
+            console.error('Plotly.newPlot failed:', error)
+        };
+    }
+
+
+    // 7. Plot histogram error
+    function histogramError (id, data) {
+
+        // Initial RMS error
+        const initialRms = {
+            name: 'initial_rms_error',
+            type: 'bar',
+            x: data.bin_edges,
+            y: data.init,
+            marker: {
+                color: 'indianred',
+                opacity: 0.8
+            }
+        };
+
+        // S_phase bar plot
+        const relocRms = {
+            name: 'reloc_rms_error',
+            type: 'bar',
+            x: data.bin_edges,
+            y: data.reloc,
+            marker: {
+                color: '#1F77B4',
+                opacity: 0.8
+            }
+        };
+
+        // Set plot layout
+        const layout = {
+            title: 'Origin Time RMS error (second)',
+            showlegend: true, 
+            template: 'plotly_white',
+            barmode: 'group',
+            legend: {
+                yanchor : "top",
+                y : 0.99,
+                xanchor : "right",
+                x : 0.99,             
+                bgcolor : "rgba(255,255,255,0.5)"
+            },
+            height: 400,
+            autosize: true,
+            xaxis: {
+                title: 'Second',
+                tickangle: 0
+            },
+            yaxis: {
+                title: 'Counts',
+                rangemode: 'tozero',
+                range: [0, Math.max(...data.init, ...data.reloc)*1.1]
+            },
+            margin: {
+                r: 100,
+                b: 100
+            }
+        };
+
+        // Plotly plot call
+        try {
+            Plotly.newPlot(id, [initialRms, relocRms], layout);
+        } catch (error) {
+            console.error('Plotly.newPlot failed:', error)
+        };
+
+    }
+
+
     // Function to update UI with fetched data
     function updateUI(data) {
         if (!data || !data.general_statistics || !data.overall_daily_intensities || !data.station_performance) {
@@ -433,6 +586,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const station_performance = data.station_performance;
         const wadati_profile =  data.wadati_profile;
         const time_series_station_performance = data.time_series_performance;
+        const hypocenter = data.hypocenter;
+        const rms_error = data.rms_error;
 
         // call animateCount for each statistic
         animateCount('station-count', gen_stats.total_stations, 2000);
@@ -448,9 +603,14 @@ document.addEventListener('DOMContentLoaded', function() {
         // create plot for wadati profile
         WadatiProfile('wadati-profile', wadati_profile);
 
-        //  crate plot for time series station performance
-        timeSeriesStationPerformance('time-series-performance', time_series_station_performance)
+        // crate plot for time series station performance
+        timeSeriesStationPerformance('time-series-performance', time_series_station_performance);
 
+        // create 2D plot hypocenter
+        Plot2dHypocenter('hypocenter-plot', hypocenter);
+
+        // create plot for rms error histogram
+        histogramError('rms-error', rms_error);
     }
 
     // Debounce function to limit frequent API calls

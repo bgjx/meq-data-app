@@ -200,13 +200,54 @@ def analysis_engine(df: pd.DataFrame):
         'ts_tp': merged['Ts_Tp'].tolist()
     }
 
+
+    ## Hypocenter and Station Plots
+    # get station data
+    station_df = picking_df[picking_df['station_code'].isin(stations)][[
+        "station_code", "station_lat", "station_lon", "station_elev_m"
+        ]]
+    
+    hypocenter = {
+        'reloc': {
+            'latitude': hypocenter_df['source_lat_reloc'].tolist(),
+            'longitude': hypocenter_df['source_lon_reloc'].tolist(),
+            'depth': hypocenter_df['source_depth_m_reloc'].tolist()
+        },
+        'initial': {
+            'latitude': hypocenter_df['source_lat_init'].tolist(),
+            'longitude': hypocenter_df['source_lon_init'].tolist(),
+            'depth': hypocenter_df['source_depth_m_init'].tolist()
+        },
+        'station': {
+            'station_code': station_df['station_code'].tolist(),
+            'latitude': station_df['station_lat'].tolist(),
+            'longitude': station_df['station_lon'].tolist(),
+            'elev': station_df['station_elev_m'].tolist()
+        }
+    }
+
+    ## RMS error 
+    # create histogram data for both reloc and init hypocenter
+    bin_width = 0.01
+    bin_edges = np.arange(0, (0.1 + bin_width), bin_width)
+    hist_rms = {}
+    for error_type in ['reloc', 'init']:
+        rms_data =  hypocenter_df[f'source_err_rms_s_{error_type}']
+        hist_counts, _ = np.histogram(rms_data, bins=bin_edges)
+        hist_rms[error_type] = hist_counts.tolist()
+    
+    hist_rms['bin_width'] = bin_width
+    hist_rms['bin_edges'] = bin_edges.tolist()
+
     # create result objects
     result  = {
         'general_statistics': general_statistics,
         'overall_daily_intensities': overall_daily_intensities,
         'station_performance': station_performance,
         'wadati_profile': wadati_data,
-        'time_series_performance': time_series_performance
+        'time_series_performance': time_series_performance,
+        'hypocenter': hypocenter,
+        'rms_error': hist_rms
     }
 
     return result
