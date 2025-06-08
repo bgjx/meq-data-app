@@ -60,22 +60,31 @@ def analysis_engine(df: pd.DataFrame):
     if missing_columns:
         raise ValueError(f"Missing these required columns {', '.join(missing_columns)}")
 
-    # calculate Ts_Tp for Wadati Profile calculation
-    df['Ts_Tp'] = (df['s_arrival_dt'] - df['p_arrival_dt']).dt.total_seconds()
+
     
-    # Drop duplication for specific columns
-    unique_df = df[[
+    # Drop duplication for specific columns to get only hypocenter data
+    hypocenter_df = df[[
         "source_id", "source_lat_reloc", "source_lon_reloc", "location_reloc", "source_depth_m_reloc", "source_origin_dt_reloc",
         "source_lat_init", "source_lon_init", "location_init", "source_depth_m_init", "source_origin_dt_init",
         "n_phases", "magnitude"]].drop_duplicates(subset='source_id')
     
+    picking_df = df[[
+        "source_id", "network_code", "station_code", 
+        "station_lat", "station_lon", "station_elev_m",
+        "p_arrival_dt", "s_arrival_dt", "coda_dt"
+    ]]
+
+    # calculate Ts_Tp for Wadati Profile calculation
+    picking_df['Ts_Tp'] = (picking_df['s_arrival_dt'] - picking_df['p_arrival_dt']).dt.total_seconds()
+
+    
     # get list of source_id and station
-    source_id = df['source_id'].unique()
-    stations = df['station_code'].unique()
+    source_id = hypocenter_df['source_id'].unique()
+    stations = sorted(picking_df['station_code'].unique())
     
     # Statistic in number
-    total_events = len(unique_df['source_id'])
-    total_phases = len(df['p_arrival_dt']) + len(df['s_arrival_dt'])
+    total_events = len(hypocenter_df['source_id'])
+    total_phases = len(picking_df['p_arrival_dt']) + len(picking_df['s_arrival_dt'])
     total_stations =  len(stations)
 
     general_statistics = {
@@ -87,7 +96,7 @@ def analysis_engine(df: pd.DataFrame):
 
     ## Overall Daily intensities
     # get date series from data
-    date_series = pd.to_datetime(unique_df['source_origin_dt_init'])
+    date_series = pd.to_datetime(hypocenter_df['source_origin_dt_init'])
     grouped_daily_data = (date_series
                           .groupby(
                               [
@@ -112,17 +121,29 @@ def analysis_engine(df: pd.DataFrame):
 
     ## Station performance
     station_performance = {}
-    for sta in sorted(stations):
+    for sta in stations:
         # select P and S phase data recorded by this station
-        phases = df[df['station_code'] == sta][['p_arrival_dt', 's_arrival_dt']] 
+        phases = picking_df[picking_df['station_code'] == sta][['p_arrival_dt', 's_arrival_dt']] 
         station_performance[f'{sta}'] = {
             'p_phase': len(phases['p_arrival_dt']),
             's_phase': len(phases['s_arrival_dt'])
         }
 
+    ## Station performance time-series
+    # create pivot table
+    picking_df['p_arrival_dt_date'] = pd.to_datetime(picking_df['p_arrival_dt']).dt.date
+    pivot_station  = pd.pivot_table(
+                        picking_df,
+                        values='p_arrival_dt_date',
+                        index='p_arrival_dt_date',
+                        columns=stations,
+                        aggfunc='count'
+    )
+
+    print(pivot_station.head())
+
     ## Wadati profile
-    # Get subset df for faster calculation
-    subset_df = df[['source_id', 'p_arrival_dt', 'Ts_Tp']]
+    # Calculate time reference
     epoch = datetime(1970, 1, 1)
 
     origin_time = {
@@ -131,7 +152,7 @@ def analysis_engine(df: pd.DataFrame):
     }
 
     for id in source_id:
-        phase_df = subset_df[subset_df['source_id'] == id]
+        phase_df = picking_df[picking_df['source_id'] == id]
         phase_df = phase_df.copy()
 
         # calculate total seconds (epoch as reference)
@@ -152,9 +173,9 @@ def analysis_engine(df: pd.DataFrame):
     # calculate P_travel time
     origin_time_df = pd.DataFrame.from_dict(origin_time)
 
-    # merged with the subset_df
+    # merged with the picking_df
     merged = (
-                subset_df
+                picking_df
                 .merge(origin_time_df, on='source_id', how='inner' )
               )
     
