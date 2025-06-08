@@ -8,14 +8,15 @@ from datetime import datetime, timedelta
 mapbox_access_token = 'pk.eyJ1IjoiZWRlbG8iLCJhIjoiY20zNG1zN3F5MDFjdzJsb3N4ZDJ1ZTR1byJ9.bgl0vpixXnhDKJ8SnW4PYA'
 
 REQUIRED_COLUMNS_NAME = [
-    "id", "source_id", 
-    "source_lat_reloc", "source_lon_reloc", "location_reloc", "source_depth_m_reloc", "source_origin_dt_reloc",
-    "source_lat_init", "source_lon_init", "location_init", "source_depth_m_init", "source_origin_dt_init",
-    "network_code", "station_code", "station_lat", "station_lon", "station_elev_m",
-    "p_arrival_dt", "s_arrival_dt", "coda_dt",
-    "n_phases", "magnitude",
-    "reloc_remarks", "init_remarks"
+    "id", "source_id", "source_lat_init", "source_lon_init", "location_init",
+    "source_depth_m_init", "source_origin_dt_init", "source_err_rms_s_init",
+    "remarks_init", "source_lat_reloc", "source_lon_reloc", "location_reloc",
+    "source_depth_m_reloc", "source_origin_dt_reloc", "source_err_rms_s_reloc",
+    "remarks_reloc", "network_code", "station_code", "station_lat",
+    "station_lon", "station_elev_m", "p_arrival_dt", "s_arrival_dt",
+    "coda_dt", "magnitude"
 ]
+
 
 # get hypocenter catalog
 def get_hypocenter_catalog(app_label, slug, catalog_type):
@@ -64,9 +65,12 @@ def analysis_engine(df: pd.DataFrame):
     
     # Drop duplication for specific columns to get only hypocenter data
     hypocenter_df = df[[
-        "source_id", "source_lat_reloc", "source_lon_reloc", "location_reloc", "source_depth_m_reloc", "source_origin_dt_reloc",
-        "source_lat_init", "source_lon_init", "location_init", "source_depth_m_init", "source_origin_dt_init",
-        "n_phases", "magnitude"]].drop_duplicates(subset='source_id')
+        "source_id",
+        "source_lat_reloc", "source_lon_reloc", "location_reloc", "source_depth_m_reloc", 
+        "source_origin_dt_reloc",  "source_err_rms_s_reloc", 
+        "source_lat_init", "source_lon_init", "location_init", "source_depth_m_init",
+        "source_origin_dt_init",  "source_err_rms_s_init",
+        "magnitude"]].drop_duplicates(subset='source_id')
     
     picking_df = df[[
         "source_id", "network_code", "station_code", 
@@ -75,6 +79,7 @@ def analysis_engine(df: pd.DataFrame):
     ]]
 
     # calculate Ts_Tp for Wadati Profile calculation
+    picking_df = picking_df.copy()
     picking_df['Ts_Tp'] = (picking_df['s_arrival_dt'] - picking_df['p_arrival_dt']).dt.total_seconds()
 
     
@@ -132,6 +137,7 @@ def analysis_engine(df: pd.DataFrame):
 
     ## Station performance time-series
     # create pivot table
+    picking_df = picking_df.copy()
     picking_df['p_arrival_dt_date'] = pd.to_datetime(picking_df['p_arrival_dt']).dt.date
     pivot_station  = pd.pivot_table(
                         picking_df,
