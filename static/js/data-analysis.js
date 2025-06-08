@@ -142,7 +142,8 @@ document.addEventListener('DOMContentLoaded', function() {
             autosize:true,
             xaxis : {
                 title: 'Date',
-                tickangle: -45
+                tickangle: -45,
+                type: 'date'
             },
             yaxis: {
                 title: 'Daily Counts',
@@ -365,6 +366,59 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
 
+    // 5. TIme series station performance plot
+    function timeSeriesStationPerformance(id, data){
+
+        // Line plot traces
+        const traces = data.stations.map(station => ({
+            type: 'scatter',
+            mode: 'lines',
+            x: data.dates,
+            y: data.dates.map(date => data.counts[date][station] || 0),
+            name: station,
+            line: {
+                width: 1,
+                opacity: 0.8
+            }
+        }));
+
+        // Define layout
+        const layout = {
+            title: 'Event Counts per Station Over Time',
+            showlegend: true,
+            template: 'plotly_white',
+            legend: {
+                yanchor : "top",
+                y : 0.99,
+                xanchor : "right",
+                x : 0.1,             
+                bgcolor : "rgba(255,255,255,0.5)"
+            },
+            height: 600,
+            autosize: true,
+            xaxis: {
+                title: 'Date',
+                tickangle: -45,
+                type: 'date'
+            },
+            yaxis: {
+                title: 'Daily Counts',
+                rangemode: 'tozero'
+            },
+            margin: {
+                r: 100,
+                b: 100
+            }
+        }
+        
+        // Plotly plot call
+        try {
+            Plotly.newPlot(id, traces, layout);
+        } catch (error) {
+            console.error('Plotly.newPlot failed:', error)
+        };
+    };
+
 
     // Function to update UI with fetched data
     function updateUI(data) {
@@ -378,7 +432,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const daily_intensities = data.overall_daily_intensities;
         const station_performance = data.station_performance;
         const wadati_profile =  data.wadati_profile;
-
+        const time_series_station_performance = data.time_series_performance;
 
         // call animateCount for each statistic
         animateCount('station-count', gen_stats.total_stations, 2000);
@@ -393,6 +447,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // create plot for wadati profile
         WadatiProfile('wadati-profile', wadati_profile);
+
+        //  crate plot for time series station performance
+        timeSeriesStationPerformance('time-series-performance', time_series_station_performance)
+
     }
 
     // Debounce function to limit frequent API calls

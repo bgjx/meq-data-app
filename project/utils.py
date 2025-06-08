@@ -107,7 +107,7 @@ def analysis_engine(df: pd.DataFrame):
                           )
                           .size()
                         )
-    x_values = [f"{year}/{month:02d}/{day:02d}" for year, month, day in grouped_daily_data.index]
+    x_values = [f"{year}-{month:02d}-{day:02d}" for year, month, day in grouped_daily_data.index]
     y_array = grouped_daily_data.values
     y_bar  = y_array.tolist()
     y_cumulative =  np.ndarray.tolist(np.cumsum(y_array))
@@ -129,18 +129,26 @@ def analysis_engine(df: pd.DataFrame):
             's_phase': len(phases['s_arrival_dt'])
         }
 
+
     ## Station performance time-series
     # create pivot table
     picking_df['p_arrival_dt_date'] = pd.to_datetime(picking_df['p_arrival_dt']).dt.date
     pivot_station  = pd.pivot_table(
                         picking_df,
-                        values='p_arrival_dt_date',
                         index='p_arrival_dt_date',
-                        columns=stations,
-                        aggfunc='count'
+                        columns='station_code',
+                        aggfunc='size',
+                        fill_value=0
     )
 
-    print(pivot_station.head())
+    # index manipulation
+    pivot_station.index = [f"{index.year}-{index.month:02d}-{index.day:02d}" for index in pivot_station.index]
+    time_series_performance = {
+        'dates': pivot_station.index.tolist(),
+        'stations': pivot_station.columns.tolist(),
+        'counts': pivot_station.to_dict('index')
+    }
+
 
     ## Wadati profile
     # Calculate time reference
@@ -192,6 +200,7 @@ def analysis_engine(df: pd.DataFrame):
         'overall_daily_intensities': overall_daily_intensities,
         'station_performance': station_performance,
         'wadati_profile': wadati_data,
+        'time_series_performance': time_series_performance
     }
 
     return result
