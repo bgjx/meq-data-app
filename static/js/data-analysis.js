@@ -572,6 +572,109 @@ document.addEventListener('DOMContentLoaded', function() {
 
     }
 
+    // 8. 3D plot hypocenter
+    function Plot3dHypocenter(id, data) {
+        // Create hover text for station
+        const hoverTextStation = data.station.station_code.map((x, i) =>
+            `Station: ${x}<br> Latitude: ${data.station.latitude[i]}<br> Longitude: ${data.station.longitude[i]}<br> ELev (m): ${data.station.elev[i]}`
+        )
+
+        const initHypo = {
+            name: 'Initial Hypocenter',
+            type: 'scatter3d',
+            mode: 'markers',
+            x: data.initial.longitude,
+            y: data.initial.latitude,
+            z: data.initial.elev,
+            marker: {
+                size: 5,
+                color: 'indianred',
+                opacity: 0.8
+            }
+        };
+
+        const relocHypo = {
+            name: 'Relocated Hypocenter',
+            type: 'scatter3d',
+            mode: 'markers',
+            x: data.reloc.longitude,
+            y: data.reloc.latitude,
+            z: data.reloc.elev,
+            marker: {
+                size: 5,
+                color: '#1F77B4',
+                opacity: 0.8
+            }
+        };
+
+        const station = {
+            name: 'Stations',
+            type: 'scatter3d',
+            mode: 'markers+text',
+            x: data.station.longitude,
+            y: data.station.latitude,
+            z: data.station.elev,
+            marker: {
+                color: '#FF9900',
+                symbol: 'triangle-up', 
+                opacity: 0.8,
+                size: 12
+            },
+            text: data.station.station_code,
+            textposition: 'top center',
+            textfont:{
+                size: 12,
+                color: '#333333'
+            },
+            hoverinfo: 'text',
+            hovertemplate: hoverTextStation
+        };
+
+
+        const layout = {
+            title: '3D Hypocenter Plot',
+            showlegend: true,
+            template: 'plotly_white',
+            legend: {
+                yanchor : "top",
+                y : 0.99,
+                xanchor : "right",
+                x : 0.99,             
+                bgcolor : "rgba(255,255,255,0.5)"
+            },
+            height: 650,
+            autosize: true,
+            scene:{
+                xaxis: {
+                    title: 'Longitude',
+                    tickangle: 0
+                },
+                yaxis: {
+                    title: 'Latitude',
+                    scaleanchor: "x", 
+                    scaleratio: 1    
+                },
+                zaxis: {
+                    title: 'Elevation (m)',
+                }, 
+                aspectmode : 'manual',
+                aspectratio: {x:1, y:1, z:0.5},
+                camera:{
+                    up:{x:0, y:0, z:1},
+                    eye: {x:0.5, y:0.5, z:0.5}
+                }
+
+            }
+        }
+
+        // Plotly plot call
+        try {
+            Plotly.newPlot(id, [initHypo, relocHypo, station], layout);
+        } catch (error) {
+            console.error('Plotly.newPlot failed:', error)
+        };
+    }
+
 
     // Function to update UI with fetched data
     function updateUI(data) {
@@ -611,6 +714,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // create plot for rms error histogram
         histogramError('rms-error', rms_error);
+
+        // create 3D plot hypocenter
+        Plot3dHypocenter('hypocenter-plot-3d', hypocenter);
     }
 
     // Debounce function to limit frequent API calls

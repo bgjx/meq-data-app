@@ -211,12 +211,12 @@ def analysis_engine(df: pd.DataFrame):
         'reloc': {
             'latitude': hypocenter_df['source_lat_reloc'].tolist(),
             'longitude': hypocenter_df['source_lon_reloc'].tolist(),
-            'depth': hypocenter_df['source_depth_m_reloc'].tolist()
+            'elev': (-1 * hypocenter_df['source_depth_m_reloc']).tolist()
         },
         'initial': {
             'latitude': hypocenter_df['source_lat_init'].tolist(),
             'longitude': hypocenter_df['source_lon_init'].tolist(),
-            'depth': hypocenter_df['source_depth_m_init'].tolist()
+            'elev': (-1 * hypocenter_df['source_depth_m_init']).tolist()
         },
         'station': {
             'station_code': station_df['station_code'].tolist(),
