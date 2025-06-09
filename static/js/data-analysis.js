@@ -736,6 +736,102 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // 10. Gutenberg-Richter Analysis
+    function gutenbergRichterAnalysis(id, data){
+
+        // Cumulative magnitude data
+        const cumulativeCounts = {
+            name: 'Cumulative (N >= M)',
+            type: 'scatter',
+            mode: 'markers',
+            x: data.cumulative.x,
+            y: data.cumulative.y,
+            marker: {
+                color: 'blue',
+                size: 8,
+                opacity: 0.8,
+                hovertemplate: 'Magnitude: ${x:.3f}<br> Log10(Count): ${y:.3f}',
+            }
+        }
+
+        // Non-cumulative magnitude data
+        const nonCumulativeCounts = {
+            name: 'Non-Cumulative',
+            type: 'scatter',
+            mode: 'markers',
+            x: data.non_cumulative.x,
+            y: data.non_cumulative.y,
+            marker: {
+                color: 'blue',
+                size : 8,
+                opacity: 0.8,
+                hovertemplate: 'Magnitude: ${x:.3f}<br> Log10(Count): ${y:.3f}'
+            }
+        }
+
+        // Plot the fitted line
+        const fittedLine = {
+            name: `Fit: b_val = ${data.b_value.toFixed(3)}, a_val = ${data.a_value.toFixed(3)}, R^2 = ${data.r_value.toFixed(3)**2}`,
+            type: 'scatter',
+            mode: 'line',
+            x: data.fitted_line.x,
+            y: data.fitted_line.y,
+            line: {
+                color: 'indianred',
+                opacity: 0.8
+            }
+        }
+
+        // Plot the Magnitude Completeness
+        const magnitudeCompleteness = {
+            name: `Magnitude Completeness: ${data.mc[0]}`,
+            type: 'scatter',
+            mode: 'markers+text',
+            x: [data.mc[0]],
+            y: [data.mc[1]],
+            marker: {
+                size: 12,
+                symbol: 'triangle-down',
+                color:'indianred'
+            },
+            text: 'MC',
+            textposition: 'top center',
+            textfont : {
+                size: 12,
+                color: '#333333' 
+            },
+            hovertemplate: '<b>Magnitude Completeness</b><br>Log10(N >= M): %{y:.2f}<br>Magnitude: %{x:.2f}<extra></extra>'
+        }
+
+        // Plot layout
+        const layout = {
+            title: 'Gutenberg-Richter Analysis',
+            showlegend: true,
+            template: 'plotly_white',
+            legend: {
+                    yanchor : "top",
+                    y : 0.99,
+                    xanchor : "right",
+                    x : 0.99,             
+                    bgcolor : "rgba(255,255,255,0.5)"
+                },
+            height: 400,
+            autosize: true,
+            xaxis: {
+                title: 'Magnitude',
+                tickangle: 0
+            },
+            yaxis: {
+                title: 'Log10(Count)',
+                rangemode: 'tozero',
+            },
+            margin: {
+                r: 100,
+                b: 100
+            }
+
+        }
+
+    }
     
 
 
