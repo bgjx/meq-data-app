@@ -146,12 +146,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 type: 'date'
             },
             yaxis: {
-                title: 'Daily Counts',
+                title: 'Daily Count',
                 side: screenLeft,
                 showgrid: true
             },
             yaxis2: {
-                title: 'Cumulative Counts',
+                title: 'Cumulative Count',
                 side: 'right',
                 overlaying: 'y',
                 showgrid:false,
@@ -226,7 +226,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Set plot layout
         const layout = {
-            title: 'Phases Counts by Station',
+            title: 'Phases Count by Station',
             showlegend: true, 
             template: 'plotly_white',
             barmode: 'group',
@@ -244,7 +244,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 tickangle: -45
             },
             yaxis: {
-                title: 'Counts',
+                title: 'Count',
                 rangemode: 'tozero',
                 range: [0, Math.max(...p_phase, ...s_phase)*1.1]
             },
@@ -712,7 +712,7 @@ document.addEventListener('DOMContentLoaded', function() {
             height: 400,
             autosize: true,
             xaxis: {
-                title: 'Magntidue Bins',
+                title: 'Magnitude',
                 tickangle: 0
             },
             yaxis: {
@@ -791,7 +791,8 @@ document.addEventListener('DOMContentLoaded', function() {
             marker: {
                 size: 12,
                 symbol: 'triangle-down',
-                color:'indianred'
+                color:'#FF9900',
+                opacity: 0.8
             },
             text: 'MC',
             textposition: 'top center',
