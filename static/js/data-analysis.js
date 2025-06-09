@@ -735,6 +735,9 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
 
+    // 10. Gutenberg-Richter Analysis
+    
+
 
     // Function to update UI with fetched data
     function updateUI(data) {
