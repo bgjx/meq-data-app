@@ -662,6 +662,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 zaxis: {
                     title: 'Elevation (m)',
+                    zeroline: false,
                 }, 
                 aspectmode : 'manual',
                 aspectratio: {x:1, y:1, z:0.5},
@@ -820,7 +821,8 @@ document.addEventListener('DOMContentLoaded', function() {
             autosize: true,
             xaxis: {
                 title: 'Magnitude',
-                tickangle: 0
+                tickangle: 0,
+                zeroline: false
             },
             yaxis: {
                 title: 'Log10(Count)',
@@ -830,7 +832,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 r: 100,
                 b: 100
             }
-
         }
 
         

@@ -248,13 +248,14 @@ def analysis_engine(df: pd.DataFrame):
 
 
     ## Gutenberg-richter Analysis
-    def _gutenberg_analysis(magnitude: pd.Series, min_magnitude, bin_width):
+    def _gutenberg_analysis(magnitude: pd.Series, bin_width):
+
+        # find the min and max value
+        min_magnitude = np.round(np.floor(magnitude.min() / bin_width) * bin_width, 3)
+        max_magnitude = np.round(np.ceil(magnitude.max() / bin_width) * bin_width, 3)
 
         # filtered magnitude
         filtered_magnitudes = magnitude[magnitude >= min_magnitude]
-
-        # Calculate Max Magnitude
-        max_magnitude = np.round(np.ceil(filtered_magnitudes.max() / bin_width) * bin_width, 3)
 
         # set the magnitude bins
         mag_bins = np.round(np.arange(min_magnitude, (max_magnitude + bin_width), bin_width), 3)
@@ -346,9 +347,8 @@ def analysis_engine(df: pd.DataFrame):
         return gutenberg_richter
     
     # call the helper function
-    min_mag = -1
     guten_bin_width = 0.1
-    gutenberg_result = _gutenberg_analysis(magnitude, min_magnitude=min_mag, bin_width=guten_bin_width)
+    gutenberg_result = _gutenberg_analysis(magnitude, bin_width=guten_bin_width)
 
     # create result objects
     result  = {
