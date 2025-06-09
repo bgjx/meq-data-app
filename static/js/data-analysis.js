@@ -832,6 +832,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
         }
 
+        
+        // Plotly plot call
+        try {
+            Plotly.newPlot(id, [cumulativeCounts, nonCumulativeCounts, fittedLine, magnitudeCompleteness], layout);
+        } catch (error) {
+            console.error('Plotly.newPlot failed:', error)
+        };
+
     }
     
 
@@ -852,6 +860,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const hypocenter = data.hypocenter;
         const rms_error = data.rms_error;
         const magnitude_hist = data.magnitude_histogram;
+        const gutenberg_analysis = data.gutenberg_analysis;
 
         // call animateCount for each statistic
         animateCount('station-count', gen_stats.total_stations, 2000);
@@ -881,6 +890,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // create magnitude histogram plot
         magnitudeHistogram('magnitude-histogram', magnitude_hist);
+
+        // create plot for Gutenberg-Analysis
+        gutenbergRichterAnalysis('gutenberg-richter-analysis', gutenberg_analysis);
     }
 
     // Debounce function to limit frequent API calls
