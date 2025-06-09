@@ -746,7 +746,7 @@ document.addEventListener('DOMContentLoaded', function() {
             x: data.cumulative.x,
             y: data.cumulative.y,
             marker: {
-                color: 'blue',
+                color: '#1F77B4',
                 size: 8,
                 opacity: 0.8,
                 hovertemplate: 'Magnitude: ${x:.3f}<br> Log10(Count): ${y:.3f}',
@@ -761,7 +761,8 @@ document.addEventListener('DOMContentLoaded', function() {
             x: data.non_cumulative.x,
             y: data.non_cumulative.y,
             marker: {
-                color: 'blue',
+                symbol: 'triangle-up',
+                color: 'green',
                 size : 8,
                 opacity: 0.8,
                 hovertemplate: 'Magnitude: ${x:.3f}<br> Log10(Count): ${y:.3f}'
@@ -770,7 +771,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Plot the fitted line
         const fittedLine = {
-            name: `Fit: b_val = ${data.b_value.toFixed(3)}, a_val = ${data.a_value.toFixed(3)}, R^2 = ${data.r_value.toFixed(3)**2}`,
+            name: `Fit: b_val = ${data.b_value.toFixed(3)}, a_val = ${data.a_value.toFixed(3)}, R^2 = ${data.r_value**2}`,
             type: 'scatter',
             mode: 'line',
             x: data.fitted_line.x,
@@ -812,7 +813,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     yanchor : "top",
                     y : 0.99,
                     xanchor : "right",
-                    x : 0.99,             
+                    x : 1.50,             
                     bgcolor : "rgba(255,255,255,0.5)"
                 },
             height: 400,

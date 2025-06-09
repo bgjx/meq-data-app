@@ -346,11 +346,9 @@ def analysis_engine(df: pd.DataFrame):
         return gutenberg_richter
     
     # call the helper function
-    min_mag = -2
+    min_mag = -1
     guten_bin_width = 0.1
-    gutenberg_result = _gutenberg_analysis(magnitude, min_magnitude=min_mag, bin_width=guten_bin_width)    
-
-    print(gutenberg_result)
+    gutenberg_result = _gutenberg_analysis(magnitude, min_magnitude=min_mag, bin_width=guten_bin_width)
 
     # create result objects
     result  = {
