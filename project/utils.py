@@ -245,102 +245,112 @@ def analysis_engine(df: pd.DataFrame):
         'magnitude': hypocenter_df['magnitude'].tolist()
     }
 
+
     ## Gutenberg-richter Analysis
-    min_magnitude = -2
-    max_magnitude = 3
-    guten_bin_width = 0.1
+    def _gutenberg_analysis(magnitude: pd.Series, min_magnitude, bin_width):
 
-    # filtered magnitude
-    filtered_magnitudes = hypocenter_df[hypocenter_df['magnitude'] >= min_magnitude]
-    mag_bins = np.arange(min_magnitude, (max_magnitude + guten_bin_width), guten_bin_width)
+        # drop nan value from magnitude
+        valid_magnitude = magnitude.dropna()
 
-    # Cumulative counts 
-    cumulative_counts = np.array([len(filtered_magnitudes[filtered_magnitudes >= m]) for m in mag_bins])
+        # filtered magnitude
+        filtered_magnitudes = valid_magnitude[valid_magnitude >= min_magnitude]
 
-    # Non cumulative counts 
-    non_cumulative_counts, _ = np.histogram(filtered_magnitudes, bins=mag_bins)
+        # Calculate Max Magnitude
+        max_magnitude = np.ceil(filtered_magnitudes.max() / bin_width) * bin_width
 
-    # Shift the non-cumulative bins to represent bin centers
-    mag_bins_non_cum = mag_bins[:-1] + guten_bin_width/2
+        # set the magnitude bins
+        mag_bins = np.arange(min_magnitude, (max_magnitude + bin_width), bin_width)
 
-    # filter out zero counts to avoid log issues
-    valid_count_indices_cum = [i for i, c in enumerate(cumulative_counts) if c > 0]
-    valid_count_indices_non_cum = [i for i, c in enumerate(non_cumulative_counts) if c > 0]
+        # Cumulative counts 
+        cumulative_counts = np.array([len(filtered_magnitudes[filtered_magnitudes >= m]) for m in mag_bins])
 
-    if len(valid_count_indices_cum) < 5:
-        raise ValueError("Too few non-zero cumulative counts for reliable fitting")
-        ???
+        # Non cumulative counts 
+        non_cumulative_counts, _ = np.histogram(filtered_magnitudes, bins=mag_bins)
 
-    # Cumulative fit data
-    mag_bins_cum = mag_bins[valid_count_indices_cum]
-    cumulative_counts = cumulative_counts[valid_count_indices_cum]
-    log_cumulative_counts = np.log10(cumulative_counts)
+        # Shift the non-cumulative bins to represent bin centers
+        mag_bins_non_cum = mag_bins[:-1] + bin_width/2
 
-    # Non cumulative data
-    mag_bins_non_cum = mag_bins_non_cum[valid_count_indices_non_cum]
-    non_cumulative_counts = non_cumulative_counts[valid_count_indices_non_cum]
-    log_non_cumulative_counts = np.log10(non_cumulative_counts)
+        # filter out zero counts to avoid log issues
+        valid_count_indices_cum = [i for i, c in enumerate(cumulative_counts) if c > 0]
+        valid_count_indices_non_cum = [i for i, c in enumerate(non_cumulative_counts) if c > 0]
 
-    # fitting to determine b-value, a-value, and magnitude completeness
-    # parameter holder
-    best_r_squared = 0
-    best_breakpoint = mag_bins_cum[0]
-    best_slope = 0
-    best_intercept = 0
-    best_index = 0
-    best_std_err = 0
+        if len(valid_count_indices_cum) < 5:
+            gutenberg_richter = {}
+            return gutenberg_richter
 
-    for i in range( 1, len(mag_bins_cum)//2):
-        breakpoint = mag_bins_cum[i]
-        mask = mag_bins_cum >= breakpoint
-        x_subset = mag_bins_cum[mask]
-        y_subset = log_cumulative_counts[mask]
+        # Cumulative fit data
+        mag_bins_cum = mag_bins[valid_count_indices_cum]
+        cumulative_counts = cumulative_counts[valid_count_indices_cum]
+        log_cumulative_counts = np.log10(cumulative_counts)
 
-        if len(x_subset) < 2 :
-            continue
+        # Non cumulative data
+        mag_bins_non_cum = mag_bins_non_cum[valid_count_indices_non_cum]
+        non_cumulative_counts = non_cumulative_counts[valid_count_indices_non_cum]
+        log_non_cumulative_counts = np.log10(non_cumulative_counts)
 
-        slope, intercept, r_value, _, std_err = linregress(x_subset, y_subset)
-        r_squared = r_value ** 2
+        # fitting to determine b-value, a-value, and magnitude completeness
+        # parameter holder
+        best_r_squared = 0
+        best_breakpoint = mag_bins_cum[0]
+        best_slope = 0
+        best_intercept = 0
+        best_index = 0
+        best_std_err = 0
 
-        if r_squared > best_r_squared:
-            best_r_squared = r_squared
-            best_breakpoint = breakpoint
-            best_slope = slope
-            best_intercept = intercept
-            best_index = i
-            best_std_err = std_err
-    
-    # fitted line 
-    fit_log_cumulative = (best_slope * mag_bins_cum) + best_intercept
-    mc = (best_breakpoint, fit_log_cumulative[best_index])
-    b_value = -1 * best_slope
-    a_value = best_intercept
-    stderr = best_std_err
-    r_value = best_r_squared
+        for i in range( 1, len(mag_bins_cum)//2):
+            breakpoint = mag_bins_cum[i]
+            mask = mag_bins_cum >= breakpoint
+            x_subset = mag_bins_cum[mask]
+            y_subset = log_cumulative_counts[mask]
 
-    gutenberg_richter = {
-        'b_value': b_value,
-        'a_value': a_value,
-        'b_value_stderr': stderr,
-        'r_squared': r_value ** 2,
-        'mc': mc,
-        'cumulative': {
-            'x': mag_bins_cum,
-            'y': log_cumulative_counts
-        },
-        'non_cumulative': {
-            'x': mag_bins_non_cum,
-            'y': log_non_cumulative_counts
-        },
-        'fitted_line': {
-            'x': mag_bins_cum,
-            'y': fit_log_cumulative
+            if len(x_subset) < 2 :
+                continue
+
+            slope, intercept, r_value, _, std_err = linregress(x_subset, y_subset)
+            r_squared = r_value ** 2
+
+            if r_squared > best_r_squared:
+                best_r_squared = r_squared
+                best_breakpoint = breakpoint
+                best_slope = slope
+                best_intercept = intercept
+                best_index = i
+                best_std_err = std_err
+        
+        # fitted line 
+        fit_log_cumulative = (best_slope * mag_bins_cum) + best_intercept
+        mc = (best_breakpoint, fit_log_cumulative[best_index])
+        b_value = -1 * best_slope
+        a_value = best_intercept
+        stderr = best_std_err
+        r_value = best_r_squared
+
+        gutenberg_richter = {
+            'b_value': b_value,
+            'a_value': a_value,
+            'b_value_stderr': stderr,
+            'r_squared': r_value ** 2,
+            'mc': mc,
+            'cumulative': {
+                'x': mag_bins_cum,
+                'y': log_cumulative_counts
+            },
+            'non_cumulative': {
+                'x': mag_bins_non_cum,
+                'y': log_non_cumulative_counts
+            },
+            'fitted_line': {
+                'x': mag_bins_cum,
+                'y': fit_log_cumulative
+            }
         }
-    }
 
-
-
-
+        return gutenberg_richter
+    
+    # call the helper function
+    min_magnitude = -2
+    guten_bin_width = 0.1
+    gutenberg_result = _gutenberg_analysis(min_magnitude=min_magnitude, bin_width=guten_bin_width)    
 
     # create result objects
     result  = {
