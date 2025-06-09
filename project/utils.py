@@ -239,6 +239,11 @@ def analysis_engine(df: pd.DataFrame):
     hist_rms['bin_width'] = bin_width
     hist_rms['bin_edges'] = bin_edges.tolist()
 
+    ## Magnitude
+    magnitude_histogram = {
+        'magnitude': hypocenter_df['magnitude'].tolist()
+    }
+
     # create result objects
     result  = {
         'general_statistics': general_statistics,
@@ -247,7 +252,8 @@ def analysis_engine(df: pd.DataFrame):
         'wadati_profile': wadati_data,
         'time_series_performance': time_series_performance,
         'hypocenter': hypocenter,
-        'rms_error': hist_rms
+        'rms_error': hist_rms,
+        'magnitude_histogram': magnitude_histogram
     }
 
     return result

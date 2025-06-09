@@ -455,7 +455,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const station = {
             name: 'Stations',
             type: 'scatter',
-            mode: 'markers',
+            mode: 'markers+text',
             x: data.station.longitude,
             y: data.station.latitude,
             marker: {
@@ -464,8 +464,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 opacity: 0.8,
                 size: 14
             },
-            text: hoverTextStation,
-            hoverinfo: 'text'
+            text: data.station.station_code,
+            textposition: 'top center',
+            textfont:{
+                size: 12,
+                color: 'rgba(52, 58, 64,0.8)'
+            },
+            hoverinfo: 'text',
+            hovertemplate: hoverTextStation
         };
         
 
@@ -624,7 +630,7 @@ document.addEventListener('DOMContentLoaded', function() {
             textposition: 'top center',
             textfont:{
                 size: 12,
-                color: '#333333'
+                color: 'rgba(52, 58, 64,0.8)'
             },
             hoverinfo: 'text',
             hovertemplate: hoverTextStation
@@ -676,6 +682,60 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 
+    // 9. Magnitude histogram plot 
+    function magnitudeHistogram(id, data) {
+        const magHist = {
+            name: 'Magnitude',
+            x: data.magnitude,
+            type: 'histogram',
+            marker: {
+                color: 'indianred',
+                line: {
+                    color:'white',
+                    width: 0.5
+                }
+            }, 
+            opacity: 0.8
+        };
+
+        const layout = {
+            title: 'Magnitude Histogram',
+            showlegend: true,
+            template: 'plotly_white',
+            legend: {
+                    yanchor : "top",
+                    y : 0.99,
+                    xanchor : "right",
+                    x : 0.99,             
+                    bgcolor : "rgba(255,255,255,0.5)"
+                },
+            height: 400,
+            autosize: true,
+            xaxis: {
+                title: 'Magntidue Bins',
+                tickangle: 0
+            },
+            yaxis: {
+                title: 'Counts',
+                rangemode: 'tozero',
+            },
+            bargap: 0.1,
+            margin: {
+                r: 100,
+                b: 100
+            }
+
+        };
+
+        // Plotly plot call
+        try {
+            Plotly.newPlot(id, [magHist], layout);
+        } catch (error) {
+            console.error('Plotly.newPlot failed:', error)
+        };
+    }
+
+
     // Function to update UI with fetched data
     function updateUI(data) {
         if (!data || !data.general_statistics || !data.overall_daily_intensities || !data.station_performance) {
@@ -691,6 +751,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const time_series_station_performance = data.time_series_performance;
         const hypocenter = data.hypocenter;
         const rms_error = data.rms_error;
+        const magnitude_hist = data.magnitude_histogram;
 
         // call animateCount for each statistic
         animateCount('station-count', gen_stats.total_stations, 2000);
@@ -717,6 +778,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // create 3D plot hypocenter
         Plot3dHypocenter('hypocenter-plot-3d', hypocenter);
+
+        // create magnitude histogram plot
+        magnitudeHistogram('magnitude-histogram', magnitude_hist);
     }
 
     // Debounce function to limit frequent API calls
