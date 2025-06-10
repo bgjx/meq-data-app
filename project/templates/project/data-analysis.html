@@ -29,12 +29,38 @@
                                     <div class="card-body">
                                         <form id = "filter-form" method="get" class="py-lg-3">
                                             <div class="form-explorer">
-                                                <!-- Other filter -->
-                                                <div class="form-input"></div>
-                                                <div class="form-input"></div>
                                                 <!-- spatial filter -->
+                                                <!-- Rectangular filter -->
                                                 <div class="form-input ">
-                                                    <div class="filter-type"> Radius Filter </div>
+                                                    <div class="filter-type"> Rectangular Filter </div>
+                                                    <div class="filter-item">
+                                                        <label for="min-latitude" class="form-label"> Min latitude </label>
+                                                        <div class="input">
+                                                            <input type="number" name="min_latitude" id="min_latitude" placeholder="0.00" min="-90" max="90" step="any">
+                                                        </div>
+                                                    </div>
+                                                    <div class="filter-item">
+                                                        <label for="max-latitude" class="form-label"> Max latitude </label>
+                                                        <div class="input">
+                                                            <input type="number" name="max_latitude" id="max_latitude" placeholder="0.00" min="-90" max="90" step="any">
+                                                        </div>
+                                                    </div>
+                                                    <div class="filter-item">
+                                                        <label for="min-longitude" class="form-label"> Min longitude </label>
+                                                        <div class="input">
+                                                            <input type="number" name="min_longitude" id="min_longitude" placeholder="90.00" min="-180" max="180" step="any">
+                                                        </div>
+                                                    </div>
+                                                    <div class="filter-item">
+                                                        <label for="max-longitude" class="form-label"> Max longitude </label>
+                                                        <div class="input">
+                                                            <input type="number" name="max_longitude" id="max_longitude" placeholder="90.00" min="-180" max="180" step="any">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- circular filter  -->
+                                                <div class="form-input ">
+                                                    <div class="filter-type"> Circular Filter </div>
                                                     <div class="filter-item">
                                                         <label for="center-latitude" class="form-label"> Center latitude </label>
                                                         <div class="input">
