@@ -865,9 +865,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const gutenberg_analysis = data.gutenberg_analysis;
 
         // call animateCount for each statistic
-        animateCount('station-count', gen_stats.total_stations, 2000);
-        animateCount('event-count', gen_stats.total_events, 2000);
-        animateCount('phase-count', gen_stats.total_phases, 2000);
+        animateCount('station-count', gen_stats.total_stations, 3000);
+        animateCount('event-count', gen_stats.total_events, 3000);
+        animateCount('phase-count', gen_stats.total_phases, 3000);
 
         // create plot for daily overall intensities
         intensitiesOverallPlot('daily-overall-intensities', daily_intensities);
