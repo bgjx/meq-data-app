@@ -1,7 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.apps import apps
-from django.core.serializers import serialize
 
 from frontpage.models import Site
 from project.utils import (get_hypocenter_catalog, 
@@ -11,7 +10,6 @@ from project.utils import (get_hypocenter_catalog,
 from . filters import table_filter, spatial_filter
 
 from datetime import datetime, timedelta
-import json
 import pandas as pd
 import csv
 
