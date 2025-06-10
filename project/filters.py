@@ -193,13 +193,6 @@ def spatial_filter(model_name):
     return SpatialFilter
 
 
-def slider_filter(model_name):
-    picked_model = apps.get_model('project', model_name)
-
-    # Get the min and max years from 
-
-
-
 
 
 
