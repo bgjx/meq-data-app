@@ -77,64 +77,25 @@ def spatial_filter(model_name):
         # Date Range Filters
         start_date = DateFilter(field_name="source_origin_dt_init", 
                                 lookup_expr="gte", 
-                                label="Start Date",
-                                # widget = forms.DateInput(
-                                #     attrs={
-                                #         'type': 'text',
-                                #         'min': min_date.strftime('%Y-%m-%d %H:%M:%S') if min_date else '',
-                                #         'max': max_date.strftime('%Y-%m-%d %H:%M:%S') if max_date else '',
-                                #         'placeholder':  min_date.strftime('%Y-%m-%d %H:%M:%S') if min_date else ''
-                                #     }
-                                # )
+                                label="Start Date"
                     )
         
         end_date = DateFilter(field_name="source_origin_dt_init",
                               lookup_expr="lte", 
                               label="End Date",
-                            #   widget = forms.DateInput(
-                            #       attrs={
-                            #             'type': 'text',
-                            #             'min': min_date.strftime('%Y-%m-%d %H:%M:%S') if min_date else '',
-                            #             'max': max_date.strftime('%Y-%m-%d %H:%M:%S') if max_date else '',
-                            #             'placeholder': max_date.strftime('%Y-%m-%d %H:%M:%S') if max_date else ''
-                            #       }
-                            #   )
                     )
         
         # Circular Radius Filter Fields
         latitude = NumberFilter(
             label = "Center Latitude",
-            # widget = forms.NumberInput(
-            #     attrs={
-            #         'placeholder': f'latitude: {median_lat}',
-            #         'min': -90,
-            #         'max': 90,
-            #         'step': 'any'
-            #     }
-            # )
         )
 
         longitude = NumberFilter(
             label= "Center Longitude",
-            # widget = forms.NumberInput(
-            #     attrs={
-            #         'placeholder': f'longitude: {median_lon}',
-            #         'min': -180,
-            #         'max': 180,
-            #         'step': 'any'
-            #     }
-            # )
         )
 
         radius = NumberFilter(
             label='Radius (Km)',
-            # widget = forms.NumberInput(
-            #     attrs={
-            #         'placeholder': 'Radius in kilometers',
-            #         'min': 0,
-            #         'step':'any'
-            #     }
-            # )
         )
 
         class Meta:
