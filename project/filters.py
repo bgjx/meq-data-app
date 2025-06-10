@@ -105,7 +105,7 @@ def spatial_filter(model_name):
         class Meta:
             model = picked_model
             fields = ['start_date', 'end_date',
-                    'center_latitude', 'center_longitude', 'radius'
+                    'center_latitude', 'center_longitude', 'radius',
                     'min_latitude', 'max_latitude', 'min_longitude', 'max_longitude']
 
         def __init__(self, *args, **kwargs):
