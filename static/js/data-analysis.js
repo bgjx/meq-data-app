@@ -128,7 +128,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // set plot layout
         const layout = {
-            title: 'Daily Intensity of Recorded Events',
+            title: {
+                text: 'Daily Intensity of Recorded Events',
+                font: {
+                    size: 18
+                }
+            },
             showlegend: true,
             template: 'plotly_white',
             legend: {
@@ -141,17 +146,31 @@ document.addEventListener('DOMContentLoaded', function() {
             height: 600,
             autosize:true,
             xaxis : {
-                title: 'Date',
+                title: {
+                    text: 'Date',
+                    fiont: {
+                        size: 14
+                    }
+                },
                 tickangle: -45,
                 type: 'date'
             },
             yaxis: {
-                title: 'Daily Counts',
-                side: screenLeft,
+                title: {
+                    text: 'Daily Counts',
+                    font: {
+                        size: 14
+                    }
+                },
                 showgrid: true
             },
             yaxis2: {
-                title: 'Cumulative Counts',
+                title: {
+                    text: 'Cumulative Counts',
+                    font: {
+                        size: 14
+                    }
+                },
                 side: 'right',
                 overlaying: 'y',
                 showgrid:false,
@@ -226,7 +245,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Set plot layout
         const layout = {
-            title: 'Phases Counts by Station',
+            title: {
+                text: 'Phases Counts by Station',
+                font: {
+                    size: 18
+                }
+            },
             showlegend: true, 
             template: 'plotly_white',
             barmode: 'group',
@@ -240,11 +264,21 @@ document.addEventListener('DOMContentLoaded', function() {
             height: 400,
             autosize: true,
             xaxis: {
-                title: 'Station',
+                title: {
+                    text: 'Station',
+                    font: {
+                        size: 14
+                    }
+                },
                 tickangle: -45
             },
             yaxis: {
-                title: 'Counts',
+                title: {
+                    text: 'Counts',
+                    font: {
+                        size: 14
+                    }
+                },
                 rangemode: 'tozero',
                 range: [0, Math.max(...p_phase, ...s_phase)*1.1]
             },
@@ -311,7 +345,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const equation = `y = ${slope.toFixed(2)}x + ${intercept.toFixed(2)}<br> Vp/Vs: ${(1 + slope).toFixed(2)}`;
 
         const layout = {
-            title: 'Wadati Profile',
+            title: {
+                text: 'Wadati Profile',
+                font: {
+                    size: 18
+                }
+            },
             showlegend: true,
             template: 'plotly-white',
             legend: {
@@ -324,11 +363,21 @@ document.addEventListener('DOMContentLoaded', function() {
             height: 400,
             autosize: true,
             xaxis: {
-                title: 'P travel (s)',
+                title: {
+                    text: 'P travel (s)',
+                    font: {
+                        size: 14
+                    }
+                },
                 tickangle: 0
             },
             yaxis: {
-                title: 'Ts - Tp (s)',
+                title: {
+                    text: 'Ts - Tp (s)',
+                    font: {
+                        size: 14
+                    }
+                },
                 rangemode: 'tozero',
                 range: [0, Math.max(...data.ts_tp) * 1.1],
                 anchor: 'x'
@@ -385,7 +434,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Define layout
         const layout = {
-            title: 'Event Counts per Station Over Time',
+            title: {
+                text: 'Event Counts per Station Over Time',
+                font: {
+                    size: 18
+                }
+            },
             showlegend: true,
             template: 'plotly_white',
             legend: {
@@ -398,12 +452,22 @@ document.addEventListener('DOMContentLoaded', function() {
             height: 600,
             autosize: true,
             xaxis: {
-                title: 'Date',
+                title: {
+                    text: 'Date',
+                    font: {
+                        size: 14
+                    }
+                },
                 tickangle: -45,
                 type: 'date'
             },
             yaxis: {
-                title: 'Daily Counts',
+                title: {
+                    text: 'Daily Counts',
+                    font: {
+                        size: 14
+                    }
+                },
                 rangemode: 'tozero'
             },
             margin: {
@@ -477,7 +541,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
 
         const layout = {
-            title: '2D Hypocenter Plots',
+            title: {
+                text: '2D Hypocenter Plots',
+                font: {
+                    size: 18
+                },
+            },
             showlegend: true,
             template: 'plotly_white',
             legend: {
@@ -490,11 +559,21 @@ document.addEventListener('DOMContentLoaded', function() {
             height: 400,
             autosize: true,
             xaxis: {
-                title: 'Longitude',
+                title: {
+                    text: 'Longitude',
+                    font: {
+                        size: 14
+                    }
+                },
                 tickangle: 0
             },
             yaxis: {
-                title: 'Latitude',
+                title: {
+                    text: 'Latitude',
+                    font: {
+                        size: 14
+                    }
+                },
                 scaleanchor: "x", 
                 scaleratio: 1    
             },
@@ -542,7 +621,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Set plot layout
         const layout = {
-            title: 'Origin Time RMS error (second)',
+            title: {
+                text: 'Origin Time RMS error (second)',
+                font: {
+                    size: 18
+                }
+            },
             showlegend: true, 
             template: 'plotly_white',
             barmode: 'group',
@@ -556,11 +640,21 @@ document.addEventListener('DOMContentLoaded', function() {
             height: 400,
             autosize: true,
             xaxis: {
-                title: 'Second',
+                title: {
+                    text: 'Second',
+                    font: {
+                        size: 14
+                    }
+                },
                 tickangle: 0
             },
             yaxis: {
-                title: 'Counts',
+                title: {
+                    text: 'Counts',
+                    font: {
+                        size: 14
+                    }
+                },
                 rangemode: 'tozero',
                 range: [0, Math.max(...data.init, ...data.reloc)*1.1]
             },
@@ -639,7 +733,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
         const layout = {
-            title: '3D Hypocenter Plot',
+            title: {
+                text: '3D Hypocenter Plot',
+                font: {
+                    size: 18
+                }
+            },
             showlegend: true,
             template: 'plotly_white',
             legend: {
@@ -653,16 +752,31 @@ document.addEventListener('DOMContentLoaded', function() {
             autosize: true,
             scene:{
                 xaxis: {
-                    title: 'Longitude',
+                    title:{
+                        text: 'Longitude',
+                        font: {
+                            size: 14
+                        }
+                    },
                     tickangle: 0
                 },
                 yaxis: {
-                    title: 'Latitude',
+                    title: {
+                        text: 'Latitude',
+                        font: {
+                            size: 14
+                        }
+                    },
                     scaleanchor: "x", 
                     scaleratio: 1    
                 },
                 zaxis: {
-                    title: 'Elevation (m)',
+                    title: {
+                        text: 'Elevation (m)',
+                        font: {
+                            size: 14
+                        }
+                    },
                     zeroline: false,
                 }, 
                 aspectmode : 'manual',
@@ -701,7 +815,12 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         const layout = {
-            title: 'Magnitude Histogram',
+            title: {
+                text: 'Magnitude Histogram',
+                font: {
+                    size: 18
+                }
+            },
             showlegend: true,
             template: 'plotly_white',
             legend: {
@@ -714,11 +833,21 @@ document.addEventListener('DOMContentLoaded', function() {
             height: 400,
             autosize: true,
             xaxis: {
-                title: 'Magnitude',
+                title: {
+                    text: 'Magnitude',
+                    font: {
+                        size: 14
+                    }
+                },
                 tickangle: 0
             },
             yaxis: {
-                title: 'Counts',
+                title: { 
+                    text: 'Counts',
+                    font: {
+                        size: 14
+                    }
+                },
                 rangemode: 'tozero',
             },
             bargap: 0.1,
@@ -808,7 +937,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Plot layout
         const layout = {
-            title: 'Gutenberg-Richter Analysis',
+            title: {
+                text: 'Gutenberg-Richter Analysis',
+                font: {
+                    size: 18
+                }
+            },
             showlegend: true,
             template: 'plotly_white',
             legend: {
@@ -821,12 +955,22 @@ document.addEventListener('DOMContentLoaded', function() {
             height: 400,
             autosize: true,
             xaxis: {
-                title: 'Magnitude',
+                title: {
+                    text: 'Magnitude',
+                    font: {
+                        size: 14
+                    }
+                },
                 tickangle: 0,
                 zeroline: false
             },
             yaxis: {
-                title: 'Log10(Count)',
+                title: {
+                    text: 'Log10(Count)',
+                    font: {
+                        size: 14
+                    }
+                },
                 rangemode: 'tozero',
             },
             margin: {
