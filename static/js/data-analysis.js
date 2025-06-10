@@ -349,7 +349,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     showarrow: false,
                     font: {
                         size: 12,
-                        color: '#1F77B4'
+                        color: '#1F77B4',
+                        opacity: 0.8
                     },
                     bgcolor: "rgba(255,255,255,0.5)",
                     bordercolor: '#1F77B4',
@@ -844,7 +845,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     }
     
-
 
     // Function to update UI with fetched data
     function updateUI(data) {
