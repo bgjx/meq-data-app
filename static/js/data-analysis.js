@@ -146,12 +146,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 type: 'date'
             },
             yaxis: {
-                title: 'Daily Count',
+                title: 'Daily Counts',
                 side: screenLeft,
                 showgrid: true
             },
             yaxis2: {
-                title: 'Cumulative Count',
+                title: 'Cumulative Counts',
                 side: 'right',
                 overlaying: 'y',
                 showgrid:false,
@@ -226,7 +226,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Set plot layout
         const layout = {
-            title: 'Phases Count by Station',
+            title: 'Phases Counts by Station',
             showlegend: true, 
             template: 'plotly_white',
             barmode: 'group',
@@ -244,7 +244,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 tickangle: -45
             },
             yaxis: {
-                title: 'Count',
+                title: 'Counts',
                 rangemode: 'tozero',
                 range: [0, Math.max(...p_phase, ...s_phase)*1.1]
             },
