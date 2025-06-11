@@ -28,9 +28,9 @@ SECRET_KEY = config('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = config('DJANGO_ALLOWED_HOSTS', default='127.0.0.1')
+ALLOWED_HOSTS = config('DJANGO_ALLOWED_HOSTS', default='https://127.0.0.1', cast= lambda v : [s.strip() for s in v.split(',')])
 
-CSRF_TRUSTED_ORIGINS = config('DJANGO_CSRF_TRUSTED_ORIGINS', default='https://127.0.0.1')
+CSRF_TRUSTED_ORIGINS = config('DJANGO_CSRF_TRUSTED_ORIGINS', default='https://127.0.0.1', cast = lambda v: [s.strip() for s in v.split(',')])
 
 # Tokens
 MAPBOX_API_TOKEN = config('MAPBOX_API_TOKEN')
@@ -95,7 +95,7 @@ DATABASES = {
         'USER': config('DB_USERNAME'),
         'PASSWORD': config('DB_PASSWORD'),
         'HOST': config('DB_HOST'),
-        'PORT': config('DB_PORT'),
+        'PORT': config('DB_PORT', default='5432'),
     }
 }
 
