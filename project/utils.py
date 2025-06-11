@@ -322,13 +322,13 @@ def analysis_engine(df: pd.DataFrame):
         b_value = -1 * best_slope
         a_value = best_intercept
         stderr = best_std_err
-        r_value = best_r_squared
+        r_squared = best_r_squared
 
         gutenberg_richter = {
             'b_value': b_value,
             'a_value': a_value,
             'b_value_stderr': stderr,
-            'r_squared': r_value ** 2,
+            'r_squared': r_squared,
             'mc': mc,
             'cumulative': {
                 'x': mag_bins_cum.tolist(),

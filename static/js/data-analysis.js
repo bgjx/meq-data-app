@@ -622,7 +622,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Set plot layout
         const layout = {
             title: {
-                text: 'Origin Time RMS error (second)',
+                text: 'Origin Time Error',
                 font: {
                     size: 18
                 }
@@ -641,7 +641,7 @@ document.addEventListener('DOMContentLoaded', function() {
             autosize: true,
             xaxis: {
                 title: {
-                    text: 'Second',
+                    text: 'RMS Error (second)',
                     font: {
                         size: 14
                     }
@@ -902,7 +902,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Plot the fitted line
         const fittedLine = {
-            name: `Fit: b_val = ${data.b_value.toFixed(3)}, a_val = ${data.a_value.toFixed(3)}, R^2 = ${data.r_value**2}`,
+            name: `Fit: b_val = ${data.b_value.toFixed(2)}, a_val = ${data.a_value.toFixed(2)}, R^2 = ${data.r_squared.toFixed(2)}`,
             type: 'scatter',
             mode: 'line',
             x: data.fitted_line.x,
