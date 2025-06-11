@@ -896,7 +896,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 color: 'green',
                 size : 8,
                 opacity: 0.8,
-                hovertemplate: 'Magnitude: ${x:.3f}<br> Log10(Count): ${y:.3f}'
+                hovertemplate: 'Magnitude: ${x:.3f}<br> Log10(Count): ${y:.3f}'  
             }
         }
 
