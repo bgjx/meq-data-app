@@ -1,9 +1,10 @@
 from django.db import models
 from django.urls import reverse
+from django.conf import settings
 import geocoder
 
 # Create your models here.
-mapbox_token = 'pk.eyJ1IjoiZWRlbG8iLCJhIjoiY20zNG1zN3F5MDFjdzJsb3N4ZDJ1ZTR1byJ9.bgl0vpixXnhDKJ8SnW4PYA'
+mapbox_token = settings.MAPBOX_API_TOKEN
 
 class Site(models.Model):
     name = models.CharField(max_length=255, db_index=True)

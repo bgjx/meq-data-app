@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.apps import apps
+from django.conf import settings
 
 from frontpage.models import Site
 from project.utils import (get_hypocenter_catalog, 
@@ -43,7 +44,7 @@ def project_site(request, site_slug = None):
 def meq_maps(request, site_slug = None):
     'Generate map frame for meq distributions map'
     site = get_object_or_404(Site, slug=site_slug)
-    mapbox_access_token = 'pk.eyJ1IjoiZWRlbG8iLCJhIjoiY20zNG1zN3F5MDFjdzJsb3N4ZDJ1ZTR1byJ9.bgl0vpixXnhDKJ8SnW4PYA'
+    mapbox_access_token = settings.MAPBOX_API_TOKEN
     context = {
         'site': site,
         'MAPBOX_TOKEN': mapbox_access_token,
