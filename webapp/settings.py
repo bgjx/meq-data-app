@@ -137,6 +137,17 @@ USE_TZ = True
 STATIC_URL = '/static/'  # this is only for the url
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
+# set static root for deployment
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+
+# Media files (image, videos, document)
+MEDIA_URL = '/media/'
+MEDIAFILES_DIRS = [BASE_DIR / 'media']
+
+# Media files for deployment
+MEDIA_ROOT = BASE_DIR / 'media'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
