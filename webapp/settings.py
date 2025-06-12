@@ -143,5 +143,5 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # GDAL library path
-GDAL_LIBRARY_PATH = "C:/Users/superuser/envs/django-project/Library/bin/gdal.dll"
+GDAL_LIBRARY_PATH = '/usr/lib/x86_64-linux-gnu/libgdal.so.34'
 os.environ['GDAL_LIBRARY_PATH'] = GDAL_LIBRARY_PATH 
