@@ -1,2 +1,12 @@
 # Local and Production secret variable
+# Testing cache
+.pytest_cache/
+*.log
+
+# virutal env and .env
+venv/
 .env
+
+# python cache files
+*.pyc
+__pycache__/
