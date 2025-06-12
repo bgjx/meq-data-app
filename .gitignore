@@ -9,4 +9,5 @@ venv/
 
 # python cache files
 *.pyc
-__pycache__/
+frontpage/__pycache__/
+project/__pycache__/
