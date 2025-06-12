@@ -8,8 +8,10 @@ django-filter==25.1
 future==1.0.0
 GDAL==3.8.4
 geocoder==1.38.1
+gunicorn==23.0.0
 idna==3.10
 numpy==2.3.0
+packaging==25.0
 pandas==2.3.0
 psycopg2==2.9.10
 psycopg2-binary==2.9.10
