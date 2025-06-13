@@ -1,26 +1,76 @@
+## Stage 1: Build Stage
 # Python Image
-FROM python:3.12.3-slim-bookworm
+FROM python:3.12.3-slim-bookworm AS builder
 
 # Set enviroment variables
 ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONBUFFERED=1
+ENV PYTHONUNBUFFERED=1
 
 # Set working directory
 WORKDIR /home/app/web
 
-# Install system dependecies for GDAL and posgreSQL (in Ubuntu)
+# Install system dependecies for GDAL and Postgresql
 RUN apt-get update && apt-get Install -y \
     gcc \
     g++ \
     gdal-bin \
     libgdal-dev \
+    python3-dev \
     && apt-get clean \
     && rm rf /var/lib/apt/lists/*
 
 # install the python dependencies 
 RUN pip insall --upgrade pip 
-COPY requirements.text .
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt 
 
-#  
+## Stage 2: Production Stage
+FROM python:3.12.3-slim-bookworm
+
+# Install runtime dependencies for GDAL and PostgreSQL
+RUN apt-get updte && apt-get install -y \
+        gdal-bin \
+        libgdal-dev \
+        && apt-get clean \
+        && rm -rf /var/lib/apt/lists/*
+
+# create non-root user in production to prevent security issues
+RUN useradd -m -r appuser && \
+    mkdir -p /home/app/web home/app/web/static home/app/web/media && \
+    chown -R appuser /home/app/web
+
+# Copy the Python dependencies from the builder stage
+COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
+COPY --from=builder /usr/local/bin/ /usr/local/bin/
+
+# set the working directory
+WORKDIR /home/app/web
+
+# copy application code
+COPY --chown=appuser:appuser . .
+
+# Set environment variables to optimize Python
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV GUNICORN_WORKERS=3
+ENV GUNICORN_PORT=8000
+
+# Switch to non-root user
+USER appuser
+
+# Expose the application port
+EXPOSE 8000
+
+# Make entry file executable
+COPY --chown=appuser:appuser entrypoint.prod.sh .
+RUN chmod +x entrypoint.prod.sh 
+
+# health check 
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \ 
+                CMD curl -f http://localhost:${GUNICORN_PORT}/health || exit
+
+# Start the application using Gunicorn
+CMD ["./entrypoint.prod.sh"]
+
+
 
