@@ -17,10 +17,10 @@ RUN apt-get update && apt-get install -y \
     libgdal-dev \
     python3-dev \
     && apt-get clean \
-    && rm rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/*
 
 # install the python dependencies 
-RUN pip insall --upgrade pip 
+RUN pip install --upgrade pip 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt 
 
@@ -28,7 +28,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 FROM python:3.12.3-slim-bookworm
 
 # Install runtime dependencies for GDAL and PostgreSQL
-RUN apt-get updte && apt-get install -y \
+RUN apt-get update && apt-get install -y \
         gdal-bin \
         libgdal-dev \
         && apt-get clean \
