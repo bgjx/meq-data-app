@@ -10,7 +10,7 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /home/app/web
 
 # Install system dependecies for GDAL and Postgresql
-RUN apt-get update && apt-get Install -y \
+RUN apt-get update && apt-get install -y \
     gcc \
     g++ \
     gdal-bin \

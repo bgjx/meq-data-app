@@ -10,8 +10,8 @@ services:
       - GUNICORN_WORKERS=${GUNICORN_WORKERS}
       - GUNICORN_PORT=${GUNICORN_PORT}
     volumes:
-      -static_volume:/home/app/web/static 
-      -media_volume:/home/app/web/media 
+      - static_volume:/home/app/web/static 
+      - media_volume:/home/app/web/media 
     depends_on:
       - db 
     networks:
@@ -34,9 +34,9 @@ services:
       dockerfile: Dockerfile.nginx 
     ports:
       - "80:80"
-    volumnes:
-      -static_volume:/home/app/web/static 
-      -media_volume:/home/app/web/media 
+    volumes:
+      - static_volume:/home/app/web/static 
+      - media_volume:/home/app/web/media 
     depends_on:
       - web 
     networks:
