@@ -12,9 +12,9 @@ python manage.py collectstatic --noinput
 
 # Start Gunicorn
 echo "Starting Gunicorn"
-python -m gunicorn \
-        --bind 0.0.0.0:8000 \
-        --workers 3 \
+exec python -m gunicorn \
+        --bind 0.0.0.0:${GUNICORN_PORT}\
+        --workers ${GUNICORN_WORKERS} \
         --log-level info \
         --access-logfile - \
         --error-logfile - \
