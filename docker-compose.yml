@@ -42,10 +42,10 @@ services:
     networks:
       - app-network
 volumes:
-  progres_data:
+  postgres_data:
   static_volume:
   media_volume:
 
 networks:
   app-network:
-  driver: bridge
+   driver: bridge
