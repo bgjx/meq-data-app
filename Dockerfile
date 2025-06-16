@@ -1,6 +1,6 @@
 ## Stage 1: Build Stage
 # Python Image
-FROM python:3.12.3-slim-bookworm AS builder
+FROM python:3.12-slim AS builder
 
 # Set enviroment variables
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -25,11 +25,10 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt 
 
 ## Stage 2: Production Stage
-FROM python:3.12.3-slim-bookworm
+FROM python:3.12-slim
 
 # Install runtime dependencies for GDAL and PostgreSQL
 RUN apt-get update && apt-get install -y \
-        gdal-bin \
         libgdal-dev \
         && apt-get clean \
         && rm -rf /var/lib/apt/lists/*

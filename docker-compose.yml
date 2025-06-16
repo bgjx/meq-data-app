@@ -5,6 +5,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    env_file:
+      - .env.local
     environment:
       - DATABASE_URL=${DB_URL}
       - GUNICORN_WORKERS=${GUNICORN_WORKERS}
@@ -18,7 +20,9 @@ services:
       - app-network 
   
   db:
-    image: postgres:16
+    image: postgis/postgis:16-3.4
+    ports:
+      - "5432:5432"
     environment:
       - POSTGRES_USER=${DB_USERNAME}
       - POSTGRES_PASSWORD=${DB_PASSWORD} 
@@ -33,7 +37,7 @@ services:
       context: .
       dockerfile: Dockerfile.nginx 
     ports:
-      - "80:80"
+      - "8000:80"
     volumes:
       - static_volume:/home/app/web/static 
       - media_volume:/home/app/web/media 

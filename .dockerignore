@@ -8,6 +8,10 @@ venv/
 .env*
 
 # python cache files
+*.pyo
 *.pyc
 frontpage/__pycache__/
 project/__pycache__/
+
+# github
+.git
