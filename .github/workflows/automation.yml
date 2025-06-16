@@ -12,7 +12,7 @@ jobs:
   steps:
    # checkout code
    - name: Checkout code
-     uses: actions/checkout@v2
+     uses: actions/checkout@v3
 
    # set up docker Buildx
    - name: Set up Docker Buildx
@@ -32,7 +32,9 @@ jobs:
        context: .
        file: ./Dockerfile
        push: true
-       tags: ${{ secrets.DOCKERHUB_USERNAME }}/meq-data-app:latest
+       tags: ${{ secrets.DOCKERHUB_USERNAME }}/meq-data-app:${{ github.sha }}
+       cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/meq-data-app:buildcache
+       cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/meq-data-app:buildcache,mode=max
 
    # Build and push Nginx image
    - name: Build and push Nginx
@@ -41,7 +43,9 @@ jobs:
       context: .
       file: ./Dockerfile.nginx
       push: true 
-      tags: ${{ secrets.DOCKERHUB_USERNAME }}/app-nginx:latest
+      tags: ${{ secrets.DOCKERHUB_USERNAME }}/app-nginx:${{ github.sha }}
+      cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/app-nginx:buildcache
+      cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/app-nginx:buildcache,mode=max
 
    # Deploy to DigitalOcean Droplet
    - name: Deploy to Droplet
@@ -54,44 +58,52 @@ jobs:
        # log in to Docker Hub
        echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}"  --password-stdin
 
+       echo "Logged in to Docker Hub"
+
        # Create .env file with environment variables
+       cat << EOF > .env
        # Django Settings
-       echo "DEBUG=False" >> .env
-       echo "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" >> .env
-       echo "DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1" >> .env
-       echo "DJANGO_CSRF_TRUSTED_ORIGINS=http://localhost:8001" >> .env
+       DEBUG=False
+       DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}
+       DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
+       DJANGO_CSRF_TRUSTED_ORIGINS=http://localhost:8001
        
        # Database Setting
-       echo "DB_ENGINE=django.contrib.gis.db.backends.postgis" >> .env
-       echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
-       echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
-       echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
-       echo "DB_HOST=5432 >> .env
-       echo "DATABASE_URL=${{ secrets.DB_URL }}" >> .env
+       DB_ENGINE=django.contrib.gis.db.backends.postgis
+       DB_NAME=${{ secrets.DB_NAME }}
+       DB_USERNAME=${{ secrets.DB_USERNAME }}
+       DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+       DB_HOST=db
+       DB_PORT=5432
+       DATABASE_URL=${{ secrets.DB_URL }}
+
+       # Postgres Setting
+       POSTGRES_USER=${{ secrets.DB_USERNAME }}
+       POSTGRES_PASSWORD=${{ secrets.DB_PASSWORD }}
+       POSTGRES_DB=${{ secrets.DB_NAME }}
 
        # Token
-       echo "MAPBOX_API_TOKEN=${{ secrets.MAPBOX_API_TOKEN }}" >> .env
+       MAPBOX_API_TOKEN=${{ secrets.MAPBOX_API_TOKEN }}
 
        # GDAL Library Path
-       echo "GDAL_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/libgdal.so" >> .env
+       GDAL_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/libgdal.so
 
        # Gunicorn Variables
-       echo "GUNICORN_WORKERS=3" >> .env
-       echo "GUNICORN_PORT=8000" >> .env
+       GUNICORN_WORKERS=3
+       GUNICORN_PORT=8000
 
+       EOF
+
+       echo "Environment variable (.env) created..."
 
        # copy docker-compose.yml to droplet
-       cat << 'EOF' > docker-compose.yml
+       cat << EOF > docker-compose.yml
        version: '3.9'
        services:
         web:
-         image: ${{ secrets.DOCKERHUB_USERNAME }}/my-data-app:latest
+         image: ${{ secrets.DOCKERHUB_USERNAME }}/meq-data-app:latest
          env_file:
           - .env
-         environment:
-          - DATABASE_URL=${DATABASE_URL}
-          - GUNICORN_WORKERS=${GUNICORN_WORKERS}
-          - GUNICORN_PORT=${GUNICORN_PORT}
          volumes:
           - static_volume:/home/app/web/static
           - media_volume:/home/app/web/media
@@ -104,11 +116,7 @@ jobs:
          env_file:
           - .env
          ports:
-          - "5432:5432"
-         environment:
-          - POSTGRES_USER=${{ secrets.DB_USERNAME }}
-          - POSTGRES_PASSWORD=${{ secrets.DB_PASSWORD }}
-          - POSTGRES_DB=${{ secrets.DB_NAME }}
+          - "5433:5432"
          volumes:
           - postgres_data:/var/lib/postgresql/data
          networks: 
@@ -133,9 +141,14 @@ jobs:
          driver: bridge
        
        EOF
+
+       echo "docker-compose.yml created..."
        
        # Deploy with Docker Compose
-       docker-compose --project-name meq-data-app down
+       docker-compose --project-name meq-data-app down --remove-orphans
+       docker-compose --project-name meq-data-app pull
        docker-compose --project-name meq-data-app up -d
+
+       echo "Deployment completed succesfully."
    
 
