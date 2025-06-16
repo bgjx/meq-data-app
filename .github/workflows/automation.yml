@@ -101,7 +101,7 @@ jobs:
        version: '3.9'
        services:
         web:
-         image: ${{ secrets.DOCKERHUB_USERNAME }}/meq-data-app:latest
+         image: ${{ secrets.DOCKERHUB_USERNAME }}/meq-data-app:${{ github.sha }}
          env_file:
           - .env
          volumes:
@@ -122,7 +122,7 @@ jobs:
          networks: 
           - app-network
         nginx:
-         image: ${{ secrets.DOCKERHUB_USERNAME }}/app-nginx:latest
+         image: ${{ secrets.DOCKERHUB_USERNAME }}/app-nginx:${{ github.sha }}
          ports:
           - "8000:80"
          volumes:
