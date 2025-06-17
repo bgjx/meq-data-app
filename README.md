@@ -8,18 +8,21 @@ The **Microearthquake Monitoring Data Analysis Dashboard** is a web application 
 
 ## Features
 
-- Interactive visualizations of microearthquake events tailored for internal project needs.
+- Interactive visualizations of microearthquake events.
 - Integration with a PostgreSQL/PostGIS database for effective geographical data handling.
-- Components for data applications such as *Relocated* and *Initial* hypocenter catalogs.
-- Automated data processing through Django management commands.
-- AJAX-based front-end interactions for real-time data updates and analysis.
+- Automated data querying and processing using Django ORM, Pandas and NumPy.
+- Vanilla JavaScript (fetch API) front-end interactions for real-time data updates and analysis.
 - User-friendly interface for managing and navigating through data analysis tasks.
 
 ---
 
 ## Getting Started
 
-These instructions will help you set up and run the application locally.
+If you'd like to test this app using **Docker** on your local machine, the following instructions will help you set it up and run it locally.
+
+Please note that, due to data confidentiality policies, the database contents are not included—so the app will appear blank.
+
+If you're interested in the database structure, feel free to contact me via email at [edelo.arham@gmail.com](mailto:edelo.arham@gmail.com).
 
 ### Prerequisites
 
@@ -39,7 +42,7 @@ cd microearthquake-dashboard
 
 ### Running the Application
 
-1. **Setup Environment Variables**: Create a `.env.local` file and configure the necessary variables:
+1. **Setup Environment Variables**: Create a `.env` file and configure the necessary variables (check webapp/settings.py):
     ```env
     DB_URL=postgres://yourusername:yourpassword@db:5432/yourdbname
     MAPBOX_API_TOKEN=your_mapbox_token
@@ -64,11 +67,11 @@ microearthquake-dashboard/
 ├── Dockerfile                  # Dockerfile for building the app
 ├── Dockerfile.nginx            # Dockerfile for Nginx server
 ├── docker-compose.yml          # Docker Compose file
-├── entrypoint.prod.sh         # Production entrypoint script
+├── entrypoint.prod.sh          # Production entrypoint script
 ├── manage.py                   # Django management utility
 ├── requirements.txt            # Python dependencies
 │
-├── frontpage/                  # Frontend application
+├── frontpage/                  # Frontpage application
 │   ├── __init__.py
 │   ├── admin.py
 │   ├── apps.py
@@ -105,14 +108,14 @@ microearthquake-dashboard/
 
 ### Enhancements in Automatic Hypocenter Processing
 
-Future improvements are focused on developing advanced backend functionalities to enable:
+Future improvements are focused on developing advanced backend data engine functionalities to enable:
 
 - **Automatic Hypocenter Determination**: Implement algorithms that can automatically identify hypocenter locations from seismic data.
 - **Hypocenter Relocation Methods**: Improve existing methodologies for relocating hypocenters based on improved data input and processing techniques.
 - **Moment Magnitude Calculations**: Enable automatic computation of moment magnitudes for detected seismic events.
 - **Post Data Analytics**: Incorporate analytical methods such as **Gutenberg-Richter analysis** to better understand the distribution and frequency of seismic events.
 
-These enhancements will make the application more robust for internal development, streamline workflows, and provide more accurate analyses of seismic data.
+These enhancements will make the application more robust for internal development, streamline workflows, and provide more accurate analyses of seismic data in microearthquake monitoring.
 
 ---
 
