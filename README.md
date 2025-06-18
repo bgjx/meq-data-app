@@ -145,4 +145,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Docker**: For containerizing the application.
 - **DigitalOcean Droplets**: For deployment.
 
-For more information on project usage, please refer to the codebase or contact the project maintainers. Happy Coding!
+For more information on project usage, please refer to the codebase or contact the project maintainers to [edelo.arham@gmail.com](mailto:edelo.arham@gmail.com).
