@@ -1,6 +1,6 @@
 # Microearthquake Monitoring Data Analysis Dashboard
 
-![image](documentation/WhatsApp%20Video%202025-06-18%20at%205.24.05%20PM.mp4)
+![demo gif](documentation/demo.gif)
 
 ## Overview
 
