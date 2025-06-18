@@ -143,5 +143,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **PostgreSQL/PostGIS**: For handling geographical data.
 - **Plotly**: For rich data visualizations.
 - **Docker**: For containerizing the application.
+- **DigitalOcean Droplets**: For deployment.
 
 For more information on project usage, please refer to the codebase or contact the project maintainers. Happy Coding!
