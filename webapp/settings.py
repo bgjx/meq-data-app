@@ -70,6 +70,7 @@ CSRF_TRUSTED_ORIGINS = config('DJANGO_CSRF_TRUSTED_ORIGINS', default='https://12
 
 # Tokens
 MAPBOX_API_TOKEN = config('MAPBOX_API_TOKEN')
+OPENAI_API_TOKEN = config('OPENAI_API_TOKEN')
 
 
 # Application definition
