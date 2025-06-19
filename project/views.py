@@ -14,6 +14,9 @@ from datetime import datetime, timedelta
 import pandas as pd
 import csv
 
+
+# Open AI data descriptor 
+
 # Function for page view renderer
 def project_site(request, site_slug = None):
     'View function for data explorer page.'
