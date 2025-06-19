@@ -13,7 +13,7 @@ from . filters import table_filter, spatial_filter
 from datetime import datetime, timedelta
 import pandas as pd
 import csv
-
+import openai 
 
 # Open AI data descriptor 
 
