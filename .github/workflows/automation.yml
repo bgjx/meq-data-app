@@ -94,6 +94,9 @@ jobs:
        GUNICORN_WORKERS=3
        GUNICORN_PORT=8000
 
+       # Open AI API key
+       OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+
        EOF
 
        echo "Environment variable (.env) created..."
