@@ -15,6 +15,7 @@ The **Microearthquake Monitoring Data Analysis Dashboard** is a web application 
 - Automated data querying and processing using Django ORM, Pandas and NumPy.
 - Vanilla JavaScript (fetch API) front-end interactions for real-time data updates and analysis.
 - User-friendly interface for managing and navigating through data analysis tasks.
+- Dynamic data filtering and downloading (microearthquake catalog).
 
 ---
 
