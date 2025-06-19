@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Helper function to get CSRF token from cookies (if needed)
+    // Helper function to get CSRF token from cookies
     function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
