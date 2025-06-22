@@ -1,159 +1,199 @@
 name: Deploy meq web app to DigitalOcean Droplet
 
 on:
- push:
-  tags:
-    - 'v*.*.*'
-  branches:
-    - main
+  push:
+    tags:
+      - 'v*.*.*'
+
+env:
+  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+  APP_NAME: meq-data-app
+  NGINX-NAME: app-nginx
+  REGISTRY: docker.io
 
 jobs:
- build-and-deploy:
-  if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-  runs-on: ubuntu-latest
-  steps:
-   # checkout code
-   - name: Checkout code
-     uses: actions/checkout@v3
+  determine-tags:
+    runs-on: ubuntu-latest
+    outputs:
+      app_tag: ${{ steps.set-tags.outputs.app_tag }}
+      nginx_tag: ${{ steps.set-tags.outputs.nginx_tag }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-   # set up docker Buildx
-   - name: Set up Docker Buildx
-     uses: docker/setup-buildx-action@v3
+      - name: Set Docker tags
+        id: set-tags
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/}
+          echo "app_tag=${{ env.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}:${VERSION},${{ env.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}:latest"" >> $GITHUB_OUTPUT
+          echo "nginx_tag=${{ env.DOCKERHUB_USERNAME }}/${{ env.NGINX_NAME }}:${VERSION},${{ env.DOCKERHUB_USERNAME }}/${{ env.NGINX_NAME }}:latest" >> $GITHUB_OUTPUT   
 
-   # log in to Docker Hub
-   - name: Log in to Docker Hub
-     uses: docker/login-action@v3
-     with:
-       username: ${{ secrets.DOCKERHUB_USERNAME }}
-       password: ${{ secrets.DOCKERHUB_TOKEN }}
+  build-and-push-docker:
+    needs: determine-tags
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-   # build and push Djang app image
-   - name: Build and push Django app
-     uses: docker/build-push-action@v5
-     with:
-       context: .
-       file: ./Dockerfile
-       push: true
-       tags: ${{ secrets.DOCKERHUB_USERNAME }}/meq-data-app:${{ github.sha }}
-       cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/meq-data-app:buildcache
-       cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/meq-data-app:buildcache,mode=max
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-   # Build and push Nginx image
-   - name: Build and push Nginx
-     uses: docker/build-push-action@v5
-     with:
-      context: .
-      file: ./Dockerfile.nginx
-      push: true 
-      tags: ${{ secrets.DOCKERHUB_USERNAME }}/app-nginx:${{ github.sha }}
-      cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/app-nginx:buildcache
-      cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/app-nginx:buildcache,mode=max
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-   # Deploy to DigitalOcean Droplet
-   - name: Deploy to Droplet
-     uses: appleboy/ssh-action@v1.0.3
-     with:
-      host: ${{ secrets.DO_HOST }}
-      username: ${{ secrets.DO_USER }}
-      key: ${{ secrets.DO_SSH_KEY }}
-      script: |
-       # log in to Docker Hub
-       echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}"  --password-stdin
+      - name: Build and push Django app
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ needs.determine-tags.outputs.app_tag }}
+          cache-from: type=registry,ref=${{ env.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}:buildcache
+          cache-to: type=registry,ref=${{ env.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}:buildcache,mode=max
 
-       echo "Logged in to Docker Hub"
+      - name: Build and push Nginx
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile.nginx
+          push: true 
+          tags: ${{ needs.determine-tags.outputs.nginx_tag }}
+          cache-from: type=registry,ref=${{ env.DOCKERHUB_USERNAME }}/${{ env.NGINX_NAME }}:buildcache
+          cache-to: type=registry,ref=${{ env.DOCKERHUB_USERNAME }}/${{ env.NGINX_NAME }}:buildcache,mode=max
+  
+  deploy:
+    needs: build-and-push-docker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Droplet
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          APP_TAG: ${{ needs.determine-tags.outputs.app_tag }}
+          NGINX_TAG: ${{ needs.determine-tags.outputs.nginx_tag }}
+        with:
+          host: ${{ secrets.DO_HOST }}
+          username: ${{ secrets.DO_USER }}
+          key: ${{ secrets.DO_SSH_KEY }}
+          envs: APP_TAG, NGINX_TAG
+          script: |
+            # log in to Docker Hub
+            echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}"  --password-stdin
 
-       # Create .env file with environment variables
-       cat << EOF > .env
-       # Django Settings
-       DEBUG=False
-       DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}
-       DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,152.42.175.249
-       DJANGO_CSRF_TRUSTED_ORIGINS=http://152.42.175.249:8000
-       
-       # Database Setting
-       DB_ENGINE=django.contrib.gis.db.backends.postgis
-       DB_NAME=${{ secrets.DB_NAME }}
-       DB_USERNAME=${{ secrets.DB_USERNAME }}
-       DB_PASSWORD=${{ secrets.DB_PASSWORD }}
-       DB_HOST=${{secrets.DB_HOST }}
-       DB_PORT=5432
-       DATABASE_URL=${{ secrets.DB_URL }}
+            echo "Logged in to Docker Hub"
 
-       # Postgres Setting
-       POSTGRES_USER=${{ secrets.DB_USERNAME }}
-       POSTGRES_PASSWORD=${{ secrets.DB_PASSWORD }}
-       POSTGRES_DB=${{ secrets.DB_NAME }}
+            # Create .env file with environment variables
+            cat << EOF > .env
+            # Django Settings
+            DEBUG=False
+            DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}
+            DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,152.42.175.249
+            DJANGO_CSRF_TRUSTED_ORIGINS=http://152.42.175.249:8000
+            
+            # Database Setting
+            DB_ENGINE=django.contrib.gis.db.backends.postgis
+            DB_NAME=${{ secrets.DB_NAME }}
+            DB_USERNAME=${{ secrets.DB_USERNAME }}
+            DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+            DB_HOST=${{secrets.DB_HOST }}
+            DB_PORT=5432
+            DATABASE_URL=${{ secrets.DB_URL }}
 
-       # Token
-       MAPBOX_API_TOKEN=${{ secrets.MAPBOX_API_TOKEN }}
+            # Postgres Setting
+            POSTGRES_USER=${{ secrets.DB_USERNAME }}
+            POSTGRES_PASSWORD=${{ secrets.DB_PASSWORD }}
+            POSTGRES_DB=${{ secrets.DB_NAME }}
 
-       # GDAL Library Path
-       GDAL_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/libgdal.so
+            # Token
+            MAPBOX_API_TOKEN=${{ secrets.MAPBOX_API_TOKEN }}
 
-       # Gunicorn Variables
-       GUNICORN_WORKERS=3
-       GUNICORN_PORT=8000
+            # GDAL Library Path
+            GDAL_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/libgdal.so
 
-       # Open AI API key
-       OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+            # Gunicorn Variables
+            GUNICORN_WORKERS=3
+            GUNICORN_PORT=8000
 
-       EOF
+            # Open AI API key
+            OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+            EOF
 
-       echo "Environment variable (.env) created..."
+            echo "Environment variable (.env) created..."
 
-       # copy docker-compose.yml to droplet
-       cat << EOF > docker-compose.yml
-       version: '3.9'
-       services:
-        web:
-         image: ${{ secrets.DOCKERHUB_USERNAME }}/meq-data-app:${{ github.sha }}
-         env_file:
-          - .env
-         volumes:
-          - static_volume:/home/app/web/static
-          - media_volume:/home/app/web/media
-         depends_on:
-          - db
-         networks:
-          - app-network
-        db:
-         image: postgis/postgis:16-3.4
-         env_file:
-          - .env
-         ports:
-          - "5433:5432"
-         volumes:
-          - postgres_data:/var/lib/postgresql/data
-         networks: 
-          - app-network
-        nginx:
-         image: ${{ secrets.DOCKERHUB_USERNAME }}/app-nginx:${{ github.sha }}
-         ports:
-          - "8000:80"
-         volumes:
-          - static_volume:/home/app/web/static
-          - media_volume:/home/app/web/media
-         depends_on:
-          - web
-         networks:
-          - app-network
-       volumes:
-        postgres_data:
-        static_volume:
-        media_volume:
-       networks:
-        app-network:
-         driver: bridge
-       
-       EOF
+            # copy docker-compose.yml to droplet
+            cat << EOF > docker-compose.yml
+            version: '3.9'
+            services:
+              web:
+                image: ${APP_TAG}
+                env_file:
+                  - .env
+                volumes:
+                  - static_volume:/home/app/web/static
+                  - media_volume:/home/app/web/media
+                depends_on:
+                  - db:
+                      condition: service_healthy
+                networks:
+                  - app-network
+                healthcheck:
+                  test: ["CMD", "curl", "-f", "http:localhost:8000/health"]
+                  interval: 30s
+                  timeout: 10s
+                  retries: 3
+              db:
+                image: postgis/postgis:16-3.4
+                env_file:
+                  - .env
+                ports:
+                  - "5433:5432"
+                volumes:
+                  - postgres_data:/var/lib/postgresql/data
+                networks: 
+                  - app-network
+                healthcheck:
+                  test: ["CMD", "pg_isready", "-U", "${{secrets.DB_USERNAME}}"]
+                  interval: 10s
+                  timeout: 5s
+                  retries: 5
+              nginx:
+                image: ${ NGINX_TAG }
+                ports:
+                  - "8000:80"
+                volumes:
+                  - static_volume:/home/app/web/static
+                  - media_volume:/home/app/web/media
+                depends_on:
+                  - web
+                      condition: service_healthy
+                networks:
+                  - app-network
+                healthcheck:
+                  test: ["CMD", "curl", "-f", "http://localhost"]
+                  interval: 30s
+                  timeout: 10s
+                  retries: 3
+            volumes:
+              postgres_data:
+              static_volume:
+              media_volume:
+            networks:
+              app-network:
+                driver: bridge
+            EOF
 
-       echo "docker-compose.yml created..."
-       
-       # Deploy with Docker Compose
-       docker-compose --project-name meq-data-app down --remove-orphans
-       docker-compose --project-name meq-data-app pull
-       docker-compose --project-name meq-data-app up -d
+            echo "docker-compose.yml created..."
+            
+            # Deploy with Docker Compose
+            docker-compose --project-name meq-data-app down --remove-orphans
+            docker-compose --project-name meq-data-app pull
+            docker-compose --project-name meq-data-app up -d --force-recreate
 
-       echo "Deployment completed succesfully."
+            # clean up unused images
+            docker image prune -f
+
+            echo "Deployment completed successfully."
    
 
