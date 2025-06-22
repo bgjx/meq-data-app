@@ -24,16 +24,11 @@ jobs:
       - name: Set Docker tags
         id: set-tags
         run: |
-          echo "GITHUB_REF: $GITHUB_REF"
           VERSION=${GITHUB_REF#refs/tags/}
-          echo "VERSION: $VERSION"
-          APP_TAG="${{ env.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}:${VERSION},${{ env.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}:latest"
-          NGINX_TAG="${{ env.DOCKERHUB_USERNAME }}/${{ env.NGINX_NAME }}:${VERSION},${{ env.DOCKERHUB_USERNAME }}/${{ env.NGINX_NAME }}:latest"
-          echo "app_tag=$APP_TAG"
-          echo "nginx_tag=$NGINX_TAG"
-          echo "app_tag=$APP_TAG" >> $GITHUB_OUTPUT
-          echo "nginx_tag=$NGINX_TAG" >> $GITHUB_OUTPUT
-
+          echo "app_tag=${{ env.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}:${VERSION}" >> $GITHUB_OUTPUT
+          echo "app_tag_latest=${{ env.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}:latest" >> $GITHUB_OUTPUT
+          echo "nginx_tag=${{ env.DOCKERHUB_USERNAME }}/${{ env.NGINX_NAME }}:${VERSION}" >> $GITHUB_OUTPUT
+          echo "nginx_tag_latest=${{ env.DOCKERHUB_USERNAME }}/${{ env.NGINX_NAME }}:latest" >> $GITHUB_OUTPUT
   build-and-push-docker:
     needs: determine-tags
     runs-on: ubuntu-latest
@@ -56,7 +51,9 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ needs.determine-tags.outputs.app_tag }}
+          tags: |
+            ${{ needs.determine-tags.outputs.app_tag }}
+            ${{ needs.determine-tags.outputs.app_tag_latest }}
           cache-from: type=registry,ref=${{ env.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}:buildcache
           cache-to: type=registry,ref=${{ env.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}:buildcache,mode=max
 
@@ -66,7 +63,9 @@ jobs:
           context: .
           file: ./Dockerfile.nginx
           push: true 
-          tags: ${{ needs.determine-tags.outputs.nginx_tag }}
+          tags: |
+            ${{ needs.determine-tags.outputs.nginx_tag }}
+            ${{ needs.determine-tags.outputs.nginx_tag_latest }}
           cache-from: type=registry,ref=${{ env.DOCKERHUB_USERNAME }}/${{ env.NGINX_NAME }}:buildcache
           cache-to: type=registry,ref=${{ env.DOCKERHUB_USERNAME }}/${{ env.NGINX_NAME }}:buildcache,mode=max
   
@@ -140,7 +139,7 @@ jobs:
                   - static_volume:/home/app/web/static
                   - media_volume:/home/app/web/media
                 depends_on:
-                  - db:
+                    db:
                       condition: service_healthy
                 networks:
                   - app-network
@@ -160,7 +159,7 @@ jobs:
                 networks: 
                   - app-network
                 healthcheck:
-                  test: ["CMD", "pg_isready", "-U", "${{secrets.DB_USERNAME}}"]
+                  test: ["CMD", "pg_isready", "-U", "$POSTGRES_USER"]
                   interval: 10s
                   timeout: 5s
                   retries: 5
@@ -172,7 +171,7 @@ jobs:
                   - static_volume:/home/app/web/static
                   - media_volume:/home/app/web/media
                 depends_on:
-                  - web
+                    web
                       condition: service_healthy
                 networks:
                   - app-network
