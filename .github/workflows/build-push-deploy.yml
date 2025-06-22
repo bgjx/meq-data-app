@@ -31,8 +31,7 @@ jobs:
           echo "app_tag_latest=${{ env.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}:latest" >> $GITHUB_OUTPUT
           echo "nginx_tag=${{ env.DOCKERHUB_USERNAME }}/${{ env.NGINX_NAME }}:${VERSION}" >> $GITHUB_OUTPUT
           echo "nginx_tag_latest=${{ env.DOCKERHUB_USERNAME }}/${{ env.NGINX_NAME }}:latest" >> $GITHUB_OUTPUT
-          cat $GITHUB_OUTPUT
-
+          
   build-and-push-docker:
     needs: determine-tags
     runs-on: ubuntu-latest
@@ -48,6 +47,11 @@ jobs:
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      
+      - name: Set tags environment variable
+        run: |
+          echo "APP_TAGS=${{ needs.determine-tags.outputs.app_tag}},${{ needs.determine-tags.outputs.app_tag_latest }}" >> $GITHUB_ENV
+          echo "NGINX_TAGS=${{ needs.determine-tags.outputs.app_tag }},${{ needs.determine-tags.outputs.app_tag_latest }}" >> $GITHUB_ENV
 
       - name: Build and push Django app
         uses: docker/build-push-action@v5
@@ -55,7 +59,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/meq-data-app:v0.0.1
+          tags: ${{ env.APP_TAGS }}
           cache-from: type=registry,ref=${{ env.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}:buildcache
           cache-to: type=registry,ref=${{ env.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}:buildcache,mode=max
 
@@ -65,7 +69,7 @@ jobs:
           context: .
           file: ./Dockerfile.nginx
           push: true 
-          tags:  ${{ secrets.DOCKERHUB_USERNAME }}/app-nginx:v0.0.1
+          tags: ${{ env.NGINX_TAGS }}
           cache-from: type=registry,ref=${{ env.DOCKERHUB_USERNAME }}/${{ env.NGINX_NAME }}:buildcache
           cache-to: type=registry,ref=${{ env.DOCKERHUB_USERNAME }}/${{ env.NGINX_NAME }}:buildcache,mode=max
   
