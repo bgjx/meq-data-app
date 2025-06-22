@@ -25,7 +25,7 @@ jobs:
         id: set-tags
         run: |
           VERSION=${GITHUB_REF#refs/tags/}
-          echo "app_tag=${{ env.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}:${VERSION},${{ env.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}:latest"" >> $GITHUB_OUTPUT
+          echo "app_tag=${{ env.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}:${VERSION},${{ env.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}:latest" >> $GITHUB_OUTPUT
           echo "nginx_tag=${{ env.DOCKERHUB_USERNAME }}/${{ env.NGINX_NAME }}:${VERSION},${{ env.DOCKERHUB_USERNAME }}/${{ env.NGINX_NAME }}:latest" >> $GITHUB_OUTPUT   
 
   build-and-push-docker:
