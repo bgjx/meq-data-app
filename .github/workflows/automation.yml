@@ -24,15 +24,16 @@ jobs:
       - name: Set Docker tags
         id: set-tags
         run: |
+          echo "GITHUB_REF: $GITHUB_REF"
           VERSION=${GITHUB_REF#refs/tags/}
           echo "VERSION: $VERSION"
-          echo "app_tag=${{ env.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}:${VERSION},${{ env.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}:latest"
-          echo "nginx_tag=${{ env.DOCKERHUB_USERNAME }}/${{ env.NGINX_NAME }}:${VERSION},${{ env.DOCKERHUB_USERNAME }}/${{ env.NGINX_NAME }}:latest"
+          APP_TAG="${{ env.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}:${VERSION},${{ env.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}:latest"
+          NGINX_TAG="${{ env.DOCKERHUB_USERNAME }}/${{ env.NGINX_NAME }}:${VERSION},${{ env.DOCKERHUB_USERNAME }}/${{ env.NGINX_NAME }}:latest"
           echo "app_tag=$APP_TAG"
           echo "nginx_tag=$NGINX_TAG"
           echo "app_tag=$APP_TAG" >> $GITHUB_OUTPUT
           echo "nginx_tag=$NGINX_TAG" >> $GITHUB_OUTPUT
-          
+
   build-and-push-docker:
     needs: determine-tags
     runs-on: ubuntu-latest
