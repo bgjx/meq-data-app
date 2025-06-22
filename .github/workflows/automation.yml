@@ -8,7 +8,7 @@ on:
 env:
   DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
   APP_NAME: meq-data-app
-  NGINX-NAME: app-nginx
+  NGINX_NAME: app-nginx
   REGISTRY: docker.io
 
 jobs:
@@ -41,7 +41,7 @@ jobs:
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push Django app
@@ -77,10 +77,10 @@ jobs:
           host: ${{ secrets.DO_HOST }}
           username: ${{ secrets.DO_USER }}
           key: ${{ secrets.DO_SSH_KEY }}
-          envs: APP_TAG, NGINX_TAG
+          envs: APP_TAG,NGINX_TAG
           script: |
             # log in to Docker Hub
-            echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}"  --password-stdin
+            echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ env.DOCKERHUB_USERNAME }}"  --password-stdin
 
             echo "Logged in to Docker Hub"
 
@@ -89,8 +89,8 @@ jobs:
             # Django Settings
             DEBUG=False
             DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}
-            DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,152.42.175.249
-            DJANGO_CSRF_TRUSTED_ORIGINS=http://152.42.175.249:8000
+            DJANGO_ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }}
+            DJANGO_CSRF_TRUSTED_ORIGINS=${{ secrets.DJANGO_CSRF_TRUSTED_ORIGINS }}
             
             # Database Setting
             DB_ENGINE=django.contrib.gis.db.backends.postgis
@@ -139,7 +139,7 @@ jobs:
                 networks:
                   - app-network
                 healthcheck:
-                  test: ["CMD", "curl", "-f", "http:localhost:8000/health"]
+                  test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
                   interval: 30s
                   timeout: 10s
                   retries: 3
@@ -159,7 +159,7 @@ jobs:
                   timeout: 5s
                   retries: 5
               nginx:
-                image: ${ NGINX_TAG }
+                image: ${NGINX_TAG}
                 ports:
                   - "8000:80"
                 volumes:
