@@ -53,9 +53,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: |
-            ${{ needs.determine-tags.outputs.app_tag }}
-            ${{ needs.determine-tags.outputs.app_tag_latest }}
+          tags: ${{ needs.determine-tags.outputs.app_tag }}, ${{ needs.determine-tags.outputs.app_tag_latest }}
           cache-from: type=registry,ref=${{ env.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}:buildcache
           cache-to: type=registry,ref=${{ env.DOCKERHUB_USERNAME }}/${{ env.APP_NAME }}:buildcache,mode=max
 
@@ -65,9 +63,7 @@ jobs:
           context: .
           file: ./Dockerfile.nginx
           push: true 
-          tags: |
-            ${{ needs.determine-tags.outputs.nginx_tag }}
-            ${{ needs.determine-tags.outputs.nginx_tag_latest }}
+          tags: ${{ needs.determine-tags.outputs.nginx_tag }}, ${{ needs.determine-tags.outputs.nginx_tag_latest }}
           cache-from: type=registry,ref=${{ env.DOCKERHUB_USERNAME }}/${{ env.NGINX_NAME }}:buildcache
           cache-to: type=registry,ref=${{ env.DOCKERHUB_USERNAME }}/${{ env.NGINX_NAME }}:buildcache,mode=max
   
