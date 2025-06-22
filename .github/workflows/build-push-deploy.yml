@@ -1,4 +1,4 @@
-name: Deploy meq web app to DigitalOcean Droplet
+name: Build Docker Images and Deploy to DigitalOcean Droplet
 
 on:
   push:
