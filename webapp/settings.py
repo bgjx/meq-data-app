@@ -87,6 +87,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.gis',
     'django_filters',
+    'health_check',
+    'health_check.db',
+    'health_check.cache',
+    'health_check.storage',
     'frontpage',
     'project'
 ]
