@@ -14,6 +14,9 @@ import os
 from pathlib import Path
 from decouple import config
 
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 # setup logging
 LOGGING = {
     'version': 1,
@@ -49,10 +52,6 @@ LOGGING = {
         } for logger_name in ('django', 'frontpage', 'project')   
     }
 }
-
-
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production
