@@ -172,7 +172,7 @@ jobs:
                 networks:
                   - app-network
                 healthcheck:
-                  test: ["CMD", "curl", "-f", "http://localhost/health/"]
+                  test: ["CMD", "wget", "--spider", "-q", "http://localhost/health/"]
                   interval: 30s
                   timeout: 10s
                   retries: 3
