@@ -36,7 +36,7 @@ RUN apt-get update && apt-get install -y \
 # create non-root user in production to prevent security issues
 RUN useradd -m -r appuser && \
     mkdir -p    /home/app/web \ 
-                /home/app/web/static \ 
+                /home/app/web/staticfiles \ 
                 /home/app/web/media \
                 /home/app/web/logs && \
     chown -R appuser:appuser /home/app/web
