@@ -99,7 +99,6 @@ jobs:
             DB_PASSWORD=${{ secrets.DB_PASSWORD }}
             DB_HOST=${{secrets.DB_HOST }}
             DB_PORT=5432
-            DATABASE_URL=${{ secrets.DB_URL }}
 
             # Postgres Setting
             POSTGRES_USER=${{ secrets.DB_USERNAME }}
