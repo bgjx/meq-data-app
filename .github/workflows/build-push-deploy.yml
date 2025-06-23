@@ -131,7 +131,7 @@ jobs:
                 env_file:
                   - .env
                 volumes:
-                  - log_volume: /home/app/web/logs
+                  - log_volume:/home/app/web/logs
                   - static_volume:/home/app/web/static
                   - media_volume:/home/app/web/media
                 depends_on:
