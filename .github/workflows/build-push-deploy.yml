@@ -80,7 +80,7 @@ jobs:
           envs: APP_TAG,NGINX_TAG
           script: |
             # log in to Docker Hub
-            echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ env.DOCKERHUB_USERNAME }}"  --password-stdin || {echo "Docker login failed"; exit 1;}
+            echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ env.DOCKERHUB_USERNAME }}"  --password-stdin
 
             echo "Logged in to Docker Hub"
 
@@ -166,7 +166,7 @@ jobs:
                   - static_volume:/home/app/web/static
                   - media_volume:/home/app/web/media
                 depends_on:
-                  web
+                  web:
                     condition: service_healthy
                 networks:
                   - app-network
@@ -187,9 +187,9 @@ jobs:
             echo "docker-compose.yml created..."
             
             # Deploy with Docker Compose
-            docker-compose --project-name meq-data-app down --remove-orphans || { echo "Docker Compose down failed"; exit 1; }
-            docker-compose --project-name meq-data-app pull || { echo "Docker Compose pull failed"; exit 1;}
-            docker-compose --project-name meq-data-app up -d --force-recreate || { echo "Docker Compose up failed"; exit 1; }
+            docker-compose --project-name meq-data-app down --remove-orphans
+            docker-compose --project-name meq-data-app pull
+            docker-compose --project-name meq-data-app up -d --force-recreate
 
             # clean up unused images
             docker image prune -f
