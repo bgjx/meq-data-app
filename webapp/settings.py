@@ -17,6 +17,10 @@ from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Create Log directory and ensure it exist
+LOG_DIR = BASE_DIR.joinpath('logs')
+os.makedirs(LOG_DIR, exist_ok=True)
+
 # setup logging
 LOGGING = {
     'version': 1,
@@ -40,7 +44,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'logs/django.log'),
+            'filename': os.path.join(LOG_DIR, 'django.log'),
             'formatter': 'verbose'
         },
     },
