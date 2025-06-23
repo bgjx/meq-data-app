@@ -9,5 +9,6 @@ venv/
 
 # python cache files
 *.pyc
+webpapp/__pycache__/
 frontpage/__pycache__/
 project/__pycache__/
