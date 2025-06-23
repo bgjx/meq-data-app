@@ -180,6 +180,7 @@ jobs:
               postgres_data:
               static_volume:
               media_volume:
+              log_volume:      
             networks:
               app-network:
                 driver: bridge
