@@ -132,7 +132,7 @@ jobs:
                   - .env
                 volumes:
                   - log_volume:/home/app/web/logs
-                  - static_volume:/home/app/web/static
+                  - static_volume:/home/app/web/staticfiles
                   - media_volume:/home/app/web/media
                 depends_on:
                     db:
@@ -164,7 +164,7 @@ jobs:
                 ports:
                   - "8000:80"
                 volumes:
-                  - static_volume:/home/app/web/static
+                  - static_volume:/home/app/web/staticfiles
                   - media_volume:/home/app/web/media
                 depends_on:
                   web:

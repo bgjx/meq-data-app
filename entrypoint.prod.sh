@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -e 
 
+# Ensure runtime directories exist and are writeable
+mkdir -p /home/app/web /home/app/web/logs /home/app/web/staticfiles /home/app/web/media
+chown -R appuser:appuser /home/app/web
+
 # Run migrations
 echo "Running database migrations..."
 python manage.py migrate --noinput

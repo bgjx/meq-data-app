@@ -35,8 +35,11 @@ RUN apt-get update && apt-get install -y \
 
 # create non-root user in production to prevent security issues
 RUN useradd -m -r appuser && \
-    mkdir -p /home/app/web home/app/web/static home/app/web/media && \
-    chown -R appuser /home/app/web
+    mkdir -p    /home/app/web \ 
+                /home/app/web/static \ 
+                /home/app/web/media \
+                /home/app/web/logs && \
+    chown -R appuser:appuser /home/app/web
 
 # Copy the Python dependencies from the builder stage
 COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
