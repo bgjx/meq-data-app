@@ -1,6 +1,8 @@
 # Microearthquake Monitoring Data Analysis Dashboard
 
-![demo gif](documentation/demo.gif)
+<div align='center'>
+    <img src='documentation/demo.gif'>
+</div>
 
 ## Overview
 
