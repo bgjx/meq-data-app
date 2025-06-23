@@ -69,7 +69,7 @@ RUN chmod +x entrypoint.prod.sh
 
 # health check 
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \ 
-                CMD curl -f http://localhost:${GUNICORN_PORT}/health || exit
+                CMD curl -f http://localhost:${GUNICORN_PORT}/health/ || exit
 
 # Start the application using Gunicorn
 CMD ["./entrypoint.prod.sh"]

@@ -135,15 +135,9 @@ jobs:
                   - static_volume:/home/app/web/staticfiles
                   - media_volume:/home/app/web/media
                 depends_on:
-                    db:
-                      condition: service_healthy
+                  - db
                 networks:
                   - app-network
-                healthcheck:
-                  test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
-                  interval: 30s
-                  timeout: 15s
-                  retries: 3
               db:
                 image: postgis/postgis:16-3.4
                 env_file:
@@ -154,11 +148,6 @@ jobs:
                   - postgres_data:/var/lib/postgresql/data
                 networks: 
                   - app-network
-                healthcheck:
-                  test: ["CMD", "pg_isready", "-U", "$POSTGRES_USER"]
-                  interval: 10s
-                  timeout: 5s
-                  retries: 5
               nginx:
                 image: ${NGINX_TAG}
                 ports:
@@ -167,15 +156,9 @@ jobs:
                   - static_volume:/home/app/web/staticfiles
                   - media_volume:/home/app/web/media
                 depends_on:
-                  web:
-                    condition: service_healthy
+                  - web
                 networks:
                   - app-network
-                healthcheck:
-                  test: ["CMD", "wget", "--spider", "-q", "http://localhost/health/"]
-                  interval: 30s
-                  timeout: 10s
-                  retries: 3
             volumes:
               postgres_data:
               static_volume:
