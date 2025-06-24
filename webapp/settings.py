@@ -92,7 +92,8 @@ INSTALLED_APPS = [
     'health_check.cache',
     'health_check.storage',
     'frontpage',
-    'project'
+    'project',
+    'account.apps.AccountConfig'
 ]
 
 MIDDLEWARE = [
