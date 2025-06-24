@@ -12,3 +12,4 @@ venv/
 webpapp/__pycache__/
 frontpage/__pycache__/
 project/__pycache__/
+account/__pycache__/
