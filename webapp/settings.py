@@ -205,5 +205,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 GDAL_LIBRARY_PATH = config('GDAL_LIBRARY_PATH')
 os.environ['GDAL_LIBRARY_PATH'] = GDAL_LIBRARY_PATH 
 
-# Authentication models
-AUTH_USER_MODEL = 'account.User'
+# # Authentication models
+# AUTH_USER_MODEL = 'account.User'
