@@ -66,6 +66,12 @@
 
             <ul class="sidebar-nav">
                 <li class="sidebar-item">
+                    <a href="{% url 'frontpage'%}" class="sidebar-link">
+                        <i class="fa-solid fa-house"></i>
+                        <span> Homepage </span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
                     <a href="{% url 'project-page' site_slug=site.slug %}" class="sidebar-link">
                         <i class="fa-solid fa-magnifying-glass"></i>
                         <span> Explore Catalog </span>
@@ -108,10 +114,6 @@
             </ul>
             <!-- Footer -->
             <footer class="sidebar-footer bg-primary">
-                <a href="{% url 'frontpage'%}" class="sidebar-link">
-                    <i class="fa-solid fa-left-long"></i>
-                    <span>Homepage</span>
-                </a>
                 <div class="sidebar-copyright">
                     <i class="fa-regular fa-copyright"></i>
                     <span> Copyright 2024 </span>
