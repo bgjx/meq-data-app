@@ -140,10 +140,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## Acknowledgments
+## Technology Stacks
 
 - **Django**: For the robust web framework.
 - **PostgreSQL/PostGIS**: For database/handling geographical data.
+- **AWS RDS**: Relational database cloud service for hosting postgreSQL.
 - **Plotly**: For rich interactive data visualizations.
 - **Docker**: For containerizing the application.
 - **DigitalOcean Droplets**: For deployment.
