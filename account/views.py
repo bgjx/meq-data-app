@@ -37,13 +37,17 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('frontpage:')
+                return redirect('frontpage')
             else:
                 msg = 'invalid credentials'
         else:
             msg = 'error validating form'
     else:
         form = LoginForm()
+    context = {
+        'form': form,
+        'msg': msg
+    }
     return render(request, 'account/login.html', {'form':form})
 
 
