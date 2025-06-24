@@ -57,9 +57,15 @@ LOGGING = {
     }
 }
 
+# Authentication 
+LOGIN_URL = '/account/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/account/login/'
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
+# Security
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('DJANGO_SECRET_KEY')
@@ -77,7 +83,6 @@ OPENAI_API_KEY = config('OPENAI_API_KEY')
 
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -185,7 +190,6 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 # set static root for deployment
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-
 # Media files (image, videos, document)
 MEDIA_URL = '/media/'
 MEDIAFILES_DIRS = [BASE_DIR / 'media']
@@ -195,9 +199,11 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # GDAL library path
 GDAL_LIBRARY_PATH = config('GDAL_LIBRARY_PATH')
 os.environ['GDAL_LIBRARY_PATH'] = GDAL_LIBRARY_PATH 
+
+# Authentication models
+AUTH_USER_MODEL = 'account.User'
