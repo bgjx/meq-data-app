@@ -27,7 +27,7 @@ If you'd like to test this app using **Docker** on your local machine, the follo
 
 Please note that, due to data confidentiality policies, the database contents are not included—so the app will appear blank.
 
-If you're interested in the database structure, feel free to contact me via email at [edelo.arham@gmail.com](mailto:edelo.arham@gmail.com).
+If you're interested in the database structure, feel free to contact me via email at [edelo.arham@gmail.com](mailto:edelo.arham@gmail.com), i will provide you full dummy database.
 
 ### Prerequisites
 
@@ -67,53 +67,61 @@ cd microearthquake-dashboard
 ```plaintext
 microearthquake-dashboard/
 │
-├── .dockerignore               # Docker ignore file
-├── .gitignore                  # Git ignore file
-├── Dockerfile                  # Dockerfile for building the app
-├── Dockerfile.nginx            # Dockerfile for Nginx server
-├── docker-compose.yml          # Docker Compose file
-├── entrypoint.prod.sh          # Production entrypoint script
-├── manage.py                   # Django management utility
-├── requirements.txt            # Python dependencies
-│
-├── frontpage/                  # Frontpage application
-│   ├── __init__.py
-│   ├── admin.py
-│   ├── apps.py
-│   ├── models.py
-│   ├── views.py
-│   ├── urls.py
-│   ├── migrations/
-│   │   ├── ...
-│   └── templates/
-│       └── frontpage/
-│           ├── base.html
-│           └── ...
-│
-└── project/                    # Backend application
-    ├── __init__.py
-    ├── admin.py
-    ├── apps.py
-    ├── models.py
-    ├── views.py
-    ├── urls.py
-    ├── utils.py
-    ├── filters.py
-    ├── migrations/
-    │   ├── ...
-    └── templates/
-        └── project/
-            ├── base-project.html
-            └── ...
+├── .github
+│   └── workflows
+│       └── build-push-deploy.yml
+├── .gitignore
+├── LICENSE
+├── README.md
+├── dir_tree.txt
+├── django_project
+│   ├── account
+│   ├── db.sqlite3
+│   ├── frontpage
+│   ├── manage.py
+│   ├── project
+│   ├── static
+│   │   └── js
+│   │   └── media
+│   └── webapp
+│       ├── __init__.py
+│       ├── asgi.py
+│       ├── settings.py
+│       ├── urls.py
+│       └── wsgi.py
+├── docker-compose.yml
+├── documentation
+│   ├── demo.gif
+│   └── schematic.png
+├── fastapi_service
+│   ├── app
+│   │   ├── __init__.py
+│   │   └── main.py
+│   └── requirements.txt
+└── infrastructure
+    └── docker
+        ├── django
+        │   ├── .dockerignore
+        │   ├── Dockerfile
+        │   └── entrypoint.prod.sh
+        └── nginx
+            ├── Dockerfile.nginx
+            └── nginx.conf
 ```
 
 ---
+
+## Architecture and Scheme
+<div align='center'>
+    <img src='documentation/schematic.png'>
+</div>
+
 
 ## Future Improvements
 
 ### Enhancements in Automatic Hypocenter Processing
 
-Future improvements are focused on developing advanced backend data engine functionalities to enable:
+Current improvements are focused on developing advanced backend data engine functionalities with FastAPI to enable:
 
 - **Automatic Hypocenter Determination**: Implement algorithms that can automatically identify hypocenter locations from seismic data.
 - **Hypocenter Relocation Methods**: Improve existing methodologies for relocating hypocenters based on improved data input and processing techniques.
@@ -121,16 +129,6 @@ Future improvements are focused on developing advanced backend data engine funct
 - **Post Data Analytics**: Incorporate analytical methods such as **Gutenberg-Richter analysis** to better understand the distribution and frequency of seismic events.
 
 These enhancements will make the application more robust for internal development, streamline workflows, and provide more accurate analyses of seismic data in microearthquake monitoring.
-
----
-
-## Contributing
-
-If you're interested in contributing to the project:
-
-1. Fork the repository.
-2. Make your changes.
-3. Create a pull request detailing your changes and the problem it resolves.
 
 ---
 
@@ -143,6 +141,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Technology Stacks
 
 - **Django**: For the robust web framework.
+- **FastAPI**: For backend data processing, way faster than Django Rest Framework.
 - **PostgreSQL/PostGIS**: For database/handling geographical data.
 - **AWS RDS**: Relational database cloud service for hosting postgreSQL.
 - **Plotly**: For rich interactive data visualizations.

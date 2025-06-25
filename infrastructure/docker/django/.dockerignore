@@ -1,0 +1,19 @@
+# Local and Production secret variable
+# Testing cache
+.pytest_cache/
+*.log
+
+# virutal env and .env
+venv/
+django_project/venv-django
+fastapi_service/venv-fastapi
+.env*
+
+# python cache files
+*.pyo
+*.pyc
+frontpage/__pycache__/
+project/__pycache__/
+
+# github
+.git

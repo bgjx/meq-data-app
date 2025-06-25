@@ -1,0 +1,117 @@
+microearthquake-dashboard/
+│
+├── .github
+│   └── workflows
+│       └── build-push-deploy.yml
+├── .gitignore
+├── LICENSE
+├── README.md
+├── dir_tree.txt
+├── django_project
+│   ├── account
+│   │   ├── __init__.py
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── backends.py
+│   │   ├── forms.py
+│   │   ├── middleware.py
+│   │   ├── migrations
+│   │   │   ├── 0001_initial.py
+│   │   │   └── __init__.py
+│   │   ├── models.py
+│   │   ├── templates
+│   │   │   └── account
+│   │   │       ├── login.html
+│   │   │       ├── password_reset_complete.html
+│   │   │       ├── password_reset_confirm.html
+│   │   │       ├── password_reset_done.html
+│   │   │       ├── password_reset_email.html
+│   │   │       ├── password_reset_form.html
+│   │   │       ├── password_reset_subject.txt
+│   │   │       ├── signup.html
+│   │   │       ├── signup_succes.html
+│   │   │       ├── verification_failed.html
+│   │   │       └── verification_succes.html
+│   │   ├── tests.py
+│   │   ├── urls.py
+│   │   └── views.py
+│   ├── db.sqlite3
+│   ├── frontpage
+│   │   ├── __init__.py
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── migrations
+│   │   │   ├── 0001_initial.py
+│   │   │   ├── 0002_site_address.py
+│   │   │   ├── 0003_alter_site_latitude_alter_site_longitude.py
+│   │   │   └── __init__.py
+│   │   ├── models.py
+│   │   ├── templates
+│   │   │   └── frontpage
+│   │   │       ├── base.html
+│   │   │       └── frontpage.html
+│   │   ├── tests.py
+│   │   ├── urls.py
+│   │   └── views.py
+│   ├── manage.py
+│   ├── project
+│   │   ├── __init__.py
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── filters.py
+│   │   ├── migrations
+│   │   │   ├── 0001_initial.py
+│   │   │   └── __init__.py
+│   │   ├── models.py
+│   │   ├── static
+│   │   │   └── project
+│   │   │       ├── js
+│   │   │       │   ├── data-analysis.js
+│   │   │       │   └── maps-plotly.js
+│   │   │       └── css
+│   │   │           ├── bootstrap.css
+│   │   │           └── custom-style.css
+│   │   ├── templates
+│   │   │   └── project
+│   │   │       ├── base-project.html
+│   │   │       ├── data-analysis.html
+│   │   │       ├── data-explore.html
+│   │   │       ├── event-distributions.html
+│   │   │       └── partials
+│   │   │           └── catalog-table.html
+│   │   ├── tests.py
+│   │   ├── urls.py
+│   │   ├── utils.py
+│   │   └── views.py
+│   ├── static
+│   │   └── js
+│   │       ├── scripts.js
+│   │       └── table.js
+│   │   └── media
+│   │       └── image
+│   │           └── seismogram.png
+│   └── webapp
+│       ├── __init__.py
+│       ├── asgi.py
+│       ├── settings.py
+│       ├── urls.py
+│       └── wsgi.py
+├── docker-compose.yml
+├── documentation
+│   ├── demo.gif
+│   └── schematic.png
+├── fastapi_service
+│   ├── app
+│   │   ├── __init__.py
+│   │   └── main.py
+│   └── requirements.txt
+└── infrastructure
+    └── docker
+        ├── django
+        │   ├── .dockerignore
+        │   ├── Dockerfile
+        │   └── entrypoint.prod.sh
+        └── nginx
+            ├── Dockerfile.nginx
+            └── nginx.conf
+`
