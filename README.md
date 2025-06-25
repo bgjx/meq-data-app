@@ -27,7 +27,7 @@ If you'd like to test this app using **Docker** on your local machine, the follo
 
 Please note that, due to data confidentiality policies, the database contents are not included—so the app will appear blank.
 
-If you're interested in the database structure, feel free to contact me via email at [edelo.arham@gmail.com](mailto:edelo.arham@gmail.com).
+If you're interested in the database structure, feel free to contact me via email at [edelo.arham@gmail.com](mailto:edelo.arham@gmail.com), i will provide you full dummy database.
 
 ### Prerequisites
 
@@ -124,16 +124,6 @@ These enhancements will make the application more robust for internal developmen
 
 ---
 
-## Contributing
-
-If you're interested in contributing to the project:
-
-1. Fork the repository.
-2. Make your changes.
-3. Create a pull request detailing your changes and the problem it resolves.
-
----
-
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
@@ -143,6 +133,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Technology Stacks
 
 - **Django**: For the robust web framework.
+- **FastAPI**: For backend data processing, way faster then Django Rest Framework.
 - **PostgreSQL/PostGIS**: For database/handling geographical data.
 - **AWS RDS**: Relational database cloud service for hosting postgreSQL.
 - **Plotly**: For rich interactive data visualizations.
