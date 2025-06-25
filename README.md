@@ -25,7 +25,7 @@ The **Microearthquake Monitoring Data Analysis Dashboard** is a web application 
 
 If you'd like to test this app using **Docker** on your local machine, the following instructions will help you set it up and run it locally.
 
-Please note that, due to data confidentiality policies, the database contents are not included—so the app will appear blank.
+Please note that, due to data confidentiality policies, the database contents are not included—so the app will appear blank. Which means you also have to set the Admin setting and credentials manually.
 
 If you're interested in the database structure, feel free to contact me via email at [edelo.arham@gmail.com](mailto:edelo.arham@gmail.com), i will provide you full dummy database.
 
