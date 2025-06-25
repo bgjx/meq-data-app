@@ -12,7 +12,7 @@
                 <div class='card'>
                     <div class='card-body p-5 text-center'>
                         <div class='login-page'>
-                            <h2>Sign-up</h2>
+                            <h2>Sign up</h2>
                             <p> Create a Guest account to explore</p>
                             {% if form.errors %}
                                 <div class="alert alert-danger">
@@ -31,6 +31,10 @@
                                 <div class="mb-3">
                                     <label for="id_username" class="form-label"></label>
                                     {{ form.username }}
+                                </div>
+                                <div class="mb-3">
+                                    <label for="id_email" class="form-label"></label>
+                                    {{ form.email }}
                                 </div>
                                 <div class="mb-3">
                                     <label for="id_password1" class="form-label"></label>
