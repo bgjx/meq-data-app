@@ -119,7 +119,7 @@ microearthquake-dashboard/
 
 ### Enhancements in Automatic Hypocenter Processing
 
-Future improvements are focused on developing advanced backend data engine functionalities to enable:
+Current improvements are focused on developing advanced backend data engine functionalities with FastAPI to enable:
 
 - **Automatic Hypocenter Determination**: Implement algorithms that can automatically identify hypocenter locations from seismic data.
 - **Hypocenter Relocation Methods**: Improve existing methodologies for relocating hypocenters based on improved data input and processing techniques.
@@ -139,7 +139,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Technology Stacks
 
 - **Django**: For the robust web framework.
-- **FastAPI**: For backend data processing, way faster then Django Rest Framework.
+- **FastAPI**: For backend data processing, way faster than Django Rest Framework.
 - **PostgreSQL/PostGIS**: For database/handling geographical data.
 - **AWS RDS**: Relational database cloud service for hosting postgreSQL.
 - **Plotly**: For rich interactive data visualizations.
