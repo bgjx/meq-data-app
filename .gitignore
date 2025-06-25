@@ -4,12 +4,13 @@
 *.log
 
 # virutal env and .env
-venv/
+django_project/venv-django/
+fastapi_service/venv-fastapi/
 .env*
 
 # python cache files
 *.pyc
-webpapp/__pycache__/
-frontpage/__pycache__/
-project/__pycache__/
-account/__pycache__/
+django_project/webpapp/__pycache__/
+django_project/frontpage/__pycache__/
+django_project/project/__pycache__/
+django_project/account/__pycache__/

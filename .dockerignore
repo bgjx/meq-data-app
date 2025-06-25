@@ -5,6 +5,8 @@
 
 # virutal env and .env
 venv/
+django_project/venv-django
+fastapi_service/venv-fastapi
 .env*
 
 # python cache files
