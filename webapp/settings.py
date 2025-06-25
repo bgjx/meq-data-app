@@ -58,14 +58,24 @@ LOGGING = {
 }
 
 # Authentication 
+AUTH_USER_MODEL = 'account.User'
 LOGIN_URL = '/account/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/account/login/'
-
-# Security
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+# Email setting
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'edelo.arham@gmail.com'
+EMAIL_HOST_PASSWORD = 'Teras4040'
+EMAIL_USE_SSL = False
+DEFAULT_FROM_EMAIL = 'edelo.arham@gmail.com'
+
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('DJANGO_SECRET_KEY')
@@ -204,6 +214,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # GDAL library path
 GDAL_LIBRARY_PATH = config('GDAL_LIBRARY_PATH')
 os.environ['GDAL_LIBRARY_PATH'] = GDAL_LIBRARY_PATH 
-
-# # Authentication models
-# AUTH_USER_MODEL = 'account.User'
