@@ -14,3 +14,5 @@ django_project/webpapp/__pycache__/
 django_project/frontpage/__pycache__/
 django_project/project/__pycache__/
 django_project/account/__pycache__/
+
+fastapi_service/__pycache__/
