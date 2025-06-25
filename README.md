@@ -67,44 +67,85 @@ cd microearthquake-dashboard
 ```plaintext
 microearthquake-dashboard/
 │
-├── .dockerignore               # Docker ignore file
-├── .gitignore                  # Git ignore file
-├── Dockerfile                  # Dockerfile for building the app
-├── Dockerfile.nginx            # Dockerfile for Nginx server
-├── docker-compose.yml          # Docker Compose file
-├── entrypoint.prod.sh          # Production entrypoint script
-├── manage.py                   # Django management utility
-├── requirements.txt            # Python dependencies
-│
-├── frontpage/                  # Frontpage application
-│   ├── __init__.py
-│   ├── admin.py
-│   ├── apps.py
-│   ├── models.py
-│   ├── views.py
-│   ├── urls.py
-│   ├── migrations/
-│   │   ├── ...
-│   └── templates/
-│       └── frontpage/
-│           ├── base.html
-│           └── ...
-│
-└── project/                    # Backend application
-    ├── __init__.py
-    ├── admin.py
-    ├── apps.py
-    ├── models.py
-    ├── views.py
-    ├── urls.py
-    ├── utils.py
-    ├── filters.py
-    ├── migrations/
-    │   ├── ...
-    └── templates/
-        └── project/
-            ├── base-project.html
-            └── ...
+├── .github
+│   └── workflows
+│       └── build-push-deploy.yml
+├── .gitignore
+├── LICENSE
+├── README.md
+├── dir_tree.txt
+├── django_project
+│   ├── account
+│   │   ├── __init__.py
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── backends.py
+│   │   ├── forms.py
+│   │   ├── middleware.py
+│   │   ├── migrations
+│   │   ├── models.py
+│   │   ├── templates
+│   │   │   └── account
+│   │   ├── tests.py
+│   │   ├── urls.py
+│   │   └── views.py
+│   ├── db.sqlite3
+│   ├── frontpage
+│   │   ├── __init__.py
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── migrations
+│   │   ├── models.py
+│   │   ├── templates
+│   │   │   └── frontpage
+│   │   ├── tests.py
+│   │   ├── urls.py
+│   │   └── views.py
+│   ├── manage.py
+│   ├── project
+│   │   ├── __init__.py
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── filters.py
+│   │   ├── migrations
+│   │   ├── models.py
+│   │   ├── static
+│   │   │   └── project
+│   │   │       ├── js
+│   │   │       └── css
+│   │   ├── templates
+│   │   │   └── project
+│   │   ├── tests.py
+│   │   ├── urls.py
+│   │   ├── utils.py
+│   │   └── views.py
+│   ├── static
+│   │   └── js
+│   │   └── media
+│   └── webapp
+│       ├── __init__.py
+│       ├── asgi.py
+│       ├── settings.py
+│       ├── urls.py
+│       └── wsgi.py
+├── docker-compose.yml
+├── documentation
+│   ├── demo.gif
+│   └── schematic.png
+├── fastapi_service
+│   ├── app
+│   │   ├── __init__.py
+│   │   └── main.py
+│   └── requirements.txt
+└── infrastructure
+    └── docker
+        ├── django
+        │   ├── .dockerignore
+        │   ├── Dockerfile
+        │   └── entrypoint.prod.sh
+        └── nginx
+            ├── Dockerfile.nginx
+            └── nginx.conf
 ```
 
 ---
