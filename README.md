@@ -109,6 +109,12 @@ microearthquake-dashboard/
 
 ---
 
+## Architecture and Scheme
+<div align='center'>
+    <img src='documentation/schematic.png'>
+</div>
+
+
 ## Future Improvements
 
 ### Enhancements in Automatic Hypocenter Processing
