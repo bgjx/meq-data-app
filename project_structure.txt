@@ -1,4 +1,3 @@
-.dockerignore
 .github/workflows/build-push-deploy.yml
 .gitignore
 LICENSE
@@ -73,10 +72,11 @@ django_project/webapp/wsgi.py
 docker-compose.yml
 documentation/demo.gif
 documentation/schematic.png
-entrypoint.prod.sh
 fastapi_service/main.py
 fastapi_service/requirements.txt
+infrastructure/docker/django/.dockerignore
 infrastructure/docker/django/Dockerfile
+infrastructure/docker/django/entrypoint.prod.sh
 infrastructure/docker/nginx/Dockerfile.nginx
 infrastructure/docker/nginx/nginx.conf
 project_structure.txt
