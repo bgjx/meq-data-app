@@ -6,7 +6,11 @@
 
 ## Overview
 
-The **Microearthquake Monitoring Data Analysis Dashboard** is a web application built with **Django** designed specifically for internal development and operational use. This dashboard allows for the analysis and visualization of microearthquake data stored in a PostgreSQL database. Utilizing **Plotly**, it provides interactive visualizations including various plotting capabilities for efficient data exploration.
+The **Microearthquake Monitoring Data Analysis Dashboard** is a web application built professionally with **Django** designed specifically for internal development and operational use. 
+
+This dashboard allows for the analysis and visualization of microearthquake data during routine monitoring. 
+
+Utilizing **Plotly JS**, it provides swift and interactive visualizations including various plotting capabilities for efficient data analysis.
 
 ---
 
@@ -15,9 +19,17 @@ The **Microearthquake Monitoring Data Analysis Dashboard** is a web application 
 - Interactive visualizations of microearthquake events.
 - Integration with a PostgreSQL/PostGIS database for effective geographical data handling.
 - Automated data querying and processing using Django ORM, Pandas and NumPy.
+- Powerful backend engine for data cleansing and processing with FastAPI (powered by NumPy, SciPy, Pandas, and custom algorithms) 
 - Vanilla JavaScript (fetch API) front-end interactions for real-time data updates and analysis.
 - User-friendly interface for managing and navigating through data analysis tasks.
-- Dynamic data filtering and downloading (microearthquake catalog).
+- Dynamic data filtering, downloading, and updating (catalog, picking, stations, sites, etc.).
+
+---
+
+## Architecture and Scheme
+<div align='center'>
+    <img src='documentation/schematic.png'>
+</div>
 
 ---
 
@@ -109,14 +121,6 @@ microearthquake-dashboard/
             └── nginx.conf
 ```
 
----
-
-## Architecture and Scheme
-<div align='center'>
-    <img src='documentation/schematic.png'>
-</div>
-
-
 ## Future Improvements
 
 ### Enhancements in Automatic Hypocenter Processing
@@ -141,7 +145,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Technology Stacks
 
 - **Django**: For the robust web framework.
-- **FastAPI**: For backend data processing, way faster than Django Rest Framework.
+- **FastAPI**: For robust backend data processing.
 - **PostgreSQL/PostGIS**: For database/handling geographical data.
 - **AWS RDS**: Relational database cloud service for hosting postgreSQL.
 - **Plotly**: For rich interactive data visualizations.
