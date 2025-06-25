@@ -76,49 +76,10 @@ microearthquake-dashboard/
 ├── dir_tree.txt
 ├── django_project
 │   ├── account
-│   │   ├── __init__.py
-│   │   ├── admin.py
-│   │   ├── apps.py
-│   │   ├── backends.py
-│   │   ├── forms.py
-│   │   ├── middleware.py
-│   │   ├── migrations
-│   │   ├── models.py
-│   │   ├── templates
-│   │   │   └── account
-│   │   ├── tests.py
-│   │   ├── urls.py
-│   │   └── views.py
 │   ├── db.sqlite3
 │   ├── frontpage
-│   │   ├── __init__.py
-│   │   ├── admin.py
-│   │   ├── apps.py
-│   │   ├── migrations
-│   │   ├── models.py
-│   │   ├── templates
-│   │   │   └── frontpage
-│   │   ├── tests.py
-│   │   ├── urls.py
-│   │   └── views.py
 │   ├── manage.py
 │   ├── project
-│   │   ├── __init__.py
-│   │   ├── admin.py
-│   │   ├── apps.py
-│   │   ├── filters.py
-│   │   ├── migrations
-│   │   ├── models.py
-│   │   ├── static
-│   │   │   └── project
-│   │   │       ├── js
-│   │   │       └── css
-│   │   ├── templates
-│   │   │   └── project
-│   │   ├── tests.py
-│   │   ├── urls.py
-│   │   ├── utils.py
-│   │   └── views.py
 │   ├── static
 │   │   └── js
 │   │   └── media
