@@ -8,7 +8,7 @@ def is_admin(user):
     return user.groups.filter(name='Admins').exists()
 
 def is_guest_or_admin(user):
-    return user.groups.filter(name__in=['Guests', 'Admins']).exist()
+    return user.groups.filter(name__in=['Guests', 'Admins']).exists()
 
 def projects(request):
     all_projects = Site.objects.all()

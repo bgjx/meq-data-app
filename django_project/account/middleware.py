@@ -14,7 +14,8 @@ class RequireLoginMiddleware:
             '/account/password_reset/done/',
             '/account/reset/',
             '/account/reset/done/',
-            '/static/'
+            '/static/',
+            '/admin/'
         ]
     
     def __call__(self, request):
