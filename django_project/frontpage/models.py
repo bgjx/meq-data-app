@@ -20,7 +20,7 @@ class Site(models.Model):
         return self.name
     
     def get_absolute_url(self):
-        return reverse('project-page', args=[self.slug])
+        return reverse('project:project-page', args=[self.slug])
     
     def save(self, *args, **kwargs):
         g = geocoder.mapbox(self.address, key=mapbox_token)
