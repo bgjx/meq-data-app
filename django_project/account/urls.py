@@ -2,10 +2,12 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 from . import views
 
+app_name = 'account'
+
 urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('signup/', views.signup_view, name='signup'),
-    path('logout/', views.logout_view, name= 'logout'),
+    path('logout/', views.logout_view, name='logout'),
     path('verify/<uuid:token>', views.verify_email, name='verify_email'),
     path('password_reset/', auth_views.PasswordResetView.as_view(
         template_name = 'account/password_reset_form.html',

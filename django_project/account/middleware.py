@@ -6,9 +6,9 @@ class RequireLoginMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
         self.exempt_urls = [
-            reverse('login'),
-            reverse('signup'),
-            reverse('logout'),
+            reverse('account:login'),
+            reverse('account:signup'),
+            reverse('account:logout'),
             '/account/verify',
             '/account/password_reset',
             '/account/password_reset/done/',
