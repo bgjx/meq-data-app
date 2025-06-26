@@ -16,3 +16,9 @@ class RequireLoginMiddleware:
             '/account/reset/done/',
             '/static/'
         ]
+    
+    def __call__(self, request):
+        if not request.user.is_authenticated and not any(request.path.startswith(url) for url in self.exempt_urls):
+            return redirect(settings.LOGIN_URL)
+        response = self.get_response(request)
+        return response
