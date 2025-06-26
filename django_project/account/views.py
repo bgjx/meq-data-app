@@ -29,7 +29,7 @@ def signup_view(request):
             )
 
             # send verification email
-            verification_url = request.build_absolute_url(
+            verification_url = request.build_absolute_uri(
                 reverse('account:verify_email', kwargs={'token': token.token})
             )
 
