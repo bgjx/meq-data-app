@@ -72,19 +72,19 @@
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a href="{% url 'project-page' site_slug=site.slug %}" class="sidebar-link">
+                    <a href="{% url 'project:project-page' site_slug=site.slug %}" class="sidebar-link">
                         <i class="fa-solid fa-magnifying-glass"></i>
                         <span> Explore Catalog </span>
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a href="{% url 'meq-maps' site_slug=site.slug %}" class="sidebar-link">
+                    <a href="{% url 'project:meq-maps' site_slug=site.slug %}" class="sidebar-link">
                         <i class="fa-solid fa-earth-europe"></i>
                         <span> Events Distribution </span>
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a href="{% url 'data-analysis' site_slug=site.slug %}" class="sidebar-link">
+                    <a href="{% url 'project:data-analysis' site_slug=site.slug %}" class="sidebar-link">
                         <i class="fa-solid fa-chart-line"></i>
                         <span> Data Analysis </span>
                     </a>

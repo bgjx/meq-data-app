@@ -26,7 +26,7 @@ class EmailVerification(models.Model):
     email = models.EmailField(max_length=2555)
     token = models.UUIDField(default=uuid.uuid4, primary_key=True)
     created_at = models.DateTimeField(default=timezone.now())
-    expires_at = models.DateTimeField(default=lambda: timezone.now() + timedelta(days=1))
+    expires_at = models.DateTimeField(default=(timezone.now() + timedelta(days=1)))
     
     def __str__(self):
         return f"Verification for {self.user.email}"

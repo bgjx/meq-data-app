@@ -9,7 +9,6 @@ from datetime import timedelta
 from .forms import LoginForm, SignupForm
 from .models import UserProfile, EmailVerification
 
-
 def signup_view(request):
     msg = None
     if request.method == 'POST':
