@@ -15,5 +15,4 @@ urlpatterns = [
     path('<slug:site_slug>/data-analysis', views.data_analysis, name='data-analysis'),
 
     path('<slug:site_slug>/get-analysis-data', views.get_analysis_data, name='get-analysis-data'),
-
 ]
