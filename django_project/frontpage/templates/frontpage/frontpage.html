@@ -36,7 +36,6 @@
                                         .setLngLat([{{project.longitude}}, {{project.latitude}}])
                                         .setPopup(new mapboxgl.Popup().setHTML("<a href='{{project.get_absolute_url}}'> PT.{{project.name | upper }} </a> <p>{{project.address}}</p>"))
                                         .addTo(map);
-                                    console.log(marker.getPopup());
                                 {% endfor %}
                             </script>
                             
