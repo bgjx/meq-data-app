@@ -1,26 +1,20 @@
+{% extends "./base-account.html" %}
+{% block title %} Verification success {% endblock %}
 {% load static %}
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Verification Success - MEQ Dashboard</title>
-    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
-    <link rel="stylesheet" href="{% static 'css/custom-style.css' %}">
-</head>
-<body>
-    <div class="container mt-5">
-        <div class='row d-flex justify-content-center align-items-center'>
-            <div class='col-12 col-md-8 col-lg6 col-xl-5'>
-                <div class='card'>
-                    <div class='card-body p-5 text-center'>
-                        <div class='login-page'>
-                            <h2>Email Verified</h2>
-                            <p>Your email has been verified. You can now log in.</p>
-                            <a href="{% url 'account:login' %}" class="btn btn-primary">Go to Login</a>
-                        </div>
+{% block content %}
+<div class="container mt-5">
+    <div class='row d-flex justify-content-center align-items-center'>
+        <div class='col-12 col-md-8 col-lg6 col-xl-5'>
+            <div class='card'>
+                <div class='card-body p-5 text-center'>
+                    <div class='login-page'>
+                        <h2>Email Verified</h2>
+                        <p>Your email has been verified. You can now log in.</p>
+                        <a href="{% url 'account:login' %}" class="btn btn-primary">Go to Login</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}
