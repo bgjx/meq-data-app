@@ -63,7 +63,7 @@
                     </a>
                 </div>
             </div>
-
+            <!-- sidebar list -->
             <ul class="sidebar-nav">
                 <li class="sidebar-item">
                     <a href="{% url 'frontpage'%}" class="sidebar-link">
@@ -110,6 +110,20 @@
                             </li>
                         {% endfor %}
                     </ul>
+                </li>
+               <li class="sidebar-item">
+                    <a href="#" class="sidebar-link">
+                        <i class="fa-solid fa-user"></i>
+                        {% if user.is_authenticated %}
+                            <span> {{ user.username }} </span>
+                        {% endif %}
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a ref={% url 'account:logout' %} class="sidebar-link">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span> logout </span>
+                    </a>
                 </li>
             </ul>
             <!-- Footer -->
