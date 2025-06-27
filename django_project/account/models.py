@@ -4,6 +4,10 @@ import uuid
 from django.utils import timezone   
 from datetime import timedelta
 
+# calculate now time 
+def default_expiry():
+    return timezone.now() + timedelta(days=1)
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     email_verified_at= models.DateTimeField(null=True, blank=True)
@@ -25,8 +29,8 @@ class EmailVerification(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     email = models.EmailField(max_length=2555)
     token = models.UUIDField(default=uuid.uuid4, primary_key=True)
-    created_at = models.DateTimeField(default=timezone.now())
-    expires_at = models.DateTimeField(default=(timezone.now() + timedelta(days=1)))
+    created_at = models.DateTimeField(default=timezone.now)
+    expires_at = models.DateTimeField(default=default_expiry)
     
     def __str__(self):
         return f"Verification for {self.user.email}"

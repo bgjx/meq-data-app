@@ -1,5 +1,5 @@
 {% extends "./base-account.html" %}
-{% block title %} Reset password {% endblock %}
+{% block title %} Verification success {% endblock %}
 {% load static %}
 {% block content %}
 <div class="container mt-5">
@@ -8,8 +8,8 @@
             <div class='card'>
                 <div class='card-body p-5 text-center'>
                     <div class='login-page'>
-                        <h2>Password Reset Complete</h2>
-                        <p>Your password has been updated.</p>
+                        <h2>Email Verified</h2>
+                        <p>Your email has been verified. You can now log in.</p>
                         <a href="{% url 'account:login' %}" class="btn btn-primary">Go to Login</a>
                     </div>
                 </div>

@@ -101,6 +101,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.gis',
+    'fontawesomefree',
     'django_filters',
     'health_check',
     'health_check.db',

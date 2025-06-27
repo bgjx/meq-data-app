@@ -29,14 +29,14 @@ def signup_view(request):
             )
 
             # send verification email
-            verification_url = request.build_absolute_url(
+            verification_url = request.build_absolute_uri(
                 reverse('account:verify_email', kwargs={'token': token.token})
             )
 
             send_mail(
                 'Verify your Dashboard account',
                 f'Click this link to verify your email: {verification_url}',
-                'edelo.arham@gmail.com',
+                'settings.EMAIL_HOST_USER',
                 [user.email],
                 fail_silently=False,
             )
