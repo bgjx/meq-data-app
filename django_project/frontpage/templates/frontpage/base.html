@@ -12,7 +12,11 @@
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
         <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
         <link rel="stylesheet" href="{% static 'css/custom-style.css' %}">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        
+        <!-- Fontawesome -->
+        <link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'fontawesomefree/css/brands.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
 
         <!-- Map links -->
         <!-- leaflet maps -->
@@ -85,23 +89,19 @@
 
                     <div class="collapse navbar-collapse text-center" id="navbarNavDropdown">
                         <ul class="navbar-nav ms-auto">
-                            <!-- <li class="nav-item">
-                                <a class="btn btn-alert navbar-btn text-white" type="button"  href="/"> 
-                                    <span> Developer </span>
-                                    <i class="fa fa-github"></i>
-                                </a>
-                            </li> -->
-                            <!-- <li class="nav-item">
-                                <a class="btn btn-alert navbar-btn text-white" type="button"  href="/"> Login </a>
-                            </li> -->
-                            &nbsp; &nbsp; &nbsp;
                             <li class="nav-item">
-                                <a type="button" role="button" href="https://github.com/bgjx/meq-data-app" target="_blank" class="btn btn-outline-secondary">
-                                    <span> repository </span> 
-                                    <i class="fa fa-github" aria-hidden="true"> </i>
+                                <a class="btn btn-alert navbar-btn text-white" type="button"  href="">
+                                    <i class="fa-solid fa-user-tie"></i>
+                                    {% if user.is_authenticated %}
+                                        <span> {{ user.username | capfirst}} </span>
+                                    {% endif %}
                                 </a>
                             </li>
-                            &nbsp; &nbsp; &nbsp;
+                            <li class="nav-item">
+                                <a class="btn btn-alert navbar-btn text-white" type="button"  href={% url 'account:logout' %}>
+                                    <i class="fa-solid fa-right-from-bracket"></i>
+                                </a>
+                            </li>
                         </ul>        
                     </div>
                 </nav>
@@ -120,28 +120,47 @@
             <footer class="bg-primary text-center text-lg-start">
                 <!-- Grid container -->
                 <div class="container p-4 text-white">
-                <!--Grid row-->
-                <div class="row">
-                        <!--Grid column-->
-                        <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-                            <h5 class="text-uppercase">Projects</h5>
-                    
-                            <ul class="list-unstyled mb-0">
-                                {% for project in all_projects %}
+                    <!--Grid row-->
+                    <div class="row">
+                            <!--Grid column-->
+                            <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                                <h6 class="text-uppercase">Projects</h6>
+                                <ul class="list-unstyled mb-0">
+                                    {% for project in all_projects %}
+                                        <li>
+                                            <a class="dropdown-item" href="{{project.get_absolute_url}}">
+                                                <i class="fa-solid fa-location-dot"></i>
+                                                {{project.name | capfirst }} 
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                                <h6 class="text-uppercase">repository</h6>
+                                <ul class="list-unstyled mb-0">
                                     <li>
-                                        <a class="dropdown-item" href="{{project.get_absolute_url}}"> {{project.name | capfirst }} </a>
+                                        <a class= 'dropdown-item' href='https://github.com/bgjx/meq-data-app'>
+                                            <i class="fa-brands fa-github"></i>
+                                            <span> GitHub Page </span>
+                                        </a>
                                     </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                </div>
-                <!--Grid row-->
+                                    <li>
+                                        <a class= 'dropdown-item' href='https://hub.docker.com/repositories/bgjx'>
+                                            <i class="fa-brands fa-docker"></i>
+                                            <span> Docker Hub Page </span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                    </div>
+                    <!--Grid row-->
                 </div>
                 <!-- Grid container -->
             
                 <!-- Copyright -->
                 <div class="text-center p-3 text-white" style="background-color: rgba(0, 0, 0, 0.05);">
-                Copyright © 2024 
+                    Copyright © 2024 
                 <!-- <a class="text-body" href="https://mdbootstrap.com/">MDBootstrap.com</a> -->
                 </div>
                 <!-- Copyright -->
