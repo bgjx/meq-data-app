@@ -1,7 +1,7 @@
 {% extends './base-account.html' %}
 {% block title %} Login {% endblock %}
 {% load static %}
-{% block content%}
+{% block content %}
 <div class="container">
     <div class='row justify-content-center'>
         <div class='col-12 col-md-8 col-lg6 col-xl-5'>
@@ -9,7 +9,7 @@
                 <div class='card-body p-5 text-center'>
                     <div class='login-page'>
                         <h2>Login</h2>
-                        <p>  Please enter your Guest or Admin credentials </p>
+                        <p>  Please enter your guest or admin credentials </p>
                         {% if form.errors %}
                             <p class="text-danger">Invalid email/username or password.</p>
                         {% endif %}
@@ -28,8 +28,8 @@
                             </div>
                             <button type="submit" class="btn btn-primary">Login</button>
                         </form>
-                        <p class="mt-3"><a href="{% url 'account:password_reset' %}">Forgot Password</a></p>
-                        <p class="mt-3"><a href="{% url 'account:signup' %}">Don't have an Guest account? Create one</a></p>
+                        <p class="mt-3"><a href="{% url 'account:password_reset' %}">Forgot password?</a></p>
+                        <p class="mt-3"><a href="{% url 'account:signup' %}">Don't have an account? Create one</a></p>
                     </div>
                 </div>
             </div>
