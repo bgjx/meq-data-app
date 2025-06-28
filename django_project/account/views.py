@@ -35,7 +35,7 @@ def signup_view(request):
 
             send_mail(
                 'Verify your Dashboard account',
-                f'Click this link to verify your email: {verification_url}',
+                f'Hi {user.username}, thank you for signing up! Click this link to verify your email: {verification_url}',
                 'settings.EMAIL_HOST_USER',
                 [user.email],
                 fail_silently=False,
