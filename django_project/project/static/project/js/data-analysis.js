@@ -1061,14 +1061,13 @@ document.addEventListener('DOMContentLoaded', function() {
             // Show loading indicator 
             const loadingSpinner = document.getElementById('loading-spinner');
             if (loadingSpinner) loadingSpinner.style.display = 'block';
-
             try {
                 const data = await fetchAnalysisData(filters);
                 updateUI(data);
             } finally {
                 if (loadingSpinner) loadingSpinner.style.display = 'none';
             }
-        } );
+        });
     }
 
     // Handle real-time filter changes (e.g., for sliders or inputs)

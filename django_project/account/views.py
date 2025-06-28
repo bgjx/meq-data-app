@@ -1,7 +1,7 @@
 # Create your views here.
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login, logout
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group
 from django.core.mail import send_mail
 from django.urls import reverse
 from django.utils import timezone
