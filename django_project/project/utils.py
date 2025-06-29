@@ -62,7 +62,6 @@ def analysis_engine(df: pd.DataFrame):
     if missing_columns:
         raise ValueError(f"Missing these required columns {', '.join(missing_columns)}")
 
-
     
     # Drop duplication for specific columns to get only hypocenter data
     hypocenter_df = df[[
@@ -200,7 +199,6 @@ def analysis_engine(df: pd.DataFrame):
         'p_travel': merged['p_travel'].tolist(),
         'ts_tp': merged['Ts_Tp'].tolist()
     }
-
 
     ## Hypocenter and Station Plots
     # get station data

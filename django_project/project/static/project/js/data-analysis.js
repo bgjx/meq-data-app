@@ -484,6 +484,132 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     };
 
+    // 6. 2D MapBox plot 
+    function Plot2dHypocenterMapbox(id, data){
+        // Create hover text for station
+        const hoverTextStation = data.station.station_code.map((x, i) => 
+            `Station: ${x}<br> Latitude: ${data.station.latitude[i]}<br> Longitude: ${data.station.longitude[i]}<br> Elev (m): ${data.station.elev[i]}`
+        )
+
+        const initHypo = {
+            name: 'Initial Hypocenter',
+            type: 'scattermapbox',
+            mode: 'markers',
+            lat: data.initial.latitude,
+            lon: data.initial.longitude,
+            marker: {
+                color: data.initial.source_depth_m,
+                size: (data.initial.norm_magnitude * 10),
+                colorscale: 'YlOrRd',
+                opacity: 0.9,
+            },
+            text: `Depth: ${data.initial.source_depth_m}<br>Mag: ${data.initial.magnitude}`,
+            hoverinfo: 'text'
+        };
+
+
+        const relocHypo = {
+            name: 'Relocated Hypocenter',
+            type: 'scattermapbox',
+            mode: 'markers',
+            lat: data.reloc.latitude,
+            lon: data.reloc.longitude,
+            marker: {
+                color: data.reloc.source_depth_m,
+                size: (data.reloc.norm_magnitude * 10),
+                colorscale: 'YlOrRd',
+                opacity: 0.9,
+            },
+            text: `Depth: ${data.reloc.source_depth_m}<br>Mag: ${data.reloc.magnitude}`,
+            hoverinfo: 'text'
+        };
+
+
+        const station = {
+            name: 'Stations',
+            type: 'scattermapbox',
+            mode: 'markers+text',
+            lat: data.station.latitude,
+            long: data.station.longitude,
+            text: data.station.station_code,
+            textposition: 'top center',
+            marker: {
+                color: '#FF9900',
+                symbol: 'triangle-up', 
+                opacity: 0.8,
+                size: 14
+            },
+            textfont:{
+                size: 12,
+                color: 'rgba(52, 58, 64,0.8)'
+            },
+            hoverinfo: 'text',
+            hovertemplate: hoverTextStation
+        };
+
+        // set map layout 
+        const layout = {
+            title: {
+                text: '2D Hypocenter Map Plots',
+                font: {
+                    size: 18
+                },
+            },
+            mapbox: {
+                style: 'outdoors',
+                center: {
+                    lat: data.center_map.lat,
+                    lon: data.center_map.lon,
+                },
+                zoom: 12,
+                accestoken: `${window.mapboxToken}`
+            },
+            autosize: true,
+            height: 782,
+            showlegend: true,
+            legend: {
+                yanchor : "top",
+                y : 0.99,
+                xanchor : "right",
+                x : 0.99,             
+                bgcolor : "rgba(255,255,255,0.5)"
+            },
+            xaxis: {
+                title: {
+                    text: 'Longitude',
+                    font: {
+                        size: 14
+                    }
+                },
+                tickangle: 0
+            },
+            yaxis: {
+                title: {
+                    text: 'Latitude',
+                    font: {
+                        size: 14
+                    }
+                },
+                scaleanchor: "x", 
+                scaleratio: 1    
+            },
+            margin: {
+                r: 100,
+                b: 100
+            }
+        }
+
+        const config = {
+            displayModeBar: True
+        }
+
+        // Plotly plot call
+        try {
+            Plotly.newPlot(id, [initHypo, relocHypo, station], layout, config);
+        } catch (error) {
+            console.error('Plotly.newPlot failed:', error)
+        };
+    };  
 
     // 6. 2D hypocenters plots
     function Plot2dHypocenter(id, data) {
@@ -1003,6 +1129,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const station_performance = data.station_performance;
         const wadati_profile =  data.wadati_profile;
         const time_series_station_performance = data.time_series_performance;
+        const hypocenter_mapbox = data.hypocenter_mapbox;
         const hypocenter = data.hypocenter;
         const rms_error = data.rms_error;
         const magnitude_hist = data.magnitude_histogram;
@@ -1024,6 +1151,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // crate plot for time series station performance
         timeSeriesStationPerformance('time-series-performance', time_series_station_performance);
+
+        // create 2D plot hypocenter(Mapbox)
+        Plot2dHypocenterMapbox('hypocenter-plot-2d-mapbox', hypocenter_mapbox)
 
         // create 2D plot hypocenter
         Plot2dHypocenter('hypocenter-plot', hypocenter);
