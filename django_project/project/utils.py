@@ -207,11 +207,11 @@ def analysis_engine(df: pd.DataFrame, slug):
         ]]
     
     hypocenter = {
-        'center_map': {
+        'center_map':
             {'lat': -1.616487, 'lon':101.137171} if slug == 'seml' \
             else {'lat': -4.220185, 'lon': 103.379187} if slug == 'serd' \
             else {}
-        },
+        ,
         'reloc': {
             'latitude': hypocenter_df['source_lat_reloc'].tolist(),
             'longitude': hypocenter_df['source_lon_reloc'].tolist(),
@@ -229,8 +229,8 @@ def analysis_engine(df: pd.DataFrame, slug):
             'elev': station_df['station_elev_m'].tolist()
         },
         'magnitude': hypocenter_df['magnitude'].fillna(hypocenter_df['magnitude'].median()).to_list(),
-        'norm_magnitude': [(hypocenter_df['magnitude'] - hypocenter_df['magnitude'].min()) 
-                           / (hypocenter_df['magnitude'].max() - hypocenter_df['magnitude'].min())]
+        'norm_magnitude': ((hypocenter_df['magnitude'] - hypocenter_df['magnitude'].min()) 
+                           / (hypocenter_df['magnitude'].max() - hypocenter_df['magnitude'].min())).fillna(hypocenter_df['magnitude'].median()).to_list()
     }
 
     ## RMS error 

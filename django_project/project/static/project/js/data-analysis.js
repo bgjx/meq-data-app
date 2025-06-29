@@ -1,7 +1,7 @@
 //  Maps functionality
 document.addEventListener('DOMContentLoaded', function() {
     // check global variable
-    if (typeof window.absUrl === 'undefined' || typeof window.mapboxToken) {
+    if (typeof window.absUrl === 'undefined' || typeof window.mapboxToken === 'undefined') {
         console.error("Missing required global variables: absUrl");
         return;
     }
@@ -493,55 +493,58 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const initHypo = {
             name: 'Initial Hypocenter',
-            type: 'scattermapbox',
+            type: 'scattermap',
             mode: 'markers',
             lat: data.initial.latitude,
             lon: data.initial.longitude,
             marker: {
-                color: data.initial.source_depth_m,
-                size: (data.initial.norm_magnitude * 10),
-                colorscale: 'YlOrRd',
-                opacity: 0.9,
+                // color: data.initial.source_depth_m,
+                size: data.norm_magnitude.map(item => item * 25),
+                color: 'indianred',
+                opacity: 0.9
             },
-            text: `Elev: ${data.initial.elev}<br>Mag: ${data.initial.magnitude}`,
-            hoverinfo: 'text'
+            text : data.initial.elev.map((x, i) =>
+            `Depth (m): ${-1*(x.toFixed(2))}<br>Mag: ${data.magnitude[i].toFixed(2)}<br>Lat: ${data.initial.latitude[i].toFixed(5)}<br>Lon: ${data.initial.longitude[i].toFixed(5)}`,
+            ),  
+            hoverinfo: 'text' 
         };
 
 
         const relocHypo = {
             name: 'Relocated Hypocenter',
-            type: 'scattermapbox',
+            type: 'scattermap',
             mode: 'markers',
             lat: data.reloc.latitude,
             lon: data.reloc.longitude,
             marker: {
-                color: data.reloc.source_depth_m,
-                size: (data.reloc.norm_magnitude * 10),
-                colorscale: 'YlOrRd',
+                // color: data.reloc.source_depth_m,
+                size: data.norm_magnitude.map(item => item * 25),
+                color: '#1F77B4',
                 opacity: 0.9,
             },
-            text: `Elev: ${data.reloc.elev}<br>Mag: ${data.reloc.magnitude}`,
+            text : data.reloc.elev.map((x, i) =>
+            `Depth (m): ${(-1*x.toFixed(2))}<br>Mag: ${data.magnitude[i].toFixed(2)}<br>Lat: ${data.reloc.latitude[i].toFixed(5)}<br>Lon: ${data.reloc.longitude[i].toFixed(5)}`,
+            ), 
             hoverinfo: 'text'
         };
 
-
         const station = {
             name: 'Stations',
-            type: 'scattermapbox',
+            type: 'scattermap',
             mode: 'markers+text',
             lat: data.station.latitude,
-            long: data.station.longitude,
+            lon: data.station.longitude,
             text: data.station.station_code,
             textposition: 'top center',
             marker: {
-                color: '#FF9900',
-                symbol: 'triangle-up', 
+                symbol: 'triangle',
+                color: 'green',
                 opacity: 0.8,
                 size: 14
             },
             textfont:{
-                size: 12,
-                color: 'rgba(52, 58, 64,0.8)'
+                size: 14,
+                color: 'rgba(255, 255, 255, 0.8)'
             },
             hoverinfo: 'text',
             hovertemplate: hoverTextStation
@@ -555,14 +558,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     size: 18
                 },
             },
-            mapbox: {
-                style: 'outdoors',
+            map: {
+                style: 'satellite-streets',
                 center: {
                     lat: data.center_map.lat,
                     lon: data.center_map.lon,
                 },
                 zoom: 12,
-                accestoken: `${window.mapboxToken}`
             },
             autosize: true,
             height: 782,
@@ -600,7 +602,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         const config = {
-            displayModeBar: True
+            displayModeBar: true
         }
 
         // Plotly plot call
@@ -1129,7 +1131,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const station_performance = data.station_performance;
         const wadati_profile =  data.wadati_profile;
         const time_series_station_performance = data.time_series_performance;
-        const hypocenter_mapbox = data.hypocenter_mapbox;
         const hypocenter = data.hypocenter;
         const rms_error = data.rms_error;
         const magnitude_hist = data.magnitude_histogram;
@@ -1153,7 +1154,7 @@ document.addEventListener('DOMContentLoaded', function() {
         timeSeriesStationPerformance('time-series-performance', time_series_station_performance);
 
         // create 2D plot hypocenter(Mapbox)
-        Plot2dHypocenterMapbox('hypocenter-plot-2d-mapbox', hypocenter_mapbox)
+        Plot2dHypocenterMapbox('hypocenter-plot-2d-mapbox', hypocenter);
 
         // create 2D plot hypocenter
         Plot2dHypocenter('hypocenter-plot', hypocenter);
