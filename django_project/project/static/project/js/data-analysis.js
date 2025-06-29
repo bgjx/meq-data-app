@@ -608,7 +608,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const layout = {
             title: {
-                text: 'Azimuthal Gap (Degree) Histogram',
+                text: 'Azimuthal Gap Histogram (Initial)',
                 font: {
                     size: 18
                 }
