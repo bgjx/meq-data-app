@@ -1,7 +1,7 @@
 //  Maps functionality
 document.addEventListener('DOMContentLoaded', function() {
     // check global variable
-    if (typeof window.absUrl === 'undefined') {
+    if (typeof window.absUrl === 'undefined' || typeof window.mapboxToken) {
         console.error("Missing required global variables: absUrl");
         return;
     }
@@ -503,7 +503,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 colorscale: 'YlOrRd',
                 opacity: 0.9,
             },
-            text: `Depth: ${data.initial.source_depth_m}<br>Mag: ${data.initial.magnitude}`,
+            text: `Elev: ${data.initial.elev}<br>Mag: ${data.initial.magnitude}`,
             hoverinfo: 'text'
         };
 
@@ -520,7 +520,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 colorscale: 'YlOrRd',
                 opacity: 0.9,
             },
-            text: `Depth: ${data.reloc.source_depth_m}<br>Mag: ${data.reloc.magnitude}`,
+            text: `Elev: ${data.reloc.elev}<br>Mag: ${data.reloc.magnitude}`,
             hoverinfo: 'text'
         };
 

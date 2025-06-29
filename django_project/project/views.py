@@ -15,6 +15,10 @@ import pandas as pd
 import csv
 import openai 
 
+# variable
+MAPBOX_API_TOKEN = settings.MAPBOX_API_TOKEN
+
+
 # Open AI data descriptor 
 
 # Function for page view renderer
@@ -47,7 +51,7 @@ def project_site(request, site_slug = None):
 def meq_maps(request, site_slug = None):
     'Generate map frame for meq distributions map'
     site = get_object_or_404(Site, slug=site_slug)
-    mapbox_access_token = settings.MAPBOX_API_TOKEN
+    mapbox_access_token = MAPBOX_API_TOKEN
     context = {
         'site': site,
         'MAPBOX_TOKEN': mapbox_access_token,
@@ -66,11 +70,14 @@ def data_analysis(request, site_slug = None):
     w_before = now - timedelta(days=7)
     w_before_str = w_before.strftime("%Y-%m-%d %H:%M:%S") 
 
+    mapbox_access_token = MAPBOX_API_TOKEN
 
     context = {
+                ''
                 'site': site,
                 'now_time': now_str,
-                'week_before_time': w_before_str
+                'week_before_time': w_before_str,
+                'MAPBOX_TOKEN': mapbox_access_token,
     }
     
     return render(request, 'project/data-analysis.html', context)
@@ -140,7 +147,7 @@ def get_analysis_data( request, site_slug=None):
     df = pd.DataFrame.from_records(queryset.values())
 
     # Perform data analysis
-    processed_data = analysis_engine(df)
+    processed_data = analysis_engine(df, site_slug)
 
     return JsonResponse(processed_data)
 

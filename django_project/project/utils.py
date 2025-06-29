@@ -51,7 +51,7 @@ def get_station(app_label, slug):
     return all_objects
 
 
-def analysis_engine(df: pd.DataFrame):
+def analysis_engine(df: pd.DataFrame, slug):
     'Do data preprocessing and return the data to feed the plotly plots'
 
     # Check DataFrame integrity
@@ -207,6 +207,11 @@ def analysis_engine(df: pd.DataFrame):
         ]]
     
     hypocenter = {
+        'center_map': {
+            {'lat': -1.616487, 'lon':101.137171} if slug == 'seml' \
+            else {'lat': -4.220185, 'lon': 103.379187} if slug == 'serd' \
+            else {}
+        },
         'reloc': {
             'latitude': hypocenter_df['source_lat_reloc'].tolist(),
             'longitude': hypocenter_df['source_lon_reloc'].tolist(),
@@ -222,7 +227,10 @@ def analysis_engine(df: pd.DataFrame):
             'latitude': station_df['station_lat'].tolist(),
             'longitude': station_df['station_lon'].tolist(),
             'elev': station_df['station_elev_m'].tolist()
-        }
+        },
+        'magnitude': hypocenter_df['magnitude'].fillna(hypocenter_df['magnitude'].median()).to_list(),
+        'norm_magnitude': [(hypocenter_df['magnitude'] - hypocenter_df['magnitude'].min()) 
+                           / (hypocenter_df['magnitude'].max() - hypocenter_df['magnitude'].min())]
     }
 
     ## RMS error 
