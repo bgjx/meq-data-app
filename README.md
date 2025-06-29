@@ -145,7 +145,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Technology Stacks
 
 - **Django**: For the framework, take advantages of robust, secure auth and powerfull Django ORM.
-- **FastAPI**: Super fast backend, serve API call for any data processing or Machine Learning service request with asynchronous capabilities.
+- **FastAPI**: Lightnig-fast backend, serve API call for any data processing or Machine Learning service request with asynchronous capabilities.
 - **PostgreSQL/PostGIS**: For database/handling geographical data.
 - **AWS RDS**: Relational database cloud service for hosting postgreSQL.
 - **Plotly JS**: For rich interactive data visualizations front-end.
