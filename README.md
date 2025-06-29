@@ -130,9 +130,10 @@ Current improvements are focused on developing advanced backend data engine func
 - **Automatic Hypocenter Determination**: Implement algorithms that can automatically identify hypocenter locations from seismic data.
 - **Hypocenter Relocation Methods**: Improve existing methodologies for relocating hypocenters based on improved data input and processing techniques.
 - **Moment Magnitude Calculations**: Enable automatic computation of moment magnitudes for detected seismic events.
-- **Post Data Analytics**: Incorporate analytical methods such as **Gutenberg-Richter analysis** to better understand the distribution and frequency of seismic events.
+- **Post Data Analytics**: Incorporate analytical methods to gain a better understanding of microearthquake activity across all monitored sites.
 
-These enhancements will make the application more robust for internal development, streamline workflows, and provide more accurate analyses of seismic data in microearthquake monitoring.
+
+These enhancements will make the application more robust for internal development, streamline workflows, and provide more accurate real-time analyses of seismic data in microearthquake monitoring.
 
 ---
 
