@@ -10,7 +10,7 @@ mapbox_access_token = 'pk.eyJ1IjoiZWRlbG8iLCJhIjoiY20zNG1zN3F5MDFjdzJsb3N4ZDJ1ZT
 
 REQUIRED_COLUMNS_NAME = [
     "id", "source_id", "source_lat_init", "source_lon_init", "location_init",
-    "source_depth_m_init", "source_origin_dt_init", "source_err_rms_s_init",
+    "source_depth_m_init", "source_origin_dt_init", "source_err_rms_s_init", "gap_init",
     "remarks_init", "source_lat_reloc", "source_lon_reloc", "location_reloc",
     "source_depth_m_reloc", "source_origin_dt_reloc", "source_err_rms_s_reloc",
     "remarks_reloc", "network_code", "station_code", "station_lat",
@@ -51,7 +51,7 @@ def get_station(app_label, slug):
     return all_objects
 
 
-def analysis_engine(df: pd.DataFrame):
+def analysis_engine(df: pd.DataFrame, slug):
     'Do data preprocessing and return the data to feed the plotly plots'
 
     # Check DataFrame integrity
@@ -62,7 +62,6 @@ def analysis_engine(df: pd.DataFrame):
     if missing_columns:
         raise ValueError(f"Missing these required columns {', '.join(missing_columns)}")
 
-
     
     # Drop duplication for specific columns to get only hypocenter data
     hypocenter_df = df[[
@@ -70,7 +69,7 @@ def analysis_engine(df: pd.DataFrame):
         "source_lat_reloc", "source_lon_reloc", "location_reloc", "source_depth_m_reloc", 
         "source_origin_dt_reloc",  "source_err_rms_s_reloc", 
         "source_lat_init", "source_lon_init", "location_init", "source_depth_m_init",
-        "source_origin_dt_init",  "source_err_rms_s_init",
+        "source_origin_dt_init",  "source_err_rms_s_init", "gap_init",
         "magnitude"]].drop_duplicates(subset='source_id')
     
     picking_df = df[[
@@ -201,7 +200,6 @@ def analysis_engine(df: pd.DataFrame):
         'ts_tp': merged['Ts_Tp'].tolist()
     }
 
-
     ## Hypocenter and Station Plots
     # get station data
     station_df = picking_df[picking_df['station_code'].isin(stations)][[
@@ -209,6 +207,11 @@ def analysis_engine(df: pd.DataFrame):
         ]]
     
     hypocenter = {
+        'center_map':
+            {'lat': -1.616487, 'lon':101.137171} if slug == 'seml' \
+            else {'lat': -4.220185, 'lon': 103.379187} if slug == 'serd' \
+            else {}
+        ,
         'reloc': {
             'latitude': hypocenter_df['source_lat_reloc'].tolist(),
             'longitude': hypocenter_df['source_lon_reloc'].tolist(),
@@ -224,7 +227,17 @@ def analysis_engine(df: pd.DataFrame):
             'latitude': station_df['station_lat'].tolist(),
             'longitude': station_df['station_lon'].tolist(),
             'elev': station_df['station_elev_m'].tolist()
-        }
+        },
+        'magnitude': hypocenter_df['magnitude'].fillna(hypocenter_df['magnitude'].median()).to_list(),
+        'norm_magnitude': ((hypocenter_df['magnitude'] - hypocenter_df['magnitude'].min()) 
+                           / (hypocenter_df['magnitude'].max() - hypocenter_df['magnitude'].min())).fillna(hypocenter_df['magnitude'].median()).to_list()
+    }
+
+
+    ## Azimuthal Gap
+    gap = hypocenter_df['gap_init'].dropna().copy()
+    gap_histogram = {
+        'gap': gap.tolist()
     }
 
     ## RMS error 
@@ -358,6 +371,7 @@ def analysis_engine(df: pd.DataFrame):
         'wadati_profile': wadati_data,
         'time_series_performance': time_series_performance,
         'hypocenter': hypocenter,
+        'gap_histogram': gap_histogram,
         'rms_error': hist_rms,
         'magnitude_histogram': magnitude_histogram,
         'gutenberg_analysis': gutenberg_result

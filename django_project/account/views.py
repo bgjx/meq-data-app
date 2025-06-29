@@ -1,7 +1,7 @@
 # Create your views here.
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login, logout
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group
 from django.core.mail import send_mail
 from django.urls import reverse
 from django.utils import timezone
@@ -35,7 +35,7 @@ def signup_view(request):
 
             send_mail(
                 'Verify your Dashboard account',
-                f'Click this link to verify your email: {verification_url}',
+                f'Hi {user.username}, thank you for signing up! Click this link to verify your email: {verification_url}',
                 'settings.EMAIL_HOST_USER',
                 [user.email],
                 fail_silently=False,

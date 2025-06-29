@@ -115,7 +115,11 @@
         </div>
 
         <!-- Loading Spinner -->
-        <div id = 'loading-spinner' style="display: none;"> Preparing data... </div>
+        <div id = 'loading-spinner' class="text-center justify-content-center" style="display: none">
+            <div class="spinner-border text-secondary" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
 
         <!-- Stats preview -->
         <div class="row py-lg-3">
@@ -204,14 +208,27 @@
                 </div>
             </div>
         </div>
-
-        <!-- Hypocenter 2D Plots and Errors Analysis -->
+        
+        <!-- Hypocenter 2D Plot (on MapBox)-->
         <div class="row py-lg-3">
             <div class="col">
                 <div class="card">
                     <div class="card-body">
                         <div class="py-lg-3">
-                            <div class="plot-analysis" id="hypocenter-plot"></div>
+                            <div class="plot-analysis" id="hypocenter-plot-2d-mapbox"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Azimuthal Gap Histogram plots and Errors Analysis -->
+        <div class="row py-lg-3">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="py-lg-3">
+                            <div class="plot-analysis" id="gap-histogram"></div>
                         </div>
                     </div>
                 </div>
@@ -268,6 +285,7 @@
     <!-- Embed absUrl for API calls -->
     <script>
         window.absUrl = '{{site.get_absolute_url}}';
+        window.mapboxToken = '{{MAPBOX_TOKEN}}'
     </script>
     <script src = "{% static 'project/js/data-analysis.js' %}"> </script>
 {% endblock %}

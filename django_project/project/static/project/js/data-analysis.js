@@ -1,7 +1,7 @@
 //  Maps functionality
 document.addEventListener('DOMContentLoaded', function() {
     // check global variable
-    if (typeof window.absUrl === 'undefined') {
+    if (typeof window.absUrl === 'undefined' || typeof window.mapboxToken === 'undefined') {
         console.error("Missing required global variables: absUrl");
         return;
     }
@@ -484,71 +484,90 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     };
 
-
-    // 6. 2D hypocenters plots
-    function Plot2dHypocenter(id, data) {
+    // 6. 2D MapBox plot 
+    function Plot2dHypocenterMapbox(id, data){
         // Create hover text for station
-        const hoverTextStation = data.station.station_code.map((x, i) =>
-            `Station: ${x}<br> Latitude: ${data.station.latitude[i]}<br> Longitude: ${data.station.longitude[i]}<br> ELev (m): ${data.station.elev[i]}`
+        const hoverTextStation = data.station.station_code.map((x, i) => 
+            `Station: ${x}<br> Latitude: ${data.station.latitude[i]}<br> Longitude: ${data.station.longitude[i]}<br> Elev (m): ${data.station.elev[i]}`
         )
 
         const initHypo = {
             name: 'Initial Hypocenter',
-            type: 'scatter',
+            type: 'scattermap',
             mode: 'markers',
-            x: data.initial.longitude,
-            y: data.initial.latitude,
+            lat: data.initial.latitude,
+            lon: data.initial.longitude,
             marker: {
+                // color: data.initial.source_depth_m,
+                size: data.norm_magnitude.map(item => item * 25),
                 color: 'indianred',
-                opacity: 0.8
-            }
+                opacity: 0.9,
+            },
+            text : data.initial.elev.map((x, i) =>
+            `Depth (m): ${-1*(x.toFixed(2))}<br>Mag: ${data.magnitude[i].toFixed(2)}<br>Lat: ${data.initial.latitude[i].toFixed(5)}<br>Lon: ${data.initial.longitude[i].toFixed(5)}`,
+            ),  
+            hoverinfo: 'text' 
         };
 
         const relocHypo = {
             name: 'Relocated Hypocenter',
-            type: 'scatter',
+            type: 'scattermap',
             mode: 'markers',
-            x: data.reloc.longitude,
-            y: data.reloc.latitude,
+            lat: data.reloc.latitude,
+            lon: data.reloc.longitude,
             marker: {
+                // color: data.reloc.source_depth_m,
+                size: data.norm_magnitude.map(item => item * 25),
                 color: '#1F77B4',
-                opacity: 0.8
-            }
+                opacity: 0.9,
+            },
+            text : data.reloc.elev.map((x, i) =>
+            `Depth (m): ${(-1*x.toFixed(2))}<br>Mag: ${data.magnitude[i].toFixed(2)}<br>Lat: ${data.reloc.latitude[i].toFixed(5)}<br>Lon: ${data.reloc.longitude[i].toFixed(5)}`,
+            ), 
+            hoverinfo: 'text'
         };
 
-        
         const station = {
             name: 'Stations',
-            type: 'scatter',
+            type: 'scattermap',
             mode: 'markers+text',
-            x: data.station.longitude,
-            y: data.station.latitude,
+            lat: data.station.latitude,
+            lon: data.station.longitude,
+            text: data.station.station_code,
+            textposition: 'top center',
             marker: {
-                color: '#FF9900',
-                symbol: 'triangle-up', 
+                symbol: 'triangle',
+                color: 'black',
                 opacity: 0.8,
                 size: 14
             },
-            text: data.station.station_code,
-            textposition: 'top center',
             textfont:{
-                size: 12,
-                color: 'rgba(52, 58, 64,0.8)'
+                size: 14,
+                color: 'rgba(255, 255, 255, 0.8)'
             },
             hoverinfo: 'text',
             hovertemplate: hoverTextStation
         };
-        
 
+        // set map layout 
         const layout = {
             title: {
-                text: '2D Hypocenter Plots',
+                text: '2D Hypocenter Map Plots',
                 font: {
                     size: 18
                 },
             },
+            map: {
+                style: 'satellite-streets',
+                center: {
+                    lat: data.center_map.lat,
+                    lon: data.center_map.lon,
+                },
+                zoom: 12,
+            },
+            autosize: true,
+            height: 782,
             showlegend: true,
-            template: 'plotly_white',
             legend: {
                 yanchor : "top",
                 y : 0.99,
@@ -556,11 +575,58 @@ document.addEventListener('DOMContentLoaded', function() {
                 x : 0.99,             
                 bgcolor : "rgba(255,255,255,0.5)"
             },
+        }
+
+        const config = {
+            displayModeBar: true
+        }
+
+        // Plotly plot call
+        try {
+            Plotly.newPlot(id, [initHypo, relocHypo, station], layout, config);
+        } catch (error) {
+            console.error('Plotly.newPlot failed:', error)
+        };
+    };  
+
+    // 7. Azimuthal Gap Initial Histogram
+    function azimuthalGap(id, data) {
+        // Azimuthal gap (initial)
+        const azimGap = {
+            name: 'Azimuthal Gap (deg)',
+            x: data.gap,
+            type: 'histogram',
+            marker: {
+                color: 'indianred',
+                line: {
+                    color:'white',
+                    width: 0.5
+                }
+            }, 
+            opacity: 0.8
+        };
+
+        const layout = {
+            title: {
+                text: 'Azimuthal Gap Histogram (Initial)',
+                font: {
+                    size: 18
+                }
+            },
+            showlegend: true,
+            template: 'plotly_white',
+            legend: {
+                    yanchor : "top",
+                    y : 0.99,
+                    xanchor : "right",
+                    x : 0.99,             
+                    bgcolor : "rgba(255,255,255,0.5)"
+                },
             height: 400,
             autosize: true,
             xaxis: {
                 title: {
-                    text: 'Longitude',
+                    text: 'Gap (degree)',
                     font: {
                         size: 14
                     }
@@ -568,31 +634,32 @@ document.addEventListener('DOMContentLoaded', function() {
                 tickangle: 0
             },
             yaxis: {
-                title: {
-                    text: 'Latitude',
+                title: { 
+                    text: 'Counts',
                     font: {
                         size: 14
                     }
                 },
-                scaleanchor: "x", 
-                scaleratio: 1    
+                rangemode: 'tozero',
             },
+            bargap: 0.1,
             margin: {
                 r: 100,
                 b: 100
             }
-        }
+
+        };
 
         // Plotly plot call
         try {
-            Plotly.newPlot(id, [initHypo, relocHypo, station], layout);
+            Plotly.newPlot(id, [azimGap], layout);
         } catch (error) {
             console.error('Plotly.newPlot failed:', error)
         };
     }
 
 
-    // 7. Plot histogram error
+    // 8. Plot histogram error
     function histogramError (id, data) {
 
         // Initial RMS error
@@ -673,7 +740,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     }
 
-    // 8. 3D plot hypocenter
+    // 9. 3D plot hypocenter
     function Plot3dHypocenter(id, data) {
         // Create hover text for station
         const hoverTextStation = data.station.station_code.map((x, i) =>
@@ -798,7 +865,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 
-    // 9. Magnitude histogram plot 
+    // 10. Magnitude histogram plot 
     function magnitudeHistogram(id, data) {
         const magHist = {
             name: 'Magnitude',
@@ -866,7 +933,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
 
-    // 10. Gutenberg-Richter Analysis
+    // 11. Gutenberg-Richter Analysis
     function gutenbergRichterAnalysis(id, data){
 
         // Cumulative magnitude data
@@ -1004,6 +1071,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const wadati_profile =  data.wadati_profile;
         const time_series_station_performance = data.time_series_performance;
         const hypocenter = data.hypocenter;
+        const gap_hist = data.gap_histogram;
         const rms_error = data.rms_error;
         const magnitude_hist = data.magnitude_histogram;
         const gutenberg_analysis = data.gutenberg_analysis;
@@ -1025,8 +1093,11 @@ document.addEventListener('DOMContentLoaded', function() {
         // crate plot for time series station performance
         timeSeriesStationPerformance('time-series-performance', time_series_station_performance);
 
-        // create 2D plot hypocenter
-        Plot2dHypocenter('hypocenter-plot', hypocenter);
+        // create 2D plot hypocenter(Mapbox)
+        Plot2dHypocenterMapbox('hypocenter-plot-2d-mapbox', hypocenter);
+
+        // Create azimuthal gap histogram
+        azimuthalGap('gap-histogram', gap_hist);
 
         // create plot for rms error histogram
         histogramError('rms-error', rms_error);
@@ -1061,14 +1132,13 @@ document.addEventListener('DOMContentLoaded', function() {
             // Show loading indicator 
             const loadingSpinner = document.getElementById('loading-spinner');
             if (loadingSpinner) loadingSpinner.style.display = 'block';
-
             try {
                 const data = await fetchAnalysisData(filters);
                 updateUI(data);
             } finally {
                 if (loadingSpinner) loadingSpinner.style.display = 'none';
             }
-        } );
+        });
     }
 
     // Handle real-time filter changes (e.g., for sliders or inputs)
