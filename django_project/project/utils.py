@@ -10,7 +10,7 @@ mapbox_access_token = 'pk.eyJ1IjoiZWRlbG8iLCJhIjoiY20zNG1zN3F5MDFjdzJsb3N4ZDJ1ZT
 
 REQUIRED_COLUMNS_NAME = [
     "id", "source_id", "source_lat_init", "source_lon_init", "location_init",
-    "source_depth_m_init", "source_origin_dt_init", "source_err_rms_s_init",
+    "source_depth_m_init", "source_origin_dt_init", "source_err_rms_s_init", "gap_init",
     "remarks_init", "source_lat_reloc", "source_lon_reloc", "location_reloc",
     "source_depth_m_reloc", "source_origin_dt_reloc", "source_err_rms_s_reloc",
     "remarks_reloc", "network_code", "station_code", "station_lat",
@@ -69,7 +69,7 @@ def analysis_engine(df: pd.DataFrame, slug):
         "source_lat_reloc", "source_lon_reloc", "location_reloc", "source_depth_m_reloc", 
         "source_origin_dt_reloc",  "source_err_rms_s_reloc", 
         "source_lat_init", "source_lon_init", "location_init", "source_depth_m_init",
-        "source_origin_dt_init",  "source_err_rms_s_init",
+        "source_origin_dt_init",  "source_err_rms_s_init", "gap_init",
         "magnitude"]].drop_duplicates(subset='source_id')
     
     picking_df = df[[
@@ -233,6 +233,13 @@ def analysis_engine(df: pd.DataFrame, slug):
                            / (hypocenter_df['magnitude'].max() - hypocenter_df['magnitude'].min())).fillna(hypocenter_df['magnitude'].median()).to_list()
     }
 
+
+    ## Azimuthal Gap
+    gap = hypocenter_df['gap_init'].dropna().copy()
+    gap_histogram = {
+        'gap': gap.tolist()
+    }
+
     ## RMS error 
     # create histogram data for both reloc and init hypocenter
     bin_width = 0.01
@@ -364,6 +371,7 @@ def analysis_engine(df: pd.DataFrame, slug):
         'wadati_profile': wadati_data,
         'time_series_performance': time_series_performance,
         'hypocenter': hypocenter,
+        'gap_histogram': gap_histogram,
         'rms_error': hist_rms,
         'magnitude_histogram': magnitude_histogram,
         'gutenberg_analysis': gutenberg_result
