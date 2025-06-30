@@ -39,7 +39,7 @@ def project_site(request, site_slug = None):
 
         # Get model
         model = get_hypocenter_catalog('project', site_slug, catalog_type)
-        get_model = apps.get_model('projects', model)
+        get_model = apps.get_model('project', model)
 
         # apply filter
         filter_class = hypo_table_filter(model)
@@ -64,7 +64,7 @@ def download_catalog(request, site_slug, catalog_type):
 
     # Applied filter with the model and request.GET parameters
     filter_class = hypo_table_filter(model)
-    filter_instance = filter_class(request.GET, queryset=get_model.objects.al())
+    filter_instance = filter_class(request.GET, queryset=get_model.objects.all())
 
     # http response
     response = HttpResponse(
@@ -84,7 +84,6 @@ def download_catalog(request, site_slug, catalog_type):
     return response
 
 
-
 # def meq_maps(request, site_slug = None):
 #     'Generate map frame for meq distributions map'
 #     site = get_object_or_404(Site, slug=site_slug)
@@ -94,8 +93,6 @@ def download_catalog(request, site_slug, catalog_type):
 #         'MAPBOX_TOKEN': mapbox_access_token,
 #     }
 #     return render(request, 'project/event-distributions.html', context=context)# Function for data download client
-
-
 
 
 # #  API endpoint function

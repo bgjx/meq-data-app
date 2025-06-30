@@ -31,7 +31,7 @@ def get_hypocenter_catalog(app_label, slug, catalog_type):
     # Return the table objects and table name
     for model in models:
         if table_name in str(model._meta.db_table):
-            return model.__name__()
+            return model.__name__
     
     return None
 
@@ -49,7 +49,7 @@ def get_merged_catalog(app_label, slug):
     # Return the table objects and table name
     for model in models:
         if table_name in str(model._meta.db_table):
-            return model.__name__()
+            return model.__name__
     
     return None
 
