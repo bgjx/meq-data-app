@@ -59,30 +59,6 @@ def project_site(request, site_slug = None):
 #     return render(request, 'project/event-distributions.html', context=context)
 
 
-def data_analysis(request, site_slug = None):
-    'Generate views for data analysis page.'
-    site = get_object_or_404(Site, slug=site_slug)
-
-    # get current datetime
-    now = datetime.now()
-    now_str = now.strftime("%Y-%m-%d %H:%M:%S")
-
-    w_before = now - timedelta(days=7)
-    w_before_str = w_before.strftime("%Y-%m-%d %H:%M:%S") 
-
-    mapbox_access_token = MAPBOX_API_TOKEN
-
-    context = {
-                ''
-                'site': site,
-                'now_time': now_str,
-                'week_before_time': w_before_str,
-                'MAPBOX_TOKEN': mapbox_access_token,
-    }
-    
-    return render(request, 'project/data-analysis.html', context)
-
-
 # #  API endpoint function
 # def get_meq_data(request, site_slug = None):
 #     'API endpoint to get hypocenter data and calculate the center point'
@@ -128,6 +104,30 @@ def data_analysis(request, site_slug = None):
 #         data[f'meq_{catalog_type}'] = df_meq.to_dict(orient='records')
 
 #     return JsonResponse(data)
+
+
+def data_analysis(request, site_slug = None):
+    'Generate views for data analysis page.'
+    site = get_object_or_404(Site, slug=site_slug)
+
+    # get current datetime
+    now = datetime.now()
+    now_str = now.strftime("%Y-%m-%d %H:%M:%S")
+
+    w_before = now - timedelta(days=7)
+    w_before_str = w_before.strftime("%Y-%m-%d %H:%M:%S") 
+
+    mapbox_access_token = MAPBOX_API_TOKEN
+
+    context = {
+                ''
+                'site': site,
+                'now_time': now_str,
+                'week_before_time': w_before_str,
+                'MAPBOX_TOKEN': mapbox_access_token,
+    }
+    
+    return render(request, 'project/data-analysis.html', context)
 
 
 def get_analysis_data( request, site_slug=None):
