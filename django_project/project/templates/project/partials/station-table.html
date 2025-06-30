@@ -5,6 +5,7 @@
     <table id="station-table" class="table table-striped" style="width:100%">
         <thead>
             <tr>
+                <th>station_id</th>
                 <th>station_code</th>
                 <th>network_code</th>
                 <th>station_lat</th>
@@ -15,11 +16,12 @@
         <tbody>
             {% for ev in station_table_data %}
                 <tr>
+                    <td>{{ ev.id }}</td>
                     <td>{{ ev.station_code }}</td>
                     <td>{{ ev.network_code }}</td>
                     <td>{{ ev.station_lat | floatformat:7 }}</td>
                     <td>{{ ev.station_lon | floatformat:7 }}</td>
-                    <td>{{ ev.station_elev_m | floatformat:7 }}</td>
+                    <td>{{ ev.station_elev_m }}</td>
                 </tr>
             {% endfor %}
         </tbody>

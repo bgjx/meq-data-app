@@ -136,7 +136,7 @@ def download_picking_catalog(request, site_slug):
     for data in filter_instance.qs:
         writer.writerow([getattr(data, field.name) for field in get_model._meta.fields])
 
-    return None
+    return response
 
 
 def download_station(request, site_slug):
@@ -163,7 +163,7 @@ def download_station(request, site_slug):
     for data in get_model.objects.all():
         writer.writerow([getattr(data, field.name) for field in get_model._meta.fields])
     
-    return None
+    return response
 
 
 # def meq_maps(request, site_slug = None):
