@@ -10,6 +10,8 @@ urlpatterns = [
 
     path('<slug:site_slug>/download/picking/', views.download_picking_catalog, name='download-picking-catalog'),
 
+    path('<slug:site_slug>/download/station/', views.download_station, name='download-station'),
+
     # path('<slug:site_slug>/maps', views.meq_maps, name='meq-maps'),
 
     # path('<slug:site_slug>/get-meq-data', views.get_meq_data, name='get-meq-data'),

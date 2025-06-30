@@ -63,8 +63,15 @@ def project_site(request, site_slug = None):
 
     # update context
     context['picking_table'] = picking_filter_instance.qs
-    context['picking_date_filter'] = picking_filter_instance  
+    context['picking_date_filter'] = picking_filter_instance
 
+    # For station
+    # Get model
+    station_model_name = get_station('project', site_slug)
+    get_model_station = apps.get_model('project', station_model_name)
+
+    # update context
+    context['station_table'] = get_model_station.objects.all()
 
     return render(request, 'project/data-explore.html', context)
 
@@ -73,7 +80,7 @@ def project_site(request, site_slug = None):
 def download_hypo_catalog(request, site_slug, catalog_type):
     'Download hypocenter catalog according to the site slug and catalog type.'
 
-    # Get all table objects and table name
+    # Get model name
     model = get_hypocenter_catalog('project', site_slug, catalog_type)
     
     # Get reference model
@@ -104,7 +111,7 @@ def download_hypo_catalog(request, site_slug, catalog_type):
 def download_picking_catalog(request, site_slug):
     'Download picking catalog according to the site slug'
 
-    # Get table objects and table name
+    # Get model name
     model = get_picking_catalog('project', site_slug)
 
     # Get reference model 
@@ -129,6 +136,33 @@ def download_picking_catalog(request, site_slug):
     for data in filter_instance.qs:
         writer.writerow([getattr(data, field.name) for field in get_model._meta.fields])
 
+    return None
+
+
+def download_station(request, site_slug):
+    'Download station data according to site slug'
+
+    # Get model name
+    model = get_station('project', site_slug)
+
+    # Get reference model
+    get_model = apps.get_model('project', model)
+
+    # Http response
+    response = HttpResponse(
+        content_type = "text/csv; charset=utf-8",
+         headers={"Content-Disposition": 'attachment; filename="station_download.csv"'}
+    )
+
+    # write header 
+    writer = csv.writer(response, lineterminator='\n')
+    headers = [field.name for field in get_model._meta.fields]
+    writer.writerow(headers)
+
+    # writing data
+    for data in get_model.objects.all():
+        writer.writerow([getattr(data, field.name) for field in get_model._meta.fields])
+    
     return None
 
 

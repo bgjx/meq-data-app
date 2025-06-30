@@ -81,7 +81,7 @@ def get_station(app_label, slug):
     models = apps.get_app_config(app_label).get_models()
     for model in models:
         if table_name in model._meta.db_table:
-            return model.objects.all()
+            return model.__name__
     
     return None
 
