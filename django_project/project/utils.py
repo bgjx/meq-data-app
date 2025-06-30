@@ -27,6 +27,8 @@ def get_hypocenter_catalog(app_label, slug, catalog_type):
 
     # Get all models
     models = apps.get_app_config(app_label).get_models()
+
+    # Return the table objects and table name
     for model in models:
         if table_name in str(model._meta.db_table):
             return model.objects.all(), model.__name__()
