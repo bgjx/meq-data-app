@@ -5,10 +5,11 @@ from django.conf import settings
 
 from frontpage.models import Site
 from project.utils import (get_hypocenter_catalog, 
+                           get_picking_catalog,
                            get_station,
                            get_merged_catalog,
                            analysis_engine)
-from . filters import hypo_table_filter, spatial_filter
+from . filters import hypo_table_filter, picking_table_filter, spatial_filter
 
 from datetime import datetime, timedelta
 import pandas as pd
@@ -32,22 +33,38 @@ def project_site(request, site_slug = None):
         {'type': 'initial', 'download_url': 'download-initial'}
     ]
 
-    #  Process each catalog
+    #  Process table
     context = {'site': site}
+
+    # For hypocenter catalog
     for catalog in catalog_types:
         catalog_type = catalog['type']
 
         # Get model
-        model = get_hypocenter_catalog('project', site_slug, catalog_type)
-        get_model = apps.get_model('project', model)
+        hypo_model_name = get_hypocenter_catalog('project', site_slug, catalog_type)
+        get_model_hypo = apps.get_model('project', hypo_model_name)
 
         # apply filter
-        filter_class = hypo_table_filter(model)
-        filter_instance = filter_class(request.GET, queryset=get_model.objects.all())
+        hypo_filter_class = hypo_table_filter(hypo_model_name)
+        hypo_filter_instance = hypo_filter_class(request.GET, queryset=get_model_hypo.objects.all())
 
         # update context
-        context[f'table_{catalog_type}'] = filter_instance.qs
-        context[f'date_filter_{catalog_type}'] = filter_instance
+        context[f'hypo_table_{catalog_type}'] = hypo_filter_instance.qs
+        context[f'hypo_date_filter_{catalog_type}'] = hypo_filter_instance
+    
+    # For picking catalog
+    # Get model
+    picking_model_name = get_picking_catalog('project', site_slug)
+    get_model_picking = apps.get_model('project', picking_model_name)
+    
+    # Apply filter 
+    picking_filter_class = picking_table_filter(picking_model_name)
+    picking_filter_instance = picking_filter_class(request.GET, queryset=get_model_picking.objects.all())
+
+    # update context
+    context['picking_table'] = picking_filter_instance.qs
+    context['picking_date_filter'] = hypo_filter_instance  
+
 
     return render(request, 'project/data-explore.html', context)
 

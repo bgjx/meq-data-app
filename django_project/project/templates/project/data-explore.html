@@ -1,34 +1,47 @@
 {% extends './base-project.html' %}
 {% load static %}
 {% block content %}
-    <section class="py-4 container">
-        <div class="row py-lg-3">
-            <div class="col">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="py-lg-3">
-                            <h4 style="font-weight: 500;">
-                                {{ site.name | upper }} Earthquake Catalog
-                            </h4>
-                        </div>
-                        <ul class="nav nav-tabs">
-                            <li class="nav-item">
-                                <button class="nav-link active" data-tab="tab-relocated">Relocated Catalog</button>
-                            </li>
-                            <li class="nav-item">
-                                <button class="nav-link" data-tab="tab-initial">Initial Catalog</button>
-                            </li>
-                        </ul>
-                        <!-- Earthquake Catalog -->
-                        <div class="tab-contents-tab">
-                            {% include 'project/partials/hypo-catalog-table.html' with catalog_type='relocated' table_data=table_relocated date_filter=date_filter_relocated  active=True %}
-                            {% include 'project/partials/hypo-catalog-table.html' with catalog_type='initial' table_data=table_initial date_filter=date_filter_initial  %}
-                        </div>
-                        <!-- Picking Catalog -->
-
+<section class="py-4 container">
+    <div class="row py-lg-3">
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <div class="py-lg-3">
+                        <h4 style="font-weight: 500;">
+                            {{ site.name | upper }} Earthquake Catalog
+                        </h4>
+                    </div>
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item">
+                            <button class="nav-link active" data-tab="tab-relocated">Relocated Catalog</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-tab="tab-initial">Initial Catalog</button>
+                        </li>
+                    </ul>
+                    <!-- Earthquake Catalog -->
+                    <div class="tab-contents-tab">
+                        {% include 'project/partials/hypo-catalog-table.html' with catalog_type='relocated' hypo_table_data=hypo_table_relocated hypo_date_filter=hypo_date_filter_relocated  active=True %}
+                        {% include 'project/partials/hypo-catalog-table.html' with catalog_type='initial' hypo_table_data=hypo_table_initial hypo_date_filter=hypo_date_filter_initial  %}
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+
+    <div class="row py-lg-3">
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <div class="py-lg-3">
+                        <h4 style="font-weight: 500;">
+                            {{ site.name | upper }} Picking Catalog
+                        </h4>
+                        {% include 'project/partials/picking-catalog-table.html' with picking_table_data=picking_table picking_date_filter=picking_date_filter %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}

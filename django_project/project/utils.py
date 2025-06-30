@@ -36,6 +36,23 @@ def get_hypocenter_catalog(app_label, slug, catalog_type):
     return None
 
 
+# get picking catalog
+def get_picking_catalog(app_label, slug):
+    'Get hypocenter catalog from model.'
+    # Expected hypo catalog table name
+    table_name = f"{slug}_picking_catalog"
+
+    # Get all models
+    models = apps.get_app_config(app_label).get_models()
+
+    # Return the table objects and table name
+    for model in models:
+        if table_name in str(model._meta.db_table):
+            return model.__name__
+    
+    return None
+
+
 # get merged catalog view for complete data analysis
 def get_merged_catalog(app_label, slug):
     'Get full catalog by merging hypocenter, picking, and station.'
