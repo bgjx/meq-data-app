@@ -23,13 +23,13 @@
                                 <div class="col">
                                     <div class="form-label"> Start (UTC)</div>
                                     <div class="input">
-                                        {{date_filter.form.start_date}}
+                                        {{hypo_date_filter.form.hypo_start_date}}
                                     </div>
                                 </div>
                                 <div class="col py-lg-3">
                                     <div class="form-label"> End (UTC)</div>
                                     <div class="input">
-                                        {{date_filter.form.end_date}}
+                                        {{hypo_date_filter.form.hypo_end_date}}
                                     </div>
                                 </div>
                             </div>
@@ -61,7 +61,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for ev in table_data %}
+                {% for ev in hypo_table_data %}
                     <tr>
                         <td>{{ ev.source_id }}</td>
                         <td>{{ ev.source_lat | floatformat:7 }}</td>
@@ -78,8 +78,8 @@
     </div>
 
     <div class="download-csv py-lg-3">
-        <p>Or you can download the full catalog in CSV file below</p>
-        <a href="{% url 'project:download-catalog' site_slug=site.slug catalog_type=catalog_type %}" class="btn btn-primary">
+        <p>Or you can download the full hypocenter catalog in CSV file below</p>
+        <a href="{% url 'project:download-hypo-catalog' site_slug=site.slug catalog_type=catalog_type %}?{{ request.GET.urlencode }}" class="btn btn-primary">
             Download full CSV
         </a>
     </div>

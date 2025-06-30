@@ -1,0 +1,82 @@
+{% load static %}
+<!-- Date range picker form -->
+<div class="form-container">
+    <div class="card">
+        <!-- Filter header -->
+        <div class="card-header" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="true" aria-controls="filterCollapse" style="cursor: pointer;" >
+            <div class="d-flex align-items-center">
+                <h6 style="font-weight: 500;"> Filters Console</h6>
+                <button class="btn btn-link p-0 ms-auto" type="button" aria-label="Toggle filter form">
+                    <i class="bi bi-chevron-down"></i>
+                </button>
+            </div>
+        </div>
+        <!-- Collapsible card body -->
+        <div id='filterCollapse' class="collapse show">
+            <div class="card-body">
+                <form method="get" class="py-lg-3">
+                    <div class="form-explorer">
+                        <!-- Start date label  -->
+                        <div class="form-input ">
+                            <div class="filter-type"> Time Filter </div>
+                            <div class="col">
+                                <div class="form-label"> Start (UTC)</div>
+                                <div class="input">
+                                    {{picking_date_filter.form.picking_start_date}}
+                                </div>
+                            </div>
+                            <div class="col py-lg-3">
+                                <div class="form-label"> End (UTC)</div>
+                                <div class="input">
+                                    {{picking_date_filter.form.picking_end_date}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Submit button  -->
+                    <button class="btn btn-primary " type="submit">Apply Filter</button>
+                </form>
+                <div class="filter-clear">
+                    <a href="{% url 'project:project-page' site_slug=site.slug %}">clear filters</a> 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Table -->
+<div class="table-container">
+    <table id="picking-table" class="table table-striped" style="width:100%">
+        <thead>
+            <tr>
+                <th>source_id</th>
+                <th>station_code</th>
+                <th>p_arrival_dt</th>
+                <th>p_polarity</th>
+                <th>p_onset</th>
+                <th>s_arrival_dt</th> 
+                <th>coda_dt</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ev in picking_table_data %}
+                <tr>
+                    <td>{{ ev.source_id }}</td>
+                    <td>{{ ev.station_code }}</td>
+                    <td>{{ ev.p_arrival_dt | date:"Y-m-d H:i:s.u" }}</td>
+                    <td>{{ ev.p_polarity}}</td>
+                    <td>{{ ev.p_onset }}</td>
+                    <td>{{ ev.s_arrival_dt | date:"Y-m-d H:i:s.u" }}</td>
+                    <td>{{ ev.coda_dt | date:"Y-m-d H:i:s.u" }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="download-csv py-lg-3">
+    <p>Or you can download the full picking catalog in CSV file below</p>
+    <a href="{% url 'project:download-picking-catalog' site_slug=site.slug %}?{{ request.GET.urlencode }}" class="btn btn-primary">
+        Download full CSV
+    </a>
+</div>

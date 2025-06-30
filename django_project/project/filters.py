@@ -14,16 +14,17 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-
-def table_filter(model_name):
+# filter for hypocenter catalog table
+def hypo_table_filter(model_name):
     picked_model = apps.get_model('project', model_name)
 
     # get the data time scope
     min_date = picked_model.objects.all().aggregate(min_date=Min('source_origin_dt'))['min_date']
     max_date = picked_model.objects.all().aggregate(max_date=Max('source_origin_dt'))['max_date']
 
-    class TableFilter(django_filters.FilterSet):
-        start_date = DateFilter(field_name="source_origin_dt", 
+    # Inherit django filter class object
+    class HypoTableFilter(django_filters.FilterSet):
+        hypo_start_date = DateFilter(field_name="source_origin_dt", 
                                 lookup_expr="gte", 
                                 label="Start Date",
                                 widget = forms.DateInput(
@@ -34,9 +35,9 @@ def table_filter(model_name):
                                         'placeholder':  min_date.strftime('%Y-%m-%d %H:%M:%S') if min_date else ''
                                     }
                                 )
-                    )
+        )
         
-        end_date = DateFilter(field_name="source_origin_dt",
+        hypo_end_date = DateFilter(field_name="source_origin_dt",
                               lookup_expr="lte", 
                               label="End Date",
                               widget = forms.DateInput(
@@ -47,12 +48,56 @@ def table_filter(model_name):
                                         'placeholder': max_date.strftime('%Y-%m-%d %H:%M:%S') if max_date else ''
                                   }
                               )
-                    )
+        )
         
         class Meta:
             model = picked_model
-            fields = []
-    return TableFilter
+            fields = ['hypo_start_date', 'hypo_end_date']
+    return HypoTableFilter
+
+
+# filter for picking catalog table
+def picking_table_filter(model_name):
+    picked_model = apps.get_model('project', model_name)
+
+    # Get the data time scope (base on P-arrival)
+    min_date = picked_model.objects.all().aggregate(min_date = Min('p_arrival_dt'))['min_date']
+    max_date = picked_model.objects.all().aggregate(max_date = Max('p_arrival_dt'))['max_date']
+
+    # Inherit django filter class object
+    class PickTableFilter(django_filters.FilterSet):
+        picking_start_date = DateFilter( field_name="p_arrival_dt",
+                                lookup_expr="gte",
+                                label="Start Date",
+                                widget = forms.DateInput(
+                                    attrs={
+                                        'type': 'text',
+                                        'min': min_date.strftime('%Y-%m-%d %H:%M:%S') if min_date else '',
+                                        'max': max_date.strftime('%Y-%m-%d %H:%M:%S') if max_date else '',
+                                        'placeholder':  min_date.strftime('%Y-%m-%d %H:%M:%S') if min_date else ''
+                                    },
+                                ),
+        )
+
+        picking_end_date = DateFilter(field_name= "p_arrival_dt",
+                              lookup_expr="lte",
+                              label="End Date",
+                              widget = forms.DateInput(
+                                  attrs={
+                                        'type': 'text',
+                                        'min': min_date.strftime('%Y-%m-%d %H:%M:%S') if min_date else '',
+                                        'max': max_date.strftime('%Y-%m-%d %H:%M:%S') if max_date else '',
+                                        'placeholder': max_date.strftime('%Y-%m-%d %H:%M:%S') if max_date else ''
+                                  },
+                              ),
+        )
+
+        class Meta:
+            model = picked_model
+            fields = ['picking_start_date', 'picking_end_date']
+    
+    return PickTableFilter
+
 
 
 def spatial_filter(model_name):
