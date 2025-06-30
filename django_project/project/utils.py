@@ -22,7 +22,7 @@ REQUIRED_COLUMNS_NAME = [
 # get hypocenter catalog
 def get_hypocenter_catalog(app_label, slug, catalog_type):
     'Get hypocenter catalog from model.'
-    # Expected table name
+    # Expected hypo catalog table name
     table_name = f"{slug}_{catalog_type}_catalog"
 
     # Get all models
@@ -39,22 +39,34 @@ def get_hypocenter_catalog(app_label, slug, catalog_type):
 # get merged catalog view for complete data analysis
 def get_merged_catalog(app_label, slug):
     'Get full catalog by merging hypocenter, picking, and station.'
-    # get all the tables
-    for model in apps.get_app_config(app_label).get_models():
-        if f"{slug}_catalog_merged_view" in str(model._meta.db_table):
-            all_objects = model.objects.all()
-            model_name = model.__name__ 
-            break
-    return all_objects, model_name
+
+    # Expected view merged table name
+    table_name = f"{slug}_catalog_merged_view" 
+
+    # Get all view merged models
+    models = apps.get_app_config(app_label).get_models()
+
+    # Return the table objects and table name
+    for model in models:
+        if table_name in str(model._meta.db_table):
+            return model.objects.all(), model.__name__()
+    
+    return None
 
 
 def get_station(app_label, slug):
     'Get station data from station model'
-    for model in apps.get_app_config(app_label).get_models():
-        if f"{slug}_station" in model._meta.db_table:
-            all_objects = model.objects.all()
-            break
-    return all_objects
+
+    # Expected station table name
+    table_name = f"{slug}_station" 
+
+    # Get all station models
+    models = apps.get_app_config(app_label).get_models()
+    for model in models:
+        if table_name in model._meta.db_table:
+            return model.objects.all()
+    
+    return None
 
 
 def analysis_engine(df: pd.DataFrame, slug):
