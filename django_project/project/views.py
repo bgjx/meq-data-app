@@ -70,7 +70,7 @@ def project_site(request, site_slug = None):
 
 
 # Function for data download client
-def download_catalog(request, site_slug, catalog_type):
+def download_hypo_catalog(request, site_slug, catalog_type):
     'Download catalog according to the site slug and catalog type.'
 
     # Get all table objects and table name
@@ -99,6 +99,10 @@ def download_catalog(request, site_slug, catalog_type):
         writer.writerow([getattr(data, field.name) for field in get_model._meta.fields])
     
     return response
+
+
+def download_picking_catalog(request, site_slug):
+    return None
 
 
 # def meq_maps(request, site_slug = None):

@@ -62,7 +62,7 @@ def picking_table_filter(model_name):
 
     # Get the data time scope (base on P-arrival)
     min_date = picked_model.objects.all().aggregate(min_date = Min('p_arrival_dt'))['min_date']
-    max_date = picked_model.objects.all().aggregate(max_data = Max('p_arrival_dt'))['max_date']
+    max_date = picked_model.objects.all().aggregate(max_date = Max('p_arrival_dt'))['max_date']
 
     # Inherit django filter class object
     class PickTableFilter(django_filters.FilterSet):

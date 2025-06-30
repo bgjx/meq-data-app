@@ -1,86 +1,84 @@
 {% load static %}
-<div class="tab-content {% if active %}active{% endif %}" id="tab-{{ catalog_type }}">
-    <!-- Date range picker form -->
-    <div class="form-container">
-        <div class="card">
-            <!-- Filter header -->
-            <div class="card-header" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="true" aria-controls="filterCollapse" style="cursor: pointer;" >
-                <div class="d-flex align-items-center">
-                    <h6 style="font-weight: 500;"> Filters Console</h6>
-                    <button class="btn btn-link p-0 ms-auto" type="button" aria-label="Toggle filter form">
-                        <i class="bi bi-chevron-down"></i>
-                    </button>
-                </div>
+<!-- Date range picker form -->
+<div class="form-container">
+    <div class="card">
+        <!-- Filter header -->
+        <div class="card-header" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="true" aria-controls="filterCollapse" style="cursor: pointer;" >
+            <div class="d-flex align-items-center">
+                <h6 style="font-weight: 500;"> Filters Console</h6>
+                <button class="btn btn-link p-0 ms-auto" type="button" aria-label="Toggle filter form">
+                    <i class="bi bi-chevron-down"></i>
+                </button>
             </div>
-            <!-- Collapsible card body -->
-            <div id='filterCollapse' class="collapse show">
-                <div class="card-body">
-                    <form method="get" class="py-lg-3">
-                        <div class="form-explorer">
-                            <!-- Start date label  -->
-                            <div class="form-input ">
-                                <div class="filter-type"> Time Filter </div>
-                                <div class="col">
-                                    <div class="form-label"> Start (UTC)</div>
-                                    <div class="input">
-                                        {{date_filter.form.start_date}}
-                                    </div>
+        </div>
+        <!-- Collapsible card body -->
+        <div id='filterCollapse' class="collapse show">
+            <div class="card-body">
+                <form method="get" class="py-lg-3">
+                    <div class="form-explorer">
+                        <!-- Start date label  -->
+                        <div class="form-input ">
+                            <div class="filter-type"> Time Filter </div>
+                            <div class="col">
+                                <div class="form-label"> Start (UTC)</div>
+                                <div class="input">
+                                    {{date_filter.form.start_date}}
                                 </div>
-                                <div class="col py-lg-3">
-                                    <div class="form-label"> End (UTC)</div>
-                                    <div class="input">
-                                        {{date_filter.form.end_date}}
-                                    </div>
+                            </div>
+                            <div class="col py-lg-3">
+                                <div class="form-label"> End (UTC)</div>
+                                <div class="input">
+                                    {{date_filter.form.end_date}}
                                 </div>
                             </div>
                         </div>
-                        <!-- Submit button  -->
-                        <button class="btn btn-primary " type="submit">Apply Filter</button>
-                    </form>
-                    <div class="filter-clear">
-                        <a href="{% url 'project:project-page' site_slug=site.slug %}">clear filters</a> 
                     </div>
+                    <!-- Submit button  -->
+                    <button class="btn btn-primary " type="submit">Apply Filter</button>
+                </form>
+                <div class="filter-clear">
+                    <a href="{% url 'project:project-page' site_slug=site.slug %}">clear filters</a> 
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Table -->
-    <div class="table-container">
-        <table class="table table-striped" style="width:100%">
-            <thead>
+<!-- Table -->
+<div class="table-container">
+    <table class="table table-striped" style="width:100%">
+        <thead>
+            <tr>
+                <th>source_id</th>
+                <th>source_latitude</th>
+                <th>source_longitude</th>
+                <th>source_depth_m</th>
+                <th>source_origin_dt</th>
+                <th>source_err_rms_s</th> <!-- Unified header name -->
+                <th>magnitude</th>
+                <th>remarks</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ev in table_data %}
                 <tr>
-                    <th>source_id</th>
-                    <th>source_latitude</th>
-                    <th>source_longitude</th>
-                    <th>source_depth_m</th>
-                    <th>source_origin_dt</th>
-                    <th>source_err_rms_s</th> <!-- Unified header name -->
-                    <th>magnitude</th>
-                    <th>remarks</th>
+                    <td>{{ ev.source_id }}</td>
+                    <td>{{ ev.source_lat | floatformat:7 }}</td>
+                    <td>{{ ev.source_lon | floatformat:7 }}</td>
+                    <td>{{ ev.source_depth_m | floatformat:3 }}</td>
+                    <td>{{ ev.source_origin_dt | date:"Y-m-d H:i:s.u" }}</td>
+                    <td>{{ ev.source_err_rms_s | floatformat:3 }}</td>
+                    <td>{{ ev.magnitude | floatformat:3 }}</td>
+                    <td>{{ ev.remarks }}</td>
                 </tr>
-            </thead>
-            <tbody>
-                {% for ev in table_data %}
-                    <tr>
-                        <td>{{ ev.source_id }}</td>
-                        <td>{{ ev.source_lat | floatformat:7 }}</td>
-                        <td>{{ ev.source_lon | floatformat:7 }}</td>
-                        <td>{{ ev.source_depth_m | floatformat:3 }}</td>
-                        <td>{{ ev.source_origin_dt | date:"Y-m-d H:i:s.u" }}</td>
-                        <td>{{ ev.source_err_rms_s | floatformat:3 }}</td>
-                        <td>{{ ev.magnitude | floatformat:3 }}</td>
-                        <td>{{ ev.remarks }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
-    <div class="download-csv py-lg-3">
-        <p>Or you can download the full catalog in CSV file below</p>
-        <a href="{% url 'project:download-catalog' site_slug=site.slug catalog_type=catalog_type %}" class="btn btn-primary">
-            Download full CSV
-        </a>
-    </div>
+<div class="download-csv py-lg-3">
+    <p>Or you can download the full catalog in CSV file below</p>
+    <a href="{% url 'project:download-picking-catalog' site_slug=site.slug %}?{{ request.GET.urlencode }}" class="btn btn-primary">
+        Download full CSV
+    </a>
 </div>
