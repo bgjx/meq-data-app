@@ -23,13 +23,13 @@
                                 <div class="col">
                                     <div class="form-label"> Start (UTC)</div>
                                     <div class="input">
-                                        {{date_filter.form.start_date}}
+                                        {{hypo_date_filter.form.hypo_start_date}}
                                     </div>
                                 </div>
                                 <div class="col py-lg-3">
                                     <div class="form-label"> End (UTC)</div>
                                     <div class="input">
-                                        {{date_filter.form.end_date}}
+                                        {{hypo_date_filter.form.hypo_end_date}}
                                     </div>
                                 </div>
                             </div>
@@ -61,7 +61,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for ev in table_data %}
+                {% for ev in hypo_table_data %}
                     <tr>
                         <td>{{ ev.source_id }}</td>
                         <td>{{ ev.source_lat | floatformat:7 }}</td>

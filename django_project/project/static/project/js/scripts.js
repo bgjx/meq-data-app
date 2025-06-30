@@ -74,4 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
+    // For picking table
+    let table = new DataTable('#picking-table')
 });

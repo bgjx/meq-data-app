@@ -24,7 +24,7 @@ def hypo_table_filter(model_name):
 
     # Inherit django filter class object
     class HypoTableFilter(django_filters.FilterSet):
-        start_date = DateFilter(field_name="source_origin_dt", 
+        hypo_start_date = DateFilter(field_name="source_origin_dt", 
                                 lookup_expr="gte", 
                                 label="Start Date",
                                 widget = forms.DateInput(
@@ -37,7 +37,7 @@ def hypo_table_filter(model_name):
                                 )
         )
         
-        end_date = DateFilter(field_name="source_origin_dt",
+        hypo_end_date = DateFilter(field_name="source_origin_dt",
                               lookup_expr="lte", 
                               label="End Date",
                               widget = forms.DateInput(
@@ -52,7 +52,7 @@ def hypo_table_filter(model_name):
         
         class Meta:
             model = picked_model
-            fields = []
+            fields = ['hypo_start_date', 'hypo_end_date']
     return HypoTableFilter
 
 
@@ -66,7 +66,7 @@ def picking_table_filter(model_name):
 
     # Inherit django filter class object
     class PickTableFilter(django_filters.FilterSet):
-        start_date = DateFilter( field_name="p_arrival_dt",
+        picking_start_date = DateFilter( field_name="p_arrival_dt",
                                 lookup_expr="gte",
                                 label="Start Date",
                                 widget = forms.DateInput(
@@ -79,7 +79,7 @@ def picking_table_filter(model_name):
                                 ),
         )
 
-        end_date = DateFilter(field_name= "p_arrival_dt",
+        picking_end_date = DateFilter(field_name= "p_arrival_dt",
                               lookup_expr="lte",
                               label="End Date",
                               widget = forms.DateInput(
@@ -94,7 +94,7 @@ def picking_table_filter(model_name):
 
         class Meta:
             model = picked_model
-            fields = []
+            fields = ['picking_start_date', 'picking_end_date']
     
     return PickTableFilter
 

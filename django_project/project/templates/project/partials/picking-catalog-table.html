@@ -22,13 +22,13 @@
                             <div class="col">
                                 <div class="form-label"> Start (UTC)</div>
                                 <div class="input">
-                                    {{date_filter.form.start_date}}
+                                    {{picking_date_filter.form.picking_start_date}}
                                 </div>
                             </div>
                             <div class="col py-lg-3">
                                 <div class="form-label"> End (UTC)</div>
                                 <div class="input">
-                                    {{date_filter.form.end_date}}
+                                    {{picking_date_filter.form.picking_end_date}}
                                 </div>
                             </div>
                         </div>
@@ -46,30 +46,28 @@
 
 <!-- Table -->
 <div class="table-container">
-    <table class="table table-striped" style="width:100%">
+    <table id="picking-table" class="table table-striped" style="width:100%">
         <thead>
             <tr>
                 <th>source_id</th>
-                <th>source_latitude</th>
-                <th>source_longitude</th>
-                <th>source_depth_m</th>
-                <th>source_origin_dt</th>
-                <th>source_err_rms_s</th> <!-- Unified header name -->
-                <th>magnitude</th>
-                <th>remarks</th>
+                <th>station_code</th>
+                <th>p_arrival_dt</th>
+                <th>p_polarity</th>
+                <th>p_onset</th>
+                <th>s_arrival_dt</th> 
+                <th>coda_dt</th>
             </tr>
         </thead>
         <tbody>
-            {% for ev in table_data %}
+            {% for ev in picking_table_data %}
                 <tr>
                     <td>{{ ev.source_id }}</td>
-                    <td>{{ ev.source_lat | floatformat:7 }}</td>
-                    <td>{{ ev.source_lon | floatformat:7 }}</td>
-                    <td>{{ ev.source_depth_m | floatformat:3 }}</td>
-                    <td>{{ ev.source_origin_dt | date:"Y-m-d H:i:s.u" }}</td>
-                    <td>{{ ev.source_err_rms_s | floatformat:3 }}</td>
-                    <td>{{ ev.magnitude | floatformat:3 }}</td>
-                    <td>{{ ev.remarks }}</td>
+                    <td>{{ ev.station_code }}</td>
+                    <td>{{ ev.p_arrival_dt | date:"Y-m-d H:i:s.u" }}</td>
+                    <td>{{ ev.p_polarity}}</td>
+                    <td>{{ ev.p_onset }}</td>
+                    <td>{{ ev.s_arrival_dt | date:"Y-m-d H:i:s.u" }}</td>
+                    <td>{{ ev.coda_dt | date:"Y-m-d H:i:s.u" }}</td>
                 </tr>
             {% endfor %}
         </tbody>

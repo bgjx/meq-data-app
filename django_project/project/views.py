@@ -63,7 +63,7 @@ def project_site(request, site_slug = None):
 
     # update context
     context['picking_table'] = picking_filter_instance.qs
-    context['picking_date_filter'] = hypo_filter_instance  
+    context['picking_date_filter'] = picking_filter_instance  
 
 
     return render(request, 'project/data-explore.html', context)
@@ -71,7 +71,7 @@ def project_site(request, site_slug = None):
 
 # Function for data download client
 def download_hypo_catalog(request, site_slug, catalog_type):
-    'Download catalog according to the site slug and catalog type.'
+    'Download hypocenter catalog according to the site slug and catalog type.'
 
     # Get all table objects and table name
     model = get_hypocenter_catalog('project', site_slug, catalog_type)
@@ -102,6 +102,33 @@ def download_hypo_catalog(request, site_slug, catalog_type):
 
 
 def download_picking_catalog(request, site_slug):
+    'Download picking catalog according to the site slug'
+
+    # Get table objects and table name
+    model = get_picking_catalog('project', site_slug)
+
+    # Get reference model 
+    get_model = apps.get_model('project', model)
+
+    # Applied filter with the model and request.GET parameters
+    filter_class = picking_table_filter(model)
+    filter_instance = filter_class(request.GET, queryset=get_model.objects.all())
+
+    # Http response
+    response = HttpResponse(
+        content_type = "text/csv; charset=utf-8",
+        headers={"Content-Disposition": 'attachment; filename="picking_catalog_download.csv"'}
+    )
+
+    # write header
+    writer = csv.writer(response, lineterminator='\n')
+    headers = [field.name for field in get_model._meta.fields]
+    writer.writerow(headers)
+
+    # writing data
+    for data in filter_instance.qs:
+        writer.writerow([getattr(data, field.name) for field in get_model._meta.fields])
+
     return None
 
 
