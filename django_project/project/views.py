@@ -36,11 +36,15 @@ def project_site(request, site_slug = None):
     context = {'site': site}
     for catalog in catalog_types:
         catalog_type = catalog['type']
+
         # Get model
-        db_table, model = get_hypocenter_catalog('project', site_slug, catalog_type)
+        model = get_hypocenter_catalog('project', site_slug, catalog_type)
+        get_model = apps.get_model('projects', model)
+
         # apply filter
         filter_class = hypo_table_filter(model)
-        filter_instance = filter_class(request.GET, queryset=db_table)
+        filter_instance = filter_class(request.GET, queryset=get_model.objects.all())
+
         # update context
         context[f'table_{catalog_type}'] = filter_instance.qs
         context[f'date_filter_{catalog_type}'] = filter_instance
@@ -51,8 +55,16 @@ def project_site(request, site_slug = None):
 # Function for data download client
 def download_catalog(request, site_slug, catalog_type):
     'Download catalog according to the site slug and catalog type.'
-    db_table, model = get_hypocenter_catalog('project', site_slug, catalog_type)
+
+    # Get all table objects and table name
+    model = get_hypocenter_catalog('project', site_slug, catalog_type)
+    
+    # Get reference model
     get_model = apps.get_model('project', model)
+
+    # Applied filter with the model and request.GET parameters
+    filter_class = hypo_table_filter(model)
+    filter_instance = filter_class(request.GET, queryset=get_model.objects.al())
 
     # http response
     response = HttpResponse(
@@ -61,12 +73,12 @@ def download_catalog(request, site_slug, catalog_type):
     )
 
     # write header
-    writer = csv.writer(response)
+    writer = csv.writer(response, lineterminator='\n')
     headers = [field.name for field in get_model._meta.fields]
     writer.writerow(headers)
 
     # writing data
-    for data in db_table:
+    for data in filter_instance.qs:
         writer.writerow([getattr(data, field.name) for field in get_model._meta.fields])
     
     return response
