@@ -22,12 +22,16 @@ REQUIRED_COLUMNS_NAME = [
 # get hypocenter catalog
 def get_hypocenter_catalog(app_label, slug, catalog_type):
     'Get hypocenter catalog from model.'
-    for model in apps.get_app_config(app_label).get_models():
-        if f"{slug}_{catalog_type}_catalog" in str(model._meta.db_table):
-            all_objects = model.objects.all()
-            model_name = model.__name__
-            break
-    return all_objects, model_name
+    # Expected table name
+    table_name = f"{slug}_{catalog_type}_catalog"
+
+    # Get all models
+    models = apps.get_app_config(app_label).get_models()
+    for model in models:
+        if table_name in str(model._meta.db_table):
+            return model.objects.all(), model.__name__()
+    
+    return None
 
 
 # get merged catalog view for complete data analysis

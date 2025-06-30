@@ -19,11 +19,13 @@
                                 <button class="nav-link" data-tab="tab-initial">Initial Catalog</button>
                             </li>
                         </ul>
-
+                        <!-- Earthquake Catalog -->
                         <div class="tab-contents-tab">
-                            {% include 'project/partials/catalog-table.html' with catalog_type='relocated' table_data=table_relocated date_filter=date_filter_relocated  active=True %}
-                            {% include 'project/partials/catalog-table.html' with catalog_type='initial' table_data=table_initial date_filter=date_filter_initial  %}
+                            {% include 'project/partials/hypo-catalog-table.html' with catalog_type='relocated' table_data=table_relocated date_filter=date_filter_relocated  active=True %}
+                            {% include 'project/partials/hypo-catalog-table.html' with catalog_type='initial' table_data=table_initial date_filter=date_filter_initial  %}
                         </div>
+                        <!-- Picking Catalog -->
+
                     </div>
                 </div>
             </div>

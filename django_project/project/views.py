@@ -8,7 +8,7 @@ from project.utils import (get_hypocenter_catalog,
                            get_station,
                            get_merged_catalog,
                            analysis_engine)
-from . filters import table_filter, spatial_filter
+from . filters import hypo_table_filter, spatial_filter
 
 from datetime import datetime, timedelta
 import pandas as pd
@@ -39,13 +39,38 @@ def project_site(request, site_slug = None):
         # Get model
         db_table, model = get_hypocenter_catalog('project', site_slug, catalog_type)
         # apply filter
-        filter_class = table_filter(model)
+        filter_class = hypo_table_filter(model)
         filter_instance = filter_class(request.GET, queryset=db_table)
         # update context
         context[f'table_{catalog_type}'] = filter_instance.qs
         context[f'date_filter_{catalog_type}'] = filter_instance
 
     return render(request, 'project/data-explore.html', context)
+
+
+# Function for data download client
+def download_catalog(request, site_slug, catalog_type):
+    'Download catalog according to the site slug and catalog type.'
+    db_table, model = get_hypocenter_catalog('project', site_slug, catalog_type)
+    get_model = apps.get_model('project', model)
+
+    # http response
+    response = HttpResponse(
+        content_type = "text/csv; charset=utf-8",
+        headers={"Content-Disposition": 'attachment; filename="hypo_catalog_download.csv"'}
+    )
+
+    # write header
+    writer = csv.writer(response)
+    headers = [field.name for field in get_model._meta.fields]
+    writer.writerow(headers)
+
+    # writing data
+    for data in db_table:
+        writer.writerow([getattr(data, field.name) for field in get_model._meta.fields])
+    
+    return response
+
 
 
 # def meq_maps(request, site_slug = None):
@@ -56,7 +81,9 @@ def project_site(request, site_slug = None):
 #         'site': site,
 #         'MAPBOX_TOKEN': mapbox_access_token,
 #     }
-#     return render(request, 'project/event-distributions.html', context=context)
+#     return render(request, 'project/event-distributions.html', context=context)# Function for data download client
+
+
 
 
 # #  API endpoint function
@@ -151,26 +178,3 @@ def get_analysis_data( request, site_slug=None):
 
     return JsonResponse(processed_data)
 
-
-# Function for data download client
-def download_catalog(request, site_slug, catalog_type):
-    'Download catalog according to the site slug and catalog type.'
-    db_table, model = get_hypocenter_catalog('project', site_slug, catalog_type)
-    get_model = apps.get_model('project', model)
-
-    # http response
-    response = HttpResponse(
-        content_type = "text/csv",
-        headers={"Content-Disposition": 'attachment; filename="catalog_download.csv"'}
-    )
-
-    # write header
-    writer = csv.writer(response)
-    headers = [field.name for field in get_model._meta.fields]
-    writer.writerow(headers)
-
-    # writing data
-    for data in db_table:
-        writer.writerow([getattr(data, field.name) for field in get_model._meta.fields])
-    
-    return response

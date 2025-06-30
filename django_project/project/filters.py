@@ -15,7 +15,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def table_filter(model_name):
+def hypo_table_filter(model_name):
     picked_model = apps.get_model('project', model_name)
 
     # get the data time scope
