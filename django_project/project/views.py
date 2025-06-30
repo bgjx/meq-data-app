@@ -219,12 +219,15 @@ def get_analysis_data( request, site_slug=None):
 
     site = get_object_or_404(Site, slug= site_slug)
 
-    # Get merged catalog model
-    db_merged_table, model = get_merged_catalog('project', site_slug)
+    # Get merged catalog model name
+    model = get_merged_catalog('project', site_slug)
+
+    # Get reference model
+    get_model = apps.get_model('project', model)
 
     # Apply spatial filter 
     filter_class = spatial_filter(model)
-    filter_instance = filter_class(request.GET, queryset=db_merged_table)
+    filter_instance = filter_class(request.GET, queryset=get_model.objects.all())
     queryset = filter_instance.qs 
 
     # Create pandas DataFrame as input for data analysis
