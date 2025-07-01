@@ -253,7 +253,7 @@ def upload_hypo_catalog(request, site_slug, catalog_type):
                     'overwrite': bool(conflicting_ids),
                 }
 
-                return render(request, 'project/uploads/upload-hypo-catalog.html', context)
+                return render(request, 'project/uploads/upload-confirm.html', context)
             
             except Exception as e:
                 messages.error(request, f"Error processing CSV: {e}")
@@ -262,7 +262,13 @@ def upload_hypo_catalog(request, site_slug, catalog_type):
     else:
         form = UploadFormCatalogCSV()
     
-    return render(request, 'project/uploads/upload-hypo-catalog.html', {'form': form})
+    context ={
+        'site': site,
+        'form': form,
+        'data_type': f'{catalog_type.capitalize()} Catalog'
+    }
+    
+    return render(request, 'project/uploads/upload-hypo-catalog.html', context)
 
 
 # def meq_maps(request, site_slug = None):

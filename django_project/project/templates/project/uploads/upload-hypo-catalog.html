@@ -1,4 +1,4 @@
-{% extends './base-project.html' %}
+{% extends '../base-project.html' %}
 {% load static %}
 {% block content %}
 <section class="py-4 container">
@@ -6,7 +6,7 @@
     <div class="row py-lg-3">
         <div class="col">
             <div class="card shadow">
-                <div class="card-body p-5 text-center">
+                <div class="card-body p-5">
                     <div class="upload-page">
                         <h4>
                             Upload Files Page for {{ site.name | upper }} {{data_type }} Data
@@ -15,10 +15,22 @@
                         <p> Before uploading make sure your .CSV files following this data structure</p>
                         {{ data_structure }}
                     </div>
-                    <form method='post' enctype='multipart/form-data'>
+                    <form method='post' >
                         {% csrf_token %}
-                        {{ form.as_p }}
-                        <button type="submit"> Check Data Integrity First </button>
+                        <div class="mb-3">
+                            <label for="id_title" class="form-label"></label>
+                            {{ form.title }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_description" class="form-label"></label>
+                            {{ form.description }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_file" class="form-label"></label>
+                            {{ form.file }}
+                        </div>
+                        <button type="submit" class="btn btn-primary"> Check Data Integrity </button>
                     </form>
                 </div>
             </div>
