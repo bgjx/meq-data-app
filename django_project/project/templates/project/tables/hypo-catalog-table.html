@@ -86,7 +86,7 @@
 
     <div class="upload-section py-lg-3">
         <p> Or if you are Admin, you can update the catalog </p>
-        <a href="{% url 'project:upload-form' site_slug=site.slug upload_type=catalog_type %}" class="btn btn-primary">
+        <a href="{% url 'project:upload-hypo-catalog' site_slug=site.slug catalog_type=catalog_type %}" class="btn btn-primary">
             Upload CSV
         </a>
     </div>
