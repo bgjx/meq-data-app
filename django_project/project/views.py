@@ -76,7 +76,7 @@ def project_site(request, site_slug = None):
     return render(request, 'project/data-explore.html', context)
 
 
-# Function for data download client
+# View functions for data download client
 def download_hypo_catalog(request, site_slug, catalog_type):
     'Download hypocenter catalog according to the site slug and catalog type.'
 
@@ -150,7 +150,7 @@ def download_station(request, site_slug):
 
     # Http response
     response = HttpResponse(
-        content_type = "text/csv; charset=utf-8",
+        content_type = "text# View functions for data download client/csv; charset=utf-8",
          headers={"Content-Disposition": 'attachment; filename="station_download.csv"'}
     )
 
@@ -164,6 +164,32 @@ def download_station(request, site_slug):
         writer.writerow([getattr(data, field.name) for field in get_model._meta.fields])
     
     return response
+
+def upload_form(request, site_slug, upload_type):
+    'From for uploading data according to site and the upload type'
+    site = get_object_or_404(Site, slug=site_slug)
+
+    # check upload type
+    data_type = None
+    if upload_type in ['initial', 'relocated']:
+        data_type = f"Catalog {upload_type.capitalize()}"
+    elif upload_type == 'picking':
+        data_type = 'picking'
+    else:
+        data_type = 'station'        
+
+    context = {
+        'site': site,
+        'data_type': data_type
+
+    }
+    return render(request, 'project/upload-form.html', context)
+
+# View functions for data upload client
+def upload_hypo_catalog(request, site_slug, catalog_type):
+    'Download hypocenter catalog according to the site slug and catalog type.'
+    return None 
+
 
 
 # def meq_maps(request, site_slug = None):

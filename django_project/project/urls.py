@@ -12,6 +12,9 @@ urlpatterns = [
 
     path('<slug:site_slug>/download/station/', views.download_station, name='download-station'),
 
+    path('<slug:site_slug>/upload-form/<str:upload_type>', views.upload_form, name='upload-form'),
+
+    path('<slug:site_slug>/upload/hypo/<str:catalog_type>', views.upload_hypo_catalog, name='upload-hypo-catalog'),
     # path('<slug:site_slug>/maps', views.meq_maps, name='meq-maps'),
 
     # path('<slug:site_slug>/get-meq-data', views.get_meq_data, name='get-meq-data'),
