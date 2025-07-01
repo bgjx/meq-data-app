@@ -5,19 +5,9 @@ import numpy as np
 from datetime import datetime, timedelta
 from scipy.stats import linregress
 
+from . import config
 
 mapbox_access_token = 'pk.eyJ1IjoiZWRlbG8iLCJhIjoiY20zNG1zN3F5MDFjdzJsb3N4ZDJ1ZTR1byJ9.bgl0vpixXnhDKJ8SnW4PYA'
-
-REQUIRED_COLUMNS_NAME = [
-    "id", "source_id", "source_lat_init", "source_lon_init", "location_init",
-    "source_depth_m_init", "source_origin_dt_init", "source_err_rms_s_init", "gap_init",
-    "remarks_init", "source_lat_reloc", "source_lon_reloc", "location_reloc",
-    "source_depth_m_reloc", "source_origin_dt_reloc", "source_err_rms_s_reloc",
-    "remarks_reloc", "network_code", "station_code", "station_lat",
-    "station_lon", "station_elev_m", "p_arrival_dt", "s_arrival_dt",
-    "coda_dt", "magnitude"
-]
-
 
 # get hypocenter catalog
 def get_hypocenter_catalog(app_label, slug, catalog_type):
@@ -93,7 +83,7 @@ def analysis_engine(df: pd.DataFrame, slug):
     if df.empty:
         raise ValueError('DataFrame cannot be empty')
     
-    missing_columns = [col for col in REQUIRED_COLUMNS_NAME if col not in df.columns]
+    missing_columns = [col for col in config.REQUIRED_COLUMNS_NAME if col not in df.columns]
     if missing_columns:
         raise ValueError(f"Missing these required columns {', '.join(missing_columns)}")
 

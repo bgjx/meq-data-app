@@ -1,7 +1,8 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.apps import apps
 from django.conf import settings
+from django.contrib import messages
 
 from frontpage.models import Site
 from project.utils import (get_hypocenter_catalog, 
@@ -10,10 +11,17 @@ from project.utils import (get_hypocenter_catalog,
                            get_merged_catalog,
                            analysis_engine)
 from . filters import hypo_table_filter, picking_table_filter, spatial_filter
+from . forms import UploadFormCatalogCSV
+from . data_cleanser import (clean_hypo_df
+
+                            )
+
 
 from datetime import datetime, timedelta
 import pandas as pd
 import csv
+from io import TextIOWrapper
+from . import config
 import openai 
 
 # variable
@@ -76,7 +84,7 @@ def project_site(request, site_slug = None):
     return render(request, 'project/data-explore.html', context)
 
 
-# Function for data download client
+# View functions for data download client
 def download_hypo_catalog(request, site_slug, catalog_type):
     'Download hypocenter catalog according to the site slug and catalog type.'
 
@@ -150,7 +158,7 @@ def download_station(request, site_slug):
 
     # Http response
     response = HttpResponse(
-        content_type = "text/csv; charset=utf-8",
+        content_type = "text# View functions for data download client/csv; charset=utf-8",
          headers={"Content-Disposition": 'attachment; filename="station_download.csv"'}
     )
 
@@ -163,7 +171,104 @@ def download_station(request, site_slug):
     for data in get_model.objects.all():
         writer.writerow([getattr(data, field.name) for field in get_model._meta.fields])
     
-    return response
+    return response# Get the model reference
+
+# Data Uploading views
+def read_csv_file(csv_file):
+    try:
+        df = pd.read_csv(csv_file)
+    except Exception as e:
+        raise ValueError(f"Could not read CSV file: {e}")
+    
+    # check missing columns
+    missing_columns = set(config.REQUIRED_HYPO_COLUMNS_NAME) - set(df.columns)
+    if missing_columns:
+        raise ValueError(f"Missing columns: {", ".join(missing_columns)}")
+    
+    return df
+
+
+def save_dataframe_to_db(model, df:pd.DataFrame, overwrite=False):
+    for _, row in df.iterrows():
+        row_data = {k: (v if pd.notna(v) else None) for k,v in row.items()}
+
+        if overwrite:
+            model.objects.update_or_create(
+                source_id = row_data['source_id'],
+                defaults  = row_data
+            )
+        else:
+            model.objects.get_or_create(
+                source_id = row_data['source_id'],
+                defaults = row_data
+            )
+
+
+def upload_hypo_catalog(request, site_slug, catalog_type):
+    'Download hypocenter catalog according to the site slug and catalog type.'
+
+    site = get_object_or_404(Site,slug=site_slug)
+    
+    # Get model name
+    model = get_hypocenter_catalog('project', site_slug, catalog_type)
+    
+    # Get reference model
+    get_model = apps.get_model('project', model)
+
+    if request.method == 'POST' and 'confirm_upload' in request.POST:
+        # confirm and save
+        overwrite = request.POST.get('overwrite') == True
+        df_records = request.session.get('csv_data')
+
+        if df_records:
+            df = pd.DataFrame.from_records(df_records)
+            save_dataframe_to_db(get_model, df, overwrite=overwrite)
+            del request.session['csv_data']
+            messages.success(request, 'CSV data uploaded successfully.')
+        else:
+            messages.error(request, 'No CSV data to upload.')
+        
+        return redirect('upload_catalog')
+
+    elif request.method == 'POST':
+        form = UploadFormCatalogCSV(request.POST, request.FILES)
+        if form.is_valid():
+            try:
+                df = read_csv_file(form.cleaned_data['file'])
+                df = clean_hypo_df(df)
+
+                # find conflicting ids
+                conflicting_ids = list(
+                    get_model.objects
+                    .filter(source_id__in = df['source_id'].tolist())
+                    .values_list('source_id', flat=True)
+                )
+                preview_data = df.head().to_dict(orient='records')
+                request.session['csv_data'] = df.to_dict(orient='records')
+
+                context = {
+                    'form': form,
+                    'conflicts': conflicting_ids,
+                    'preview': preview_data,
+                    'overwrite': bool(conflicting_ids),
+                }
+
+                return render(request, 'project/uploads/upload-confirm.html', context)
+            
+            except Exception as e:
+                messages.error(request, f"Error processing CSV: {e}")
+                return redirect('project:upload-hypo-catalog')
+        
+    else:
+        form = UploadFormCatalogCSV()
+    
+    context ={
+        'site': site,
+        'form': form,
+        'data_type': f'{catalog_type.capitalize()} Catalog'
+    }
+    
+    return render(request, 'project/uploads/upload-hypo-catalog.html', context)
 
 
 # def meq_maps(request, site_slug = None):
