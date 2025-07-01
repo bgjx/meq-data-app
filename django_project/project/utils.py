@@ -8,6 +8,11 @@ from scipy.stats import linregress
 
 mapbox_access_token = 'pk.eyJ1IjoiZWRlbG8iLCJhIjoiY20zNG1zN3F5MDFjdzJsb3N4ZDJ1ZTR1byJ9.bgl0vpixXnhDKJ8SnW4PYA'
 
+# Data required columns name
+REQUIRED_HYPO_COLUMNS_NAME = [
+
+]
+
 REQUIRED_COLUMNS_NAME = [
     "id", "source_id", "source_lat_init", "source_lon_init", "location_init",
     "source_depth_m_init", "source_origin_dt_init", "source_err_rms_s_init", "gap_init",

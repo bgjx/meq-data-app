@@ -165,6 +165,7 @@ def download_station(request, site_slug):
     
     return response
 
+# Data Uploading views
 def upload_form(request, site_slug, upload_type):
     'From for uploading data according to site and the upload type'
     site = get_object_or_404(Site, slug=site_slug)
