@@ -295,6 +295,7 @@ def upload_form(request, site_slug):
 
                     context = {
                         'site': site,
+                        'type': f"Hypocenter {catalog_type.capitalize()} Catalog",
                         'form': form,
                         'conflicts': conflicting_ids,
                         'preview': preview_data,

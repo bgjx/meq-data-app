@@ -9,7 +9,7 @@
                 <div class='card-body p-5'>
                     <div class='upload-page'>
 
-                        <h2>Confirm Upload</h2>
+                        <h2>Confirm Upload for {{ type }}</h2>
 
                         {% if conflicts %}
                         <p style="color: red;">⚠️ Conflicting <strong>source_id</strong>s found: {{ conflicts }}</p>
@@ -39,15 +39,16 @@
                                 </tbody>
                             </table>
                         </div>
-
-                        <form method="post">
-                        {% csrf_token %}
-                        <input type="hidden" name="confirm_upload" value="1">
-                        <input type="hidden" name="overwrite" value="{% if overwrite %}true{% else %}false{% endif %}">
-                        <button type="submit" class="btn btn-primary" >Yes, Upload</button>
-                        <a href="{% url 'project:upload-form' site_slug=site.slug%}">Cancel</a>
-                        </form>
-                        
+                        <div class='confirm-section py-lg-3'>
+                            <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="confirm_upload" value="1">
+                            <input type="hidden" name="overwrite" value="{% if overwrite %}true{% else %}false{% endif %}">
+                            <p>If you do?, submit YES otherwise CANCEL.</p>
+                            <button type="submit" class="btn btn-primary" >Yes, Upload</button>
+                            <a href="{% url 'project:upload-form' site_slug=site.slug%}" class="btn btn-primary">Cancel</a>
+                            </form>
+                        </div>  
                     </div>
                 </div>
             </div>
