@@ -1,4 +1,5 @@
 from django.contrib.gis.db import models
+from django.contrib.gis.geos import Point
 
 # SEML catalog models
 class SemlInitialCatalog(models.Model):
@@ -16,9 +17,17 @@ class SemlInitialCatalog(models.Model):
     magnitude = models.FloatField(blank=True, null=True)
     remarks = models.CharField(max_length=10, blank=True, null=True)
 
+    # special spatial field
+    location_init = models.PointField(blank=True, null=True)
+
     class Meta:
         managed = False
         db_table = 'seml_initial_catalog'
+    
+    # def save(self, *args, **kwargs):
+    #     if self.source_lat is not None and self.source_lon is not None:
+    #         self.location_init = Point(self.source_lon, self.source_lat)
+    #     super().save(*args, **kwargs)
 
 
 class SemlRelocatedCatalog(models.Model):
@@ -36,9 +45,17 @@ class SemlRelocatedCatalog(models.Model):
     magnitude = models.FloatField(blank=True, null=True)
     remarks = models.CharField(max_length=10, blank=True, null=True)
 
+    # special spatial field
+    location_reloc = models.PointField(blank=True, null=True)
+
     class Meta:
         managed = False
         db_table = 'seml_relocated_catalog'
+    
+    # def save(self, *args, **kwargs):
+    #     if self.source_lat is not None and self.source_lon is not None:
+    #         self.location_reloc = Point(self.source_lon, self.source_lat)
+    #     super().save(*args, **kwargs)
 
 
 class SemlPickingCatalog(models.Model):
@@ -197,3 +214,14 @@ class SerdCatalogMergedView(models.Model):
     class Meta:
         managed = False
         db_table = 'serd_catalog_merged_view'
+
+# File upload models
+class HypoCatalogUplaod(models.Model):
+    title = models.CharField(max_length=50)
+    type = models.CharField(max_length=25)
+    description = models.CharField(max_length=225)
+    file_name = models.CharField(max_length=50)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title

@@ -10,7 +10,7 @@ def clean_hypo_df(df:pd.DataFrame):
     df['source_lat'] = pd.to_numeric(df['source_lat'], errors='coerce')
     df['source_lon'] = pd.to_numeric(df['source_lon'], errors='coerce')
     df['source_depth_m'] = pd.to_numeric(df['source_depth_m'], errors='coerce')
-    df['source_origin_dt'] = pd.to_datetime(df['source_origin_dt'], errors='coerce')
+    df['source_origin_dt'] = pd.to_datetime(df['source_origin_dt'], errors='coerce').dt.strftime('%Y-%m-%dT%H:%M:%S.%f')
     df['source_err_rms_s'] = pd.to_numeric(df['source_err_rms_s'], errors='coerce')
     df['n_phases'] = pd.to_numeric(df['n_phases'], errors='coerce').astype('Int64')
     df['source_gap_degree'] = pd.to_numeric(df['source_gap_degree'], errors='coerce')

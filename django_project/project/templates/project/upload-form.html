@@ -1,0 +1,60 @@
+{% extends './base-project.html' %}
+{% load static %}
+{% block content %}
+<section class="py-4 container">
+    <!-- Station Data -->
+    <div class="row py-lg-3">
+        <div class="col">
+            <div class="card shadow">
+                <div class="card-body p-5">
+                    <div class="upload-page">
+                        <h4>
+                            Upload a file for updating {{ site.name | upper }} database
+                        </h4>
+                        <br>
+                        <p> Before uploading make sure your .CSV files following this data structure</p>
+                        {{ data_structure }}
+
+                        {% if form.errors %}
+                            <div class="alert alert-danger">
+                                {% for field in form %}
+                                    {% for error in field.errors %}
+                                        {{error}}
+                                    {% endfor %}
+                                {% endfor %}
+                                {% for error in form.non_field_errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <form method="POST" action="{% url 'project:upload-form' site_slug=site.slug %}" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="id_title" class="form-label"></label>
+                                {{ form.title }}
+                            </div>
+                            <div class = "from-group">
+                                <label for id='id_choice' class="form-label"> Data type: </label>
+                                {% for radio in form.catalog_type %}
+                                    <div class="form-check">
+                                        {{ radio.tag }} {{ radio.choice_label }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <div class="mb-3">
+                                <label for="id_description" class="form-label"></label>
+                                {{ form.description }}
+                            </div>
+                            <div class="mb-3">
+                                <label for="id_file" class="form-label"></label>
+                                {{ form.file }}
+                            </div>
+                            <button type="submit" class="btn btn-primary"> Check Data Integrity </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<section>
+{% endblock %}

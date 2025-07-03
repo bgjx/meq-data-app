@@ -76,8 +76,11 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // For picking table
-    let picking_table = new DataTable('#picking-table')
+    let picking_table = new DataTable('#picking-table');
 
     // For station table
-    let station_table = new DataTable('#station-table')
+    let station_table = new DataTable('#station-table');
+
+    // For upload preview table
+    let preview_table = new DataTable('#preview-table');
 });
