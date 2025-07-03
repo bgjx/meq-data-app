@@ -2,15 +2,15 @@ from django import forms
 
 class UploadFormCatalogCSV(forms.Form):
 
-    CATALOG_TYPE_CHOICES = [
+    DATA_TYPE_CHOICES = [
         ('initial', 'Initial Hypocenter'),
         ('relocated', 'Relocated Hypocenter'),
         ('picking', 'Picking Catalog'),
         ('station', 'Station Data')
     ]
 
-    catalog_type = forms.ChoiceField(
-        choices=CATALOG_TYPE_CHOICES,
+    data_type = forms.ChoiceField(
+        choices=DATA_TYPE_CHOICES,
         widget=forms.RadioSelect
     )
 

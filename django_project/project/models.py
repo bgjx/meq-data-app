@@ -216,12 +216,12 @@ class SerdCatalogMergedView(models.Model):
         db_table = 'serd_catalog_merged_view'
 
 # File upload models
-class HypoCatalogUplaod(models.Model):
+class Updates(models.Model):
     title = models.CharField(max_length=50)
     type = models.CharField(max_length=25)
     description = models.CharField(max_length=225)
     file_name = models.CharField(max_length=50)
-    uploaded_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title

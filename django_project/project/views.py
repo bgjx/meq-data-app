@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib import messages
 
 from frontpage.models import Site
-from project.models import HypoCatalogUplaod
+from project.models import Updates
 from project.utils import (get_hypocenter_catalog, 
                            get_picking_catalog,
                            get_station,
@@ -13,7 +13,8 @@ from project.utils import (get_hypocenter_catalog,
                            analysis_engine)
 from . filters import hypo_table_filter, picking_table_filter, spatial_filter
 from . forms import UploadFormCatalogCSV
-from . data_cleanser import (clean_hypo_df
+from . data_cleanser import (clean_hypo_df,
+                             clean_picking_df
 
                             )
 
@@ -184,7 +185,20 @@ def read_hypo_file(csv_file):
     # check missing columns
     missing_columns = set(config.REQUIRED_HYPO_COLUMNS_NAME) - set(df.columns)
     if missing_columns:
-        raise ValueError(f"Missing columns: {", ".join(missing_columns)}")
+        raise ValueError(f'Missing columns: {", ".join(missing_columns)}')
+    
+    return df
+
+def read_picking_file(csv_file):
+    try:
+        df = pd.read_csv(csv_file)
+    except Exception as e:
+        raise ValueError(f"Could not read CSV file: {e}")
+
+    # check missing columns
+    missing_columns = set(config.REQUIRED_PICKING_COLUMNS_NAME) - set(df.columns)
+    if missing_columns:
+        raise ValueError(f'Missing columns: {", ".join(missing_columns)}')
     
     return df
 
@@ -228,12 +242,12 @@ def upload_form(request, site_slug):
     elif request.method == 'POST':
         form = UploadFormCatalogCSV(request.POST, request.FILES)
         if form.is_valid():
-            catalog_type = form.cleaned_data['catalog_type']
+            data_type = form.cleaned_data['data_type']
             uploaded_file = form.cleaned_data['file']
 
-            if catalog_type == 'initial':
+            if data_type in ['initial', 'relocated']:
                 # Get model reference
-                model = get_hypocenter_catalog('project', site_slug, catalog_type)
+                model = get_hypocenter_catalog('project', site_slug, data_type)
                 get_model = apps.get_model('project', model)
 
                 try:
@@ -260,7 +274,7 @@ def upload_form(request, site_slug):
                     }
 
                     # update the upload models
-                    HypoCatalogUplaod.objects.create(
+                    Updates.objects.create(
                         title = form.cleaned_data['title'],
                         type = "initial catalog",
                         description = form.cleaned_data['description'],
@@ -270,22 +284,22 @@ def upload_form(request, site_slug):
                     return render(request, 'project/uploads/upload-confirm.html', context)
 
                 except Exception as e :
-                    messages.error(request, f"Error processing {catalog_type} catalog CSV file: {e}")
+                    messages.error(request, f"Error processing {data_type} catalog CSV file: {e}")
                     return redirect('project:upload-form')
                 
-            elif catalog_type == 'relocated':
+            elif data_type == 'picking':
                 # Get model reference
-                model = get_hypocenter_catalog('project', site_slug, catalog_type)
+                model = get_picking_catalog('project', site_slug) 
                 get_model = apps.get_model('project', model)
-
+                
                 try:
-                    df = read_hypo_file(uploaded_file)
-                    df = clean_hypo_df(df)
+                    df = read_picking_file(uploaded_file)
+                    df = clean_picking_df(df)
 
                     # find conflicting ids
                     conflicting_ids = list(
                         get_model.objects
-                        .filter(source_id__in = df['source_id'].tolist())
+                        .filter(source_id__in = df['source_id'].unique().tolist())
                         .values_list('source_id', flat=True)
                     )
 
@@ -295,7 +309,6 @@ def upload_form(request, site_slug):
 
                     context = {
                         'site': site,
-                        'type': f"Hypocenter {catalog_type.capitalize()} Catalog",
                         'form': form,
                         'conflicts': conflicting_ids,
                         'preview': preview_data,
@@ -303,18 +316,19 @@ def upload_form(request, site_slug):
                     }
 
                     # update the upload models
-                    HypoCatalogUplaod.objects.create(
+                    Updates.objects.create(
                         title = form.cleaned_data['title'],
-                        type = f" {catalog_type} catalog",
+                        type = "picking catalog",
                         description = form.cleaned_data['description'],
                         file_name = form.cleaned_data['file'].name
                     )
-                        
-                    return render(request, 'project/uploads/upload-confirm.html', context)
 
-                except Exception as e :
-                    messages.error(request, f"Error processing {catalog_type} catalog CSV file: {e}")
+                    return render (request, 'project/uploads/upload-confirm.html', context)
+                
+                except Exception as e:
+                    messages.error(request, f"Error processing {data_type} catalog CSV file: {e}")
                     return redirect('project:upload-form')
+                 
             else:
                 return redirect('project:upload-form')
         

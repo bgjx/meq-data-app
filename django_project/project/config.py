@@ -5,6 +5,11 @@ REQUIRED_HYPO_COLUMNS_NAME = [
     'remarks'
 ]
 
+REQUIRED_PICKING_COLUMNS_NAME = [
+    'source_id', 'station_code', 'p_arrival_dt', 'p_polarity', 'p_onset',
+    's_arrival_dt', 'coda_dt'
+]
+
 REQUIRED_COLUMNS_NAME = [
     "id", "source_id", "source_lat_init", "source_lon_init", "location_init",
     "source_depth_m_init", "source_origin_dt_init", "source_err_rms_s_init", "gap_init",
