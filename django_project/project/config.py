@@ -10,6 +10,10 @@ REQUIRED_PICKING_COLUMNS_NAME = [
     's_arrival_dt', 'coda_dt'
 ]
 
+REQUIRED_STATION_COLUMNS_NAME = [
+    'station_code', 'network_code', 'station_lat', 'station_lon', 'station_elev_m'
+]
+
 REQUIRED_COLUMNS_NAME = [
     "id", "source_id", "source_lat_init", "source_lon_init", "location_init",
     "source_depth_m_init", "source_origin_dt_init", "source_err_rms_s_init", "gap_init",

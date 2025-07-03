@@ -31,7 +31,7 @@ def clean_picking_df(df:pd.DataFrame):
 
     # convert columns data type
     df['source_id'] = pd.to_numeric(df['source_id'], errors='coerce').astype('Int64')
-    df['source_code'] = df['station_code'].astype(str).where(df['station_code'].notnull(), None)
+    df['station_code'] = df['station_code'].astype(str).where(df['station_code'].notnull(), None)
     df['p_arrival_dt'] = pd.to_datetime(df['p_arrival_dt'], errors='coerce').dt.strftime('%Y-%m-%dT%H:%M:%S.%f')
     df['p_polarity'] = df['p_polarity'].astype(str).where(df['p_polarity'].notnull(), None)
     df['p_onset'] = df['p_onset'].astype(str).where(df['p_onset'].notnull(), None)
@@ -40,6 +40,19 @@ def clean_picking_df(df:pd.DataFrame):
 
     df = df.dropna(subset=['source_id'])
 
+    return df
+
+# Data cleanser for picking catalog data
+def clean_station_df(df:pd.DataFrame):
+    df = df[config.REQUIRED_STATION_COLUMNS_NAME]
+
+    # convert columns data type
+    df['station_code'] = df['station_code'].astype(str).where(df['station_code'].notnull(), None)
+    df['network_code'] = df['network_code'].astype(str).where(df['network_code'].notnull(), None)
+    df['station_lat'] = pd.to_numeric(df['station_lat'], errors='coerce')
+    df['station_lon'] = pd.to_numeric(df['station_lon'], errors='coerce')
+    df['station_elev_m'] = pd.to_numeric(df['station_elev_m'], errors='coerce')
+    
     return df
     
     

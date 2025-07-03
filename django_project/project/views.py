@@ -14,8 +14,8 @@ from project.utils import (get_hypocenter_catalog,
 from . filters import hypo_table_filter, picking_table_filter, spatial_filter
 from . forms import UploadFormCatalogCSV
 from . data_cleanser import (clean_hypo_df,
-                             clean_picking_df
-
+                             clean_picking_df,
+                             clean_station_df
                             )
 
 
@@ -183,11 +183,12 @@ def read_hypo_file(csv_file):
         raise ValueError(f"Could not read CSV file: {e}")
     
     # check missing columns
-    missing_columns = set(config.REQUIRED_HYPO_COLUMNS_NAME) - set(df.columns)
+    missing_columns = [col for col in config.REQUIRED_HYPO_COLUMNS_NAME if col not in df.columns]
     if missing_columns:
         raise ValueError(f'Missing columns: {", ".join(missing_columns)}')
     
     return df
+
 
 def read_picking_file(csv_file):
     try:
@@ -196,10 +197,24 @@ def read_picking_file(csv_file):
         raise ValueError(f"Could not read CSV file: {e}")
 
     # check missing columns
-    missing_columns = set(config.REQUIRED_PICKING_COLUMNS_NAME) - set(df.columns)
+    missing_columns = [col for col in config.REQUIRED_PICKING_COLUMNS_NAME if col not in df.columns]
     if missing_columns:
         raise ValueError(f'Missing columns: {", ".join(missing_columns)}')
     
+    return df
+
+
+def read_station_file(csv_file):
+    try:
+        df = pd.read_csv(csv_file)
+    except Exception as e:
+        raise ValueError(f"Could not read CSV file: {e}")
+    
+    # check missing columns
+    missing_columns = [col for col in config.REQUIRED_STATION_COLUMNS_NAME if col not in df.columns]
+    if missing_columns:
+        raise ValueError(f'Missing columns: {", ".join(missing_columns)}')
+
     return df
 
 
@@ -328,6 +343,47 @@ def upload_form(request, site_slug):
                 except Exception as e:
                     messages.error(request, f"Error processing {data_type} catalog CSV file: {e}")
                     return redirect('project:upload-form')
+            
+            elif data_type == 'station':
+                # Get model reference
+                model = get_station('project', site_slug) 
+                get_model = apps.get_model('project', model)
+
+                try:
+                    df = read_station_file(uploaded_file)
+                    df = clean_station_df(df)
+
+                    # find conflicting station code
+                    conflicting_stations = list(
+                        get_model.objects
+                        .filter(station_code__in = df['station_code'].tolist())
+                        .values_list('source_id', flat=True)
+                    )
+
+                    # preview data
+                    preview_data = df.head().to_dict(orient='records')
+                    request.session['csv_file'] = df.to_dict(orient='records')
+
+                    context = {
+                        'site': site,
+                        'form': form,
+                        'conflicts': conflicting_stations,
+                        'preview': preview_data,
+                        'overwrite': bool(conflicting_stations)
+                    }
+
+                    
+                    # update the upload models
+                    Updates.objects.create(
+                        title = form.cleaned_data['title'],
+                        type = "station data",
+                        description = form.cleaned_data['description'],
+                        file_name = form.cleaned_data['file'].name
+                    )
+
+                    return render(request, 'project/uploads/upload-confirm.html', context)
+
+
                  
             else:
                 return redirect('project:upload-form')
