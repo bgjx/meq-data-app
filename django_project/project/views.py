@@ -23,7 +23,7 @@ from datetime import datetime, timedelta
 import pandas as pd
 import csv
 from io import TextIOWrapper
-from . import config
+from . config import REQUIREMENTS
 import openai 
 
 # variable
@@ -175,61 +175,35 @@ def download_station(request, site_slug):
     
     return response# Get the model reference
 
-# Data Uploading views
-def read_hypo_file(csv_file):
-    try:
-        df = pd.read_csv(csv_file)
-    except Exception as e:
-        raise ValueError(f"Could not read CSV file: {e}")
-    
-    # check missing columns
-    missing_columns = [col for col in config.REQUIRED_HYPO_COLUMNS_NAME if col not in df.columns]
-    if missing_columns:
-        raise ValueError(f'Missing columns: {", ".join(missing_columns)}')
-    
-    return df
 
-
-def read_picking_file(csv_file):
+# CSV file read method
+def read_csv_file(csv_file, data_type):
     try:
         df = pd.read_csv(csv_file)
     except Exception as e:
         raise ValueError(f"Could not read CSV file: {e}")
 
-    # check missing columns
-    missing_columns = [col for col in config.REQUIRED_PICKING_COLUMNS_NAME if col not in df.columns]
-    if missing_columns:
-        raise ValueError(f'Missing columns: {", ".join(missing_columns)}')
-    
-    return df
-
-
-def read_station_file(csv_file):
-    try:
-        df = pd.read_csv(csv_file)
-    except Exception as e:
-        raise ValueError(f"Could not read CSV file: {e}")
-    
-    # check missing columns
-    missing_columns = [col for col in config.REQUIRED_STATION_COLUMNS_NAME if col not in df.columns]
+    # Check missing columns
+    columns_check = REQUIREMENTS[data_type]
+    missing_columns = [col for col in columns_check if col not in df.columns]
     if missing_columns:
         raise ValueError(f'Missing columns: {", ".join(missing_columns)}')
 
     return df
 
-
-def save_dataframe_to_db(model, df:pd.DataFrame, overwrite=False):
+# Save to database method
+def save_dataframe_to_db(model, df:pd.DataFrame, lookup_fields: list[str], overwrite=False):
     for _, row in df.iterrows():
         row_data = {k: (v if pd.notna(v) else None) for k,v in row.items()}
-        sid = row.pop('source_id')
+        lookup_data = {field: row_data.pop(field) for field in lookup_fields}
         if overwrite:
             model.objects.update_or_create(
-                source_id = sid,
+                **lookup_data,
                 defaults  = row_data
             )
         else:
             model.objects.get_or_create(
-                source_id = sid,
+                lookup_data,
                 defaults = row_data
             )
 
@@ -266,7 +240,7 @@ def upload_form(request, site_slug):
                 get_model = apps.get_model('project', model)
 
                 try:
-                    df = read_hypo_file(uploaded_file)
+                    df = read_csv_file(uploaded_file, 'hypo')
                     df = clean_hypo_df(df)
 
                     # find conflicting ids
@@ -276,18 +250,6 @@ def upload_form(request, site_slug):
                         .values_list('source_id', flat=True)
                     )
 
-                    # preview data
-                    preview_data = df.head().to_dict(orient='records')
-                    request.session['csv_data'] = df.to_dict(orient='records')
-
-                    context = {
-                        'site': site,
-                        'form': form,
-                        'conflicts': conflicting_ids,
-                        'preview': preview_data,
-                        'overwrite': bool(conflicting_ids)
-                    }
-
                     # update the upload models
                     Updates.objects.create(
                         title = form.cleaned_data['title'],
@@ -295,7 +257,19 @@ def upload_form(request, site_slug):
                         description = form.cleaned_data['description'],
                         file_name = form.cleaned_data['file'].name
                     )
-                        
+
+                    # preview data (look_up is given **kwargs parameters for model update_or_create)
+                    preview_data = df.head().to_dict(orient='records')
+                    request.session['csv_data'] = df.to_dict(orient='records')
+                    request.session['look_up'] = ['source_id']
+
+                    context = {
+                        'site': site,
+                        'form': form,
+                        'conflicts': conflicting_ids,
+                        'preview': preview_data,
+                        'overwrite': bool(conflicting_ids)
+                    }    
                     return render(request, 'project/uploads/upload-confirm.html', context)
 
                 except Exception as e :
@@ -308,7 +282,7 @@ def upload_form(request, site_slug):
                 get_model = apps.get_model('project', model)
                 
                 try:
-                    df = read_picking_file(uploaded_file)
+                    df = read_csv_file(uploaded_file, 'picking')
                     df = clean_picking_df(df)
 
                     # find conflicting ids
@@ -318,18 +292,6 @@ def upload_form(request, site_slug):
                         .values_list('source_id', flat=True)
                     )
 
-                    # preview data
-                    preview_data = df.head().to_dict(orient='records')
-                    request.session['csv_data'] = df.to_dict(orient='records')
-
-                    context = {
-                        'site': site,
-                        'form': form,
-                        'conflicts': conflicting_ids,
-                        'preview': preview_data,
-                        'overwrite': bool(conflicting_ids)
-                    }
-
                     # update the upload models
                     Updates.objects.create(
                         title = form.cleaned_data['title'],
@@ -338,6 +300,18 @@ def upload_form(request, site_slug):
                         file_name = form.cleaned_data['file'].name
                     )
 
+                    # preview data (look_up is given **kwargs parameters for model update_or_create)
+                    preview_data = df.head().to_dict(orient='records')
+                    request.session['csv_data'] = df.to_dict(orient='records')
+                    request.session['look_up'] = ['source_id', 'station_code']
+
+                    context = {
+                        'site': site,
+                        'form': form,
+                        'conflicts': conflicting_ids,
+                        'preview': preview_data,
+                        'overwrite': bool(conflicting_ids)
+                    }
                     return render (request, 'project/uploads/upload-confirm.html', context)
                 
                 except Exception as e:
@@ -350,7 +324,7 @@ def upload_form(request, site_slug):
                 get_model = apps.get_model('project', model)
 
                 try:
-                    df = read_station_file(uploaded_file)
+                    df = read_csv_file(uploaded_file, 'station')
                     df = clean_station_df(df)
 
                     # find conflicting station code
@@ -360,9 +334,18 @@ def upload_form(request, site_slug):
                         .values_list('source_id', flat=True)
                     )
 
-                    # preview data
+                    # update the upload models
+                    Updates.objects.create(
+                        title = form.cleaned_data['title'],
+                        type = "station data",
+                        description = form.cleaned_data['description'],
+                        file_name = form.cleaned_data['file'].name
+                    )
+
+                    # preview data (look_up is given **kwargs parameters for model update_or_create)
                     preview_data = df.head().to_dict(orient='records')
                     request.session['csv_file'] = df.to_dict(orient='records')
+                    request.session['look_up'] = ['station_code']
 
                     context = {
                         'site': site,
@@ -372,18 +355,11 @@ def upload_form(request, site_slug):
                         'overwrite': bool(conflicting_stations)
                     }
 
-                    
-                    # update the upload models
-                    Updates.objects.create(
-                        title = form.cleaned_data['title'],
-                        type = "station data",
-                        description = form.cleaned_data['description'],
-                        file_name = form.cleaned_data['file'].name
-                    )
-
                     return render(request, 'project/uploads/upload-confirm.html', context)
-
-
+                
+                except Exception as e:
+                    messages.error(request, f'Error processing {data_type} csv file: {e}')
+                    return redirect('project:upload-form')
                  
             else:
                 return redirect('project:upload-form')

@@ -23,3 +23,11 @@ REQUIRED_COLUMNS_NAME = [
     "station_lon", "station_elev_m", "p_arrival_dt", "s_arrival_dt",
     "coda_dt", "magnitude"
 ]
+
+# combine all requirements in one object
+REQUIREMENTS = {
+    'hypo': REQUIRED_HYPO_COLUMNS_NAME,
+    'picking': REQUIRED_PICKING_COLUMNS_NAME,
+    'station': REQUIRED_STATION_COLUMNS_NAME,
+    'merge': REQUIRED_COLUMNS_NAME
+}

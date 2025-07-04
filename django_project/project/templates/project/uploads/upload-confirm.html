@@ -41,12 +41,12 @@
                         </div>
                         <div class='confirm-section py-lg-3'>
                             <form method="post">
-                            {% csrf_token %}
-                            <input type="hidden" name="confirm_upload" value="1">
-                            <input type="hidden" name="overwrite" value="{% if overwrite %}true{% else %}false{% endif %}">
-                            <p>If you do?, submit YES otherwise CANCEL.</p>
-                            <button type="submit" class="btn btn-primary" >Yes, Upload</button>
-                            <a href="{% url 'project:upload-form' site_slug=site.slug%}" class="btn btn-primary">Cancel</a>
+                                {% csrf_token %}
+                                <input type="hidden" name="confirm_upload" value="1">
+                                <input type="hidden" name="overwrite" value="{% if overwrite %}true{% else %}false{% endif %}">
+                                <p>If you do?, submit YES otherwise CANCEL.</p>
+                                <button type="submit" class="btn btn-primary" >Yes, Upload</button>
+                                <a href="{% url 'project:upload-form' site_slug=site.slug%}" class="btn btn-primary">Cancel</a>
                             </form>
                         </div>  
                     </div>
