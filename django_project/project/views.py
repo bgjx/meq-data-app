@@ -273,7 +273,7 @@ def upload_form(request, site_slug):
                     return render(request, 'project/uploads/upload-confirm.html', context)
 
                 except Exception as e :
-                    messages.error(request, f"Error processing {data_type} catalog CSV file: {e}")
+                    messages.error(request, f"Error processing {data_type} catalog CSVREQUIRE file: {e}")
                     return redirect('project:upload-form')
                 
             elif data_type == 'picking':
