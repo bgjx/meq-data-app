@@ -192,7 +192,10 @@ def read_csv_file(csv_file, data_type):
     return df
 
 # Save to database method
-def save_dataframe_to_db(model, df:pd.DataFrame, lookup_fields: list[str], overwrite=False):
+def save_dataframe_to_db(app_name:str, model_name:str, lookup_fields:list[str], df:pd.DataFrame, overwrite=False):
+
+    # get the model reference
+    model = apps.get_model(app_name, model_name)
     for _, row in df.iterrows():
         row_data = {k: (v if pd.notna(v) else None) for k,v in row.items()}
         lookup_data = {field: row_data.pop(field) for field in lookup_fields}
@@ -203,7 +206,7 @@ def save_dataframe_to_db(model, df:pd.DataFrame, lookup_fields: list[str], overw
             )
         else:
             model.objects.get_or_create(
-                lookup_data,
+                **lookup_data,
                 defaults = row_data
             )
 
@@ -211,22 +214,25 @@ def save_dataframe_to_db(model, df:pd.DataFrame, lookup_fields: list[str], overw
 def upload_form(request, site_slug):
     'Upload form for updating database'
 
-    site = get_object_or_404(Site,slug=site_slug)
+    site = get_object_or_404(Site, slug=site_slug)
 
     if request.method == 'POST' and 'confirm_upload' in request.POST:
         # confirm and save
         overwrite = request.POST.get('overwrite') == True
+        app_name = request.session.get('app_name')
+        model_name = request.session.get('model_name')
+        lookup_fields = request.session.get('lookup_fields')
         df_records = request.session.get('csv_data')
 
         if df_records:
             df = pd.DataFrame.from_records(df_records)
-            save_dataframe_to_db(get_model, df, overwrite=overwrite)
+            save_dataframe_to_db(app_name, model_name, lookup_fields, df, overwrite=overwrite)
             del request.session['csv_data']
             messages.success(request, 'CSV data uploaded successfully.')
         else:
             messages.error(request, 'No CSV data to upload.')
         
-        return redirect('project:upload-hypo-catalog')
+        return redirect('project:upload-form', site_slug=site_slug)
 
     elif request.method == 'POST':
         form = UploadFormCatalogCSV(request.POST, request.FILES)
@@ -253,15 +259,17 @@ def upload_form(request, site_slug):
                     # update the upload models
                     Updates.objects.create(
                         title = form.cleaned_data['title'],
-                        type = "initial catalog",
+                        type = f'{data_type} catalog',
                         description = form.cleaned_data['description'],
                         file_name = form.cleaned_data['file'].name
                     )
 
                     # preview data (look_up is given **kwargs parameters for model update_or_create)
                     preview_data = df.head().to_dict(orient='records')
+                    request.session['app_name'] = 'project'
+                    request.session['model_name'] = model
                     request.session['csv_data'] = df.to_dict(orient='records')
-                    request.session['look_up'] = ['source_id']
+                    request.session['lookup_fields'] = ['source_id']
 
                     context = {
                         'site': site,
@@ -270,6 +278,7 @@ def upload_form(request, site_slug):
                         'preview': preview_data,
                         'overwrite': bool(conflicting_ids)
                     }    
+
                     return render(request, 'project/uploads/upload-confirm.html', context)
 
                 except Exception as e :
@@ -302,8 +311,10 @@ def upload_form(request, site_slug):
 
                     # preview data (look_up is given **kwargs parameters for model update_or_create)
                     preview_data = df.head().to_dict(orient='records')
+                    request.session['app_name'] = 'project'
+                    request.session['model_name'] = model
                     request.session['csv_data'] = df.to_dict(orient='records')
-                    request.session['look_up'] = ['source_id', 'station_code']
+                    request.session['lookup_fields'] = ['source_id', 'station_code']
 
                     context = {
                         'site': site,
@@ -344,8 +355,10 @@ def upload_form(request, site_slug):
 
                     # preview data (look_up is given **kwargs parameters for model update_or_create)
                     preview_data = df.head().to_dict(orient='records')
+                    request.session['app_name'] = 'project'
+                    request.session['model_name'] = model
                     request.session['csv_file'] = df.to_dict(orient='records')
-                    request.session['look_up'] = ['station_code']
+                    request.session['lookup_fields'] = ['station_code']
 
                     context = {
                         'site': site,
