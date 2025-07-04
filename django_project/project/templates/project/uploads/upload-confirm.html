@@ -8,14 +8,19 @@
             <div class='card shadow'>
                 <div class='card-body p-5'>
                     <div class='upload-page'>
-
                         <h2>Confirm Upload for {{ type }}</h2>
-
                         {% if conflicts %}
-                        <p style="color: red;">⚠️ Conflicting <strong>source_id</strong>s found: {{ conflicts }}</p>
-                        <p>Do you want to overwrite existing records?</p>
+                            <p style="color: red;">
+                                ⚠️ Conflicting {{ conflicts | length }} existing records will be overwritten.
+                                {% if conflicts | length > 10 %}
+                                    Showing first 10 conflicts: {{ conflicts | slice: ":10" }}
+                                {% else %}
+                                    Conflicts: {{ conflicts }}
+                                {% endif %}
+                            </p>
+                            <p> Do you want to overwrite existing records? </p>
                         {% else %}
-                        <p style="color: green;">✅ No ID conflicts detected. You may upload safely.</p>
+                            <p style="color: green;">✅ No ID conflicts detected. You may upload safely.</p>
                         {% endif %}
 
                         <h6>Preview :</h6>
