@@ -12,6 +12,7 @@ from project.utils import (get_hypocenter_catalog,
                            get_station,
                            get_merged_catalog,
                            analysis_engine)
+
 from . filters import hypo_table_filter, picking_table_filter, spatial_filter
 from . forms import UploadFormCatalogCSV
 from . data_cleanser import (clean_hypo_df,
