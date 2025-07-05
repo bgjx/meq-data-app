@@ -21,6 +21,7 @@ def clean_hypo_df(df:pd.DataFrame):
     df['remarks'] = df['remarks'].astype(str).where(df['remarks'].notnull(), None)
 
     df = df.dropna(subset=['source_id'])
+    df = df.drop_duplicates()
 
     return df
 
@@ -39,6 +40,7 @@ def clean_picking_df(df:pd.DataFrame):
     df['coda_dt'] = pd.to_datetime(df['coda_dt'], errors='coerce').dt.strftime('%Y-%m-%dT%H:%M:%S.%f')
 
     df = df.dropna(subset=['source_id'])
+    df = df.drop_duplicates()
 
     return df
 
@@ -52,7 +54,9 @@ def clean_station_df(df:pd.DataFrame):
     df['station_lat'] = pd.to_numeric(df['station_lat'], errors='coerce')
     df['station_lon'] = pd.to_numeric(df['station_lon'], errors='coerce')
     df['station_elev_m'] = pd.to_numeric(df['station_elev_m'], errors='coerce')
-    
+
+    df = df.drop_duplicates()
+
     return df
     
     
