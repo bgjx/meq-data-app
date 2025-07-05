@@ -3,6 +3,7 @@ from django.http import HttpResponse, JsonResponse
 from django.apps import apps
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 from frontpage.models import Site
 from project.models import Updates
@@ -33,6 +34,7 @@ MAPBOX_API_TOKEN = settings.MAPBOX_API_TOKEN
 # Open AI data descriptor 
 
 # Function for page view renderer
+@login_required
 def project_site(request, site_slug = None):
     'View function for data explorer page.'
     site = get_object_or_404(Site, slug=site_slug)
@@ -80,8 +82,12 @@ def project_site(request, site_slug = None):
     station_model_name = get_station('project', site_slug)
     get_model_station = apps.get_model('project', station_model_name)
 
+    # check role user (Admins or Guest)
+    is_admin = request.user.groups.filter(name='Admins').exists()
+
     # update context
     context['station_table'] = get_model_station.objects.all()
+    context['is_admin'] = is_admin
 
     return render(request, 'project/data-explore.html', context)
 
