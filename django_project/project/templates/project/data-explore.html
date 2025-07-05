@@ -11,7 +11,7 @@
                 <div class="card-body p-5 text-center">
                     <div class="py-lg-3">
                         <h3 style="font-weight: 500;">
-                            New Update from {{ site.name | upper }} ?
+                            Since you're an Admin, any update from {{ site.name | upper }} ?
                         </h3>
                         <h6>Upload the CSV file below</h6>
                         <a href="{% url 'project:upload-form' site_slug=site.slug %}" class="btn btn-primary">
@@ -23,7 +23,7 @@
         </div>
     </div>
     {% endif %}
-    
+
     <!-- Earthquake Catalog -->
     <div class="row py-lg-3">
         <div class="col">

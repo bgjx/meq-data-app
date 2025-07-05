@@ -220,6 +220,7 @@ def save_dataframe_to_db(app_name:str, model_name:str, lookup_fields:list[str], 
 def upload_form(request, site_slug):
     'Upload form for updating database'
 
+    # Get the site models reference
     site = get_object_or_404(Site, slug=site_slug)
 
     if request.method == 'POST' and 'confirm_upload' in request.POST:
@@ -264,6 +265,7 @@ def upload_form(request, site_slug):
 
                     # update the upload models
                     Updates.objects.create(
+                        username = request.user.username,
                         title = form.cleaned_data['title'],
                         type = f'{data_type} catalog',
                         description = form.cleaned_data['description'],
@@ -309,6 +311,7 @@ def upload_form(request, site_slug):
 
                     # update the upload models
                     Updates.objects.create(
+                        username = request.user.username,
                         title = form.cleaned_data['title'],
                         type = "picking catalog",
                         description = form.cleaned_data['description'],
@@ -353,6 +356,7 @@ def upload_form(request, site_slug):
 
                     # update the upload models
                     Updates.objects.create(
+                        username = request.user.username,
                         title = form.cleaned_data['title'],
                         type = "station data",
                         description = form.cleaned_data['description'],

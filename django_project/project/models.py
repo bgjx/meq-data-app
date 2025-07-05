@@ -21,12 +21,13 @@ class SemlInitialCatalog(models.Model):
     location_init = models.PointField(blank=True, null=True)
 
     class Meta:
+        managed = False
         db_table = 'seml_initial_catalog'
     
-    # def save(self, *args, **kwargs):
-    #     if self.source_lat is not None and self.source_lon is not None:
-    #         self.location_init = Point(self.source_lon, self.source_lat)
-    #     super().save(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        if self.source_lat is not None and self.source_lon is not None:
+            self.location_init = Point(self.source_lon, self.source_lat)
+        super().save(*args, **kwargs)
 
 
 class SemlRelocatedCatalog(models.Model):
@@ -48,12 +49,13 @@ class SemlRelocatedCatalog(models.Model):
     location_reloc = models.PointField(blank=True, null=True)
 
     class Meta:
+        managed = False
         db_table = 'seml_relocated_catalog'
     
-    # def save(self, *args, **kwargs):
-    #     if self.source_lat is not None and self.source_lon is not None:
-    #         self.location_reloc = Point(self.source_lon, self.source_lat)
-    #     super().save(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        if self.source_lat is not None and self.source_lon is not None:
+            self.location_reloc = Point(self.source_lon, self.source_lat)
+        super().save(*args, **kwargs)
 
 
 class SemlPickingCatalog(models.Model):
@@ -67,6 +69,7 @@ class SemlPickingCatalog(models.Model):
     coda_dt = models.DateTimeField(blank=True, null=True)
 
     class Meta:
+        managed = False
         db_table = 'seml_picking_catalog'
 
 # SERD catalog models
@@ -85,8 +88,18 @@ class SerdInitialCatalog(models.Model):
     magnitude = models.FloatField(blank=True, null=True)
     remarks = models.CharField(max_length=10, blank=True, null=True)
 
+    # special spatial field
+    location_init = models.PointField(blank=True, null=True)
+
     class Meta:
+        managed = False
         db_table = 'serd_initial_catalog'
+    
+    def save(self, *args, **kwargs):
+        if self.source_lat is not None and self.source_lon is not None:
+            self.location_init = Point(self.source_lon, self.source_lat)
+        super().save(*args, **kwargs)
+
 
 class SerdRelocatedCatalog(models.Model):
     source_id = models.AutoField(primary_key=True)
@@ -103,8 +116,17 @@ class SerdRelocatedCatalog(models.Model):
     magnitude = models.FloatField(blank=True, null=True)
     remarks = models.CharField(max_length=10, blank=True, null=True)
 
+    # special spatial field
+    location_reloc = models.PointField(blank=True, null=True)
+
     class Meta:
+        managed = False
         db_table = 'serd_relocated_catalog'
+    
+    def save(self, *args, **kwargs):
+        if self.source_lat is not None and self.source_lon is not None:
+            self.location_reloc = Point(self.source_lon, self.source_lat)
+        super().save(*args, **kwargs)
 
 
 class SerdPickingCatalog(models.Model):
@@ -118,6 +140,7 @@ class SerdPickingCatalog(models.Model):
     coda_dt = models.DateTimeField(blank=True, null=True)
 
     class Meta:
+        managed = False
         db_table = 'serd_picking_catalog'
 
 
@@ -131,6 +154,7 @@ class SemlStation(models.Model):
     station_elev_m = models.FloatField(blank=True, null=True)
 
     class Meta:
+        managed = False
         db_table = 'seml_station'
 
 class SerdStation(models.Model):
@@ -142,6 +166,7 @@ class SerdStation(models.Model):
     station_elev_m = models.FloatField(blank=True, null=True)
 
     class Meta:
+        managed = False
         db_table = 'serd_station'
 
 
@@ -213,11 +238,13 @@ class SerdCatalogMergedView(models.Model):
 
 # File upload models
 class Updates(models.Model):
-    title = models.CharField(max_length=50)
-    type = models.CharField(max_length=25)
-    description = models.CharField(max_length=225)
-    file_name = models.CharField(max_length=50)
-    updated_at = models.DateTimeField(auto_now_add=True)
+    id = models.AutoField(primary_key=True)
+    username = models.CharField(max_length=25, blank=True, null=True)
+    title = models.CharField(max_length=50, blank=True, null=True)
+    type = models.CharField(max_length=25, blank=True, null=True)
+    description = models.CharField(max_length=225, blank=True, null=True)
+    file_name = models.CharField(max_length=50, blank=True, null=True)
+    updated_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
     def __str__(self):
         return self.title
