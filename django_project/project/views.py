@@ -3,8 +3,10 @@ from django.http import HttpResponse, JsonResponse
 from django.apps import apps
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 from frontpage.models import Site
+from project.models import Updates
 from project.utils import (get_hypocenter_catalog, 
                            get_picking_catalog,
                            get_station,
@@ -12,8 +14,9 @@ from project.utils import (get_hypocenter_catalog,
                            analysis_engine)
 from . filters import hypo_table_filter, picking_table_filter, spatial_filter
 from . forms import UploadFormCatalogCSV
-from . data_cleanser import (clean_hypo_df
-
+from . data_cleanser import (clean_hypo_df,
+                             clean_picking_df,
+                             clean_station_df
                             )
 
 
@@ -21,7 +24,7 @@ from datetime import datetime, timedelta
 import pandas as pd
 import csv
 from io import TextIOWrapper
-from . import config
+from . config import REQUIREMENTS
 import openai 
 
 # variable
@@ -31,6 +34,7 @@ MAPBOX_API_TOKEN = settings.MAPBOX_API_TOKEN
 # Open AI data descriptor 
 
 # Function for page view renderer
+@login_required
 def project_site(request, site_slug = None):
     'View function for data explorer page.'
     site = get_object_or_404(Site, slug=site_slug)
@@ -78,8 +82,12 @@ def project_site(request, site_slug = None):
     station_model_name = get_station('project', site_slug)
     get_model_station = apps.get_model('project', station_model_name)
 
+    # check role user (Admins or Guest)
+    is_admin = request.user.groups.filter(name='Admins').exists()
+
     # update context
     context['station_table'] = get_model_station.objects.all()
+    context['is_admin'] = is_admin
 
     return render(request, 'project/data-explore.html', context)
 
@@ -173,91 +181,211 @@ def download_station(request, site_slug):
     
     return response# Get the model reference
 
-# Data Uploading views
-def read_csv_file(csv_file):
+
+# CSV file read method
+def read_csv_file(csv_file, data_type):
     try:
         df = pd.read_csv(csv_file)
     except Exception as e:
         raise ValueError(f"Could not read CSV file: {e}")
-    
-    # check missing columns
-    missing_columns = set(config.REQUIRED_HYPO_COLUMNS_NAME) - set(df.columns)
+
+    # Check missing columns
+    columns_check = REQUIREMENTS[data_type]
+    missing_columns = [col for col in columns_check if col not in df.columns]
     if missing_columns:
-        raise ValueError(f"Missing columns: {", ".join(missing_columns)}")
-    
+        raise ValueError(f'Missing columns: {", ".join(missing_columns)}')
+
     return df
 
+# Save to database method
+def save_dataframe_to_db(app_name:str, model_name:str, lookup_fields:list[str], df:pd.DataFrame, overwrite=False):
 
-def save_dataframe_to_db(model, df:pd.DataFrame, overwrite=False):
+    # get the model reference
+    model = apps.get_model(app_name, model_name)
     for _, row in df.iterrows():
         row_data = {k: (v if pd.notna(v) else None) for k,v in row.items()}
-
+        lookup_data = {field: row_data.pop(field) for field in lookup_fields}
         if overwrite:
             model.objects.update_or_create(
-                source_id = row_data['source_id'],
+                **lookup_data,
                 defaults  = row_data
             )
         else:
             model.objects.get_or_create(
-                source_id = row_data['source_id'],
+                **lookup_data,
                 defaults = row_data
             )
 
 
-def upload_hypo_catalog(request, site_slug, catalog_type):
-    'Download hypocenter catalog according to the site slug and catalog type.'
+def upload_form(request, site_slug):
+    'Upload form for updating database'
 
-    site = get_object_or_404(Site,slug=site_slug)
-    
-    # Get model name
-    model = get_hypocenter_catalog('project', site_slug, catalog_type)
-    
-    # Get reference model
-    get_model = apps.get_model('project', model)
+    # Get the site models reference
+    site = get_object_or_404(Site, slug=site_slug)
 
     if request.method == 'POST' and 'confirm_upload' in request.POST:
         # confirm and save
         overwrite = request.POST.get('overwrite') == True
+        app_name = request.session.get('app_name')
+        model_name = request.session.get('model_name')
+        lookup_fields = request.session.get('lookup_fields')
         df_records = request.session.get('csv_data')
 
         if df_records:
             df = pd.DataFrame.from_records(df_records)
-            save_dataframe_to_db(get_model, df, overwrite=overwrite)
+            save_dataframe_to_db(app_name, model_name, lookup_fields, df, overwrite=overwrite)
             del request.session['csv_data']
             messages.success(request, 'CSV data uploaded successfully.')
         else:
             messages.error(request, 'No CSV data to upload.')
         
-        return redirect('upload_catalog')
+        return redirect('project:upload-form', site_slug=site_slug)
 
     elif request.method == 'POST':
         form = UploadFormCatalogCSV(request.POST, request.FILES)
         if form.is_valid():
-            try:
-                df = read_csv_file(form.cleaned_data['file'])
-                df = clean_hypo_df(df)
+            data_type = form.cleaned_data['data_type']
+            uploaded_file = form.cleaned_data['file']
 
-                # find conflicting ids
-                conflicting_ids = list(
-                    get_model.objects
-                    .filter(source_id__in = df['source_id'].tolist())
-                    .values_list('source_id', flat=True)
-                )
-                preview_data = df.head().to_dict(orient='records')
-                request.session['csv_data'] = df.to_dict(orient='records')
+            if data_type in ['initial', 'relocated']:
+                # Get model reference
+                model = get_hypocenter_catalog('project', site_slug, data_type)
+                get_model = apps.get_model('project', model)
 
-                context = {
-                    'form': form,
-                    'conflicts': conflicting_ids,
-                    'preview': preview_data,
-                    'overwrite': bool(conflicting_ids),
-                }
+                try:
+                    df = read_csv_file(uploaded_file, 'hypo')
+                    df = clean_hypo_df(df)
 
-                return render(request, 'project/uploads/upload-confirm.html', context)
+                    # find conflicting ids
+                    conflicting_ids = list(
+                        get_model.objects
+                        .filter(source_id__in = df['source_id'].tolist())
+                        .values_list('source_id', flat=True)
+                    )
+
+                    # update the upload models
+                    Updates.objects.create(
+                        username = request.user.username,
+                        title = form.cleaned_data['title'],
+                        type = f'{data_type} catalog',
+                        description = form.cleaned_data['description'],
+                        file_name = form.cleaned_data['file'].name
+                    )
+
+                    # preview data (look_up is given **kwargs parameters for model update_or_create)
+                    preview_data = df.head().to_dict(orient='records')
+                    request.session['app_name'] = 'project'
+                    request.session['model_name'] = model
+                    request.session['csv_data'] = df.to_dict(orient='records')
+                    request.session['lookup_fields'] = ['source_id']
+
+                    context = {
+                        'site': site,
+                        'form': form,
+                        'conflicts': conflicting_ids,
+                        'preview': preview_data,
+                        'overwrite': bool(conflicting_ids)
+                    }    
+
+                    return render(request, 'project/uploads/upload-confirm.html', context)
+
+                except Exception as e :
+                    messages.error(request, f"Error processing {data_type} catalog file: {e}")
+                    return redirect('project:upload-form')
+                
+            elif data_type == 'picking':
+                # Get model reference
+                model = get_picking_catalog('project', site_slug) 
+                get_model = apps.get_model('project', model)
+                
+                try:
+                    df = read_csv_file(uploaded_file, 'picking')
+                    df = clean_picking_df(df)
+
+                    # find conflicting ids
+                    conflicting_ids = list(
+                        get_model.objects
+                        .filter(source_id__in = df['source_id'].unique().tolist())
+                        .values_list('source_id', flat=True)
+                    )
+
+                    # update the upload models
+                    Updates.objects.create(
+                        username = request.user.username,
+                        title = form.cleaned_data['title'],
+                        type = "picking catalog",
+                        description = form.cleaned_data['description'],
+                        file_name = form.cleaned_data['file'].name
+                    )
+
+                    # preview data (look_up is given **kwargs parameters for model update_or_create)
+                    preview_data = df.head().to_dict(orient='records')
+                    request.session['app_name'] = 'project'
+                    request.session['model_name'] = model
+                    request.session['csv_data'] = df.to_dict(orient='records')
+                    request.session['lookup_fields'] = ['source_id', 'station_code']
+
+                    context = {
+                        'site': site,
+                        'form': form,
+                        'conflicts': conflicting_ids,
+                        'preview': preview_data,
+                        'overwrite': bool(conflicting_ids)
+                    }
+                    return render (request, 'project/uploads/upload-confirm.html', context)
+                
+                except Exception as e:
+                    messages.error(request, f"Error processing {data_type} catalog CSV file: {e}")
+                    return redirect('project:upload-form')
             
-            except Exception as e:
-                messages.error(request, f"Error processing CSV: {e}")
-                return redirect('project:upload-hypo-catalog')
+            elif data_type == 'station':
+                # Get model reference
+                model = get_station('project', site_slug) 
+                get_model = apps.get_model('project', model)
+
+                try:
+                    df = read_csv_file(uploaded_file, 'station')
+                    df = clean_station_df(df)
+
+                    # find conflicting station code
+                    conflicting_stations = list(
+                        get_model.objects
+                        .filter(station_code__in = df['station_code'].tolist())
+                        .values_list('source_id', flat=True)
+                    )
+
+                    # update the upload models
+                    Updates.objects.create(
+                        username = request.user.username,
+                        title = form.cleaned_data['title'],
+                        type = "station data",
+                        description = form.cleaned_data['description'],
+                        file_name = form.cleaned_data['file'].name
+                    )
+
+                    # preview data (look_up is given **kwargs parameters for model update_or_create)
+                    preview_data = df.head().to_dict(orient='records')
+                    request.session['app_name'] = 'project'
+                    request.session['model_name'] = model
+                    request.session['csv_file'] = df.to_dict(orient='records')
+                    request.session['lookup_fields'] = ['station_code']
+
+                    context = {
+                        'site': site,
+                        'form': form,
+                        'conflicts': conflicting_stations,
+                        'preview': preview_data,
+                        'overwrite': bool(conflicting_stations)
+                    }
+
+                    return render(request, 'project/uploads/upload-confirm.html', context)
+                
+                except Exception as e:
+                    messages.error(request, f'Error processing {data_type} csv file: {e}')
+                    return redirect('project:upload-form')
+                 
+            else:
+                return redirect('project:upload-form')
         
     else:
         form = UploadFormCatalogCSV()
@@ -265,10 +393,9 @@ def upload_hypo_catalog(request, site_slug, catalog_type):
     context ={
         'site': site,
         'form': form,
-        'data_type': f'{catalog_type.capitalize()} Catalog'
     }
     
-    return render(request, 'project/uploads/upload-hypo-catalog.html', context)
+    return render(request, 'project/upload-form.html', context)
 
 
 # def meq_maps(request, site_slug = None):

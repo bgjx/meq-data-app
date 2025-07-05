@@ -228,3 +228,12 @@ ul.search-input{
 
 
 /* Account page setting */
+
+
+/* Latest updates setting */
+
+.list-group-item {
+    background-color: rgba(255,255,255,0.7); 
+    border:0;}
+.list-group-item-text {
+    size: 16;}

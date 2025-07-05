@@ -1,33 +1,64 @@
+{% extends '../base-project.html' %}
+{% block title %} Files Upload Confirm {% endblock %}
+{% load static %}
+{% block content %}
+<section class='py-4 container'>
+    <div class='row py-lg-3'>
+        <div class='col'>
+            <div class='card shadow'>
+                <div class='card-body p-5'>
+                    <div class='upload-page'>
+                        <h2>Confirm Upload for CSV File</h2>
+                        {% if conflicts %}
+                            <p style="color: red;">
+                                ⚠️ Conflicting {{ conflicts|length }} existing records will be overwritten.
+                                {% if conflicts|length > 10 %}
+                                    Showing first 10 conflicts: {{ conflicts|slice:"0:10" }}
+                                {% else %}
+                                    Conflicts: {{ conflicts }}
+                                {% endif %}
+                            </p>
+                            <p> Do you want to overwrite existing records? </p>
+                        {% else %}
+                            <p style="color: green;">✅ No ID conflicts detected. You may upload safely.</p>
+                        {% endif %}
 
-<h2>Confirm Upload</h2>
+                        <h6>Preview :</h6>
+                        <div class='table-container'>
+                            <table id="preview-table" class="table table-striped" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        {% for key in preview.0.keys %}
+                                            <th>{{ key }}</th>
+                                        {% endfor %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for row in preview %}
+                                        <tr>
+                                        {% for val in row.values %}
+                                            <td>{{ val }}</td>
+                                        {% endfor %}
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class='confirm-section py-lg-3'>
+                            <form method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="confirm_upload" value="1">
+                                <input type="hidden" name="overwrite" value="{% if overwrite %}true{% else %}false{% endif %}">
+                                <p>If you do?, submit YES otherwise CANCEL.</p>
+                                <button type="submit" class="btn btn-primary" >Yes, Upload</button>
+                                <a href="{% url 'project:upload-form' site_slug=site.slug %}" class="btn btn-primary">Cancel</a>
+                            </form>
+                        </div>  
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-{% if conflicts %}
-  <p style="color: red;">⚠️ Conflicting <strong>source_id</strong>s found: {{ conflicts }}</p>
-  <p>Do you want to overwrite existing records?</p>
-{% else %}
-  <p style="color: green;">✅ No ID conflicts detected. You may upload safely.</p>
-{% endif %}
-
-<h3>Preview (first 5 rows):</h3>
-<table border="1">
-  <tr>
-    {% for key in preview.0.keys %}
-      <th>{{ key }}</th>
-    {% endfor %}
-  </tr>
-  {% for row in preview %}
-    <tr>
-      {% for val in row.values %}
-        <td>{{ val }}</td>
-      {% endfor %}
-    </tr>
-  {% endfor %}
-</table>
-
-<form method="post">
-  {% csrf_token %}
-  <input type="hidden" name="confirm_upload" value="1">
-  <input type="hidden" name="overwrite" value="{% if overwrite %}true{% else %}false{% endif %}">
-  <button type="submit">Yes, Upload</button>
-  <a href="{% url 'upload_catalog' %}">Cancel</a>
-</form>
+</section>
+{% endblock %}

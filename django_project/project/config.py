@@ -5,6 +5,15 @@ REQUIRED_HYPO_COLUMNS_NAME = [
     'remarks'
 ]
 
+REQUIRED_PICKING_COLUMNS_NAME = [
+    'source_id', 'station_code', 'p_arrival_dt', 'p_polarity', 'p_onset',
+    's_arrival_dt', 'coda_dt'
+]
+
+REQUIRED_STATION_COLUMNS_NAME = [
+    'station_code', 'network_code', 'station_lat', 'station_lon', 'station_elev_m'
+]
+
 REQUIRED_COLUMNS_NAME = [
     "id", "source_id", "source_lat_init", "source_lon_init", "location_init",
     "source_depth_m_init", "source_origin_dt_init", "source_err_rms_s_init", "gap_init",
@@ -14,3 +23,11 @@ REQUIRED_COLUMNS_NAME = [
     "station_lon", "station_elev_m", "p_arrival_dt", "s_arrival_dt",
     "coda_dt", "magnitude"
 ]
+
+# combine all requirements in one object
+REQUIREMENTS = {
+    'hypo': REQUIRED_HYPO_COLUMNS_NAME,
+    'picking': REQUIRED_PICKING_COLUMNS_NAME,
+    'station': REQUIRED_STATION_COLUMNS_NAME,
+    'merge': REQUIRED_COLUMNS_NAME
+}
