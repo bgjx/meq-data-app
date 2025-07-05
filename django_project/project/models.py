@@ -1,5 +1,7 @@
 from django.contrib.gis.db import models
 from django.contrib.gis.geos import Point
+# from django.utils.timezone import make_aware
+# from zoneinfo import ZoneInfo
 
 # SEML catalog models
 class SemlInitialCatalog(models.Model):
@@ -24,11 +26,20 @@ class SemlInitialCatalog(models.Model):
         managed = False
         db_table = 'seml_initial_catalog'
     
+    # override method for location point and timezone aware
     def save(self, *args, **kwargs):
         if self.source_lat is not None and self.source_lon is not None:
             self.location_init = Point(self.source_lon, self.source_lat)
-        super().save(*args, **kwargs)
 
+        # timezone_jkt = ZoneInfo("Asia/Jakarta")
+        # for field in self._meta.fields:
+        #     if isinstance(field, models.DateTimeField):
+        #         value = getattr(self, field.name)
+        #         if value and value.tzinfo is None:
+        #             setattr(self, field.name, make_aware(value, timezone=timezone_jkt))
+
+        super().save(*args, **kwargs)
+    
 
 class SemlRelocatedCatalog(models.Model):
     source_id = models.AutoField(primary_key=True)
@@ -52,9 +63,19 @@ class SemlRelocatedCatalog(models.Model):
         managed = False
         db_table = 'seml_relocated_catalog'
     
+    # override method for location point and timezone aware
     def save(self, *args, **kwargs):
+        
         if self.source_lat is not None and self.source_lon is not None:
             self.location_reloc = Point(self.source_lon, self.source_lat)
+
+        # timezone_jkt = ZoneInfo("Asia/Jakarta")
+        # for field in self._meta.fields:
+        #     if isinstance(field, models.DateTimeField):
+        #         value = getattr(self, field.name)
+        #         if value and value.tzinfo is None:
+        #             setattr(self, field.name, make_aware(value, timezone=timezone_jkt))
+
         super().save(*args, **kwargs)
 
 
@@ -71,6 +92,18 @@ class SemlPickingCatalog(models.Model):
     class Meta:
         managed = False
         db_table = 'seml_picking_catalog'
+    
+    # # override method for timezone aware
+    # def save(self, *args, **kwargs):
+    #     timezone_jkt = ZoneInfo("Asia/Jakarta")
+    #     for field in self._meta.fields:
+    #         if isinstance(field, models.DateTimeField):
+    #             value = getattr(self, field.name)
+    #             if value and value.tzinfo is None:
+    #                 setattr(self, field.name, make_aware(value, timezone=timezone_jkt))
+
+    #     super().save(*args, **kwargs)
+
 
 # SERD catalog models
 class SerdInitialCatalog(models.Model):
@@ -95,9 +128,18 @@ class SerdInitialCatalog(models.Model):
         managed = False
         db_table = 'serd_initial_catalog'
     
+    # override method for location point and timezone aware
     def save(self, *args, **kwargs):
         if self.source_lat is not None and self.source_lon is not None:
             self.location_init = Point(self.source_lon, self.source_lat)
+
+        # timezone_jkt = ZoneInfo("Asia/Jakarta")
+        # for field in self._meta.fields:
+        #     if isinstance(field, models.DateTimeField):
+        #         value = getattr(self, field.name)
+        #         if value and value.tzinfo is None:
+        #             setattr(self, field.name, make_aware(value, timezone=timezone_jkt))
+
         super().save(*args, **kwargs)
 
 
@@ -123,9 +165,18 @@ class SerdRelocatedCatalog(models.Model):
         managed = False
         db_table = 'serd_relocated_catalog'
     
+    # override method for location point and timezone aware
     def save(self, *args, **kwargs):
         if self.source_lat is not None and self.source_lon is not None:
             self.location_reloc = Point(self.source_lon, self.source_lat)
+
+        # timezone_jkt = ZoneInfo("Asia/Jakarta")
+        # for field in self._meta.fields:
+        #     if isinstance(field, models.DateTimeField):
+        #         value = getattr(self, field.name)
+        #         if value and value.tzinfo is None:
+        #             setattr(self, field.name, make_aware(value, timezone=timezone_jkt))
+                    
         super().save(*args, **kwargs)
 
 
@@ -142,6 +193,17 @@ class SerdPickingCatalog(models.Model):
     class Meta:
         managed = False
         db_table = 'serd_picking_catalog'
+    
+    # # override method for timezone aware
+    # def save(self, *args, **kwargs):
+    #     timezone_jkt = ZoneInfo("Asia/Jakarta")
+    #     for field in self._meta.fields:
+    #         if isinstance(field, models.DateTimeField):
+    #             value = getattr(self, field.name)
+    #             if value and value.tzinfo is None:
+    #                 setattr(self, field.name, make_aware(value, timezone=timezone_jkt))
+
+    #     super().save(*args, **kwargs)
 
 
 # station model
@@ -246,5 +308,8 @@ class Updates(models.Model):
     file_name = models.CharField(max_length=50, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
+    class Meta:
+        managed = True 
+        db_table = 'project_updates'
     def __str__(self):
         return self.title
