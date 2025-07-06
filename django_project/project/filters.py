@@ -1,6 +1,6 @@
 import django_filters
 from django import forms
-from django_filters import DateFilter, NumberFilter
+from django_filters import DateTimeFilter, DateFilter, NumberFilter
 from django.apps import apps
 from django.db.models import Min, Max
 
@@ -24,7 +24,7 @@ def hypo_table_filter(model_name):
 
     # Inherit django filter class object
     class HypoTableFilter(django_filters.FilterSet):
-        hypo_start_date = DateFilter(field_name="source_origin_dt", 
+        hypo_start_date = DateTimeFilter(field_name="source_origin_dt", 
                                 lookup_expr="gte", 
                                 label="Start Date",
                                 widget = forms.DateInput(
@@ -37,7 +37,7 @@ def hypo_table_filter(model_name):
                                 )
         )
         
-        hypo_end_date = DateFilter(field_name="source_origin_dt",
+        hypo_end_date = DateTimeFilter(field_name="source_origin_dt",
                               lookup_expr="lte", 
                               label="End Date",
                               widget = forms.DateInput(
@@ -66,7 +66,7 @@ def picking_table_filter(model_name):
 
     # Inherit django filter class object
     class PickTableFilter(django_filters.FilterSet):
-        picking_start_date = DateFilter( field_name="p_arrival_dt",
+        picking_start_date = DateTimeFilter( field_name="p_arrival_dt",
                                 lookup_expr="gte",
                                 label="Start Date",
                                 widget = forms.DateInput(
@@ -79,7 +79,7 @@ def picking_table_filter(model_name):
                                 ),
         )
 
-        picking_end_date = DateFilter(field_name= "p_arrival_dt",
+        picking_end_date = DateTimeFilter(field_name= "p_arrival_dt",
                               lookup_expr="lte",
                               label="End Date",
                               widget = forms.DateInput(
@@ -106,12 +106,12 @@ def spatial_filter(model_name):
 
     class SpatialFilter(django_filters.FilterSet):
         # Date Range Filters
-        start_date = DateFilter(field_name="source_origin_dt_init", 
+        start_date = DateTimeFilter(field_name="source_origin_dt_init", 
                                 lookup_expr="gte", 
                                 label="Start Date"
                     )
         
-        end_date = DateFilter(field_name="source_origin_dt_init",
+        end_date = DateTimeFilter(field_name="source_origin_dt_init",
                               lookup_expr="lte", 
                               label="End Date",
                     )
