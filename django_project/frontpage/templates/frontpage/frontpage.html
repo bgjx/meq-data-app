@@ -6,65 +6,70 @@
     <section class = "py-4 container">
         <div class = "row py-lg-3">
             <div class = 'col'>
-                <div class="card shadow">
-                    <div class="card-body">
-                        <div class='py-lg-3'>
-                            <h4 style="font-weight: 500;">
-                                A Microearthquake Data Analytics Dashboard
-                            </h4>
-                            <p class="text-muted">
-                                Data analytics and visualization of continuous Microearthquake monitoring at PT Supreme Energy Muara Laboh (SEML) and 
-                                PT Supreme Energy Rantau Dedap (SERD) geothermal assets. Visit the project site for more details...
-                            </p>
+                <div class = 'site-page'>
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <div class='py-lg-3'>
+                                <h4 style="font-weight: 500;">
+                                    A Microearthquake Data Analytics Dashboard
+                                </h4>
+                                <p class="text-muted">
+                                    Data analytics and visualization of continuous Microearthquake monitoring at PT Supreme Energy Muara Laboh (SEML) and 
+                                    PT Supreme Energy Rantau Dedap (SERD) geothermal assets. Visit the project site for more details...
+                                </p>
+                            </div>
+                            <h6 class="mb-3 card-title">Project Locations</h6>
+                            <div id = "map">                    
+                                <script>
+                                    mapboxgl.accessToken = '{{mapbox_access_token}}';
+                                    var map = new mapboxgl.Map({
+                                        container: 'map', // container ID
+                                        style: 'mapbox://styles/mapbox/navigation-night-v1', // style URL
+                                        center: [ 104.651539, -1.792698], // starting position [lng, lat]
+                                        zoom: 5, // starting zoom
+                                    });
+                                    // Create a new marker.
+                                    {% for project in all_projects %}
+                                        var marker = new mapboxgl.Marker()
+                                            .setLngLat([{{project.longitude}}, {{project.latitude}}])
+                                            .setPopup(new mapboxgl.Popup().setHTML("<a href='{{project.get_absolute_url}}'> PT.{{project.name | upper }} </a> <p>{{project.address}}</p>"))
+                                            .addTo(map);
+                                    {% endfor %}
+                                </script>
+                                
+                            </div>
                         </div>
-                        <h6 class="mb-3 card-title">Project Locations</h6>
-                        <div id = "map">                    
-                            <script>
-                                mapboxgl.accessToken = '{{mapbox_access_token}}';
-                                var map = new mapboxgl.Map({
-                                    container: 'map', // container ID
-                                    style: 'mapbox://styles/mapbox/navigation-night-v1', // style URL
-                                    center: [ 104.651539, -1.792698], // starting position [lng, lat]
-                                    zoom: 5, // starting zoom
-                                });
-                                // Create a new marker.
-                                {% for project in all_projects %}
-                                    var marker = new mapboxgl.Marker()
-                                        .setLngLat([{{project.longitude}}, {{project.latitude}}])
-                                        .setPopup(new mapboxgl.Popup().setHTML("<a href='{{project.get_absolute_url}}'> PT.{{project.name | upper }} </a> <p>{{project.address}}</p>"))
-                                        .addTo(map);
-                                {% endfor %}
-                            </script>
-                            
-                        </div>
+
                     </div>
-
                 </div>
-
             </div>
 
             <div class = 'col-lg-3'>
-                <div class="card shadow">
-                    <div class="card-body">
-                        <h6 class="mb-3 card-title">Latest Updates</h6>
-                        <div id="updates">
-                            <ul class='list-group'>
-                                {% for update in latest_updates %}
-                                    <li class='list-group-item'>
-                                        <h6 class='list-group-item-heading'>
-                                            {{ update.username | upper }} | {{ update.title | capfirst }}
-                                        <h6>
-                                        <p class='list-group-item-text'>
-                                            {{ update.description }}
-                                        </p>
-                                        <span class='text-muted small'>
-                                            {{ update.updated_at|date:"M d, H:i" }}
-                                        </span>
-                                    </li>
-                                {% empty %}
-                                    <li class='list-group-item-text'> No recent updates. </li>
-                                {% endfor %}
-                            </ul>
+                <div class = 'update-tab'>
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <h6 class="mb-3 card-title">Latest Updates</h6>
+                            <div id="updates">
+                                <ul class='list-group'>
+                                    {% for update in latest_updates %}
+                                        <li class='list-group-item'>
+                                            <h6 class='list-group-item-heading'>
+                                                {{ update.username | upper }} | {{ update.title | capfirst }}
+                                            <h6>
+                                            <p class='list-group-item-text'>
+                                                {{ update.description }}
+                                                <br>
+                                                <span class='text-muted small'>
+                                                    {{ update.updated_at|date:"M d, H:i" }}
+                                                </span>
+                                            </p>
+                                        
+                                        </li>
+                                    {% empty %}
+                                        <li class='list-group-item-text'> No recent updates. </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>

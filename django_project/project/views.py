@@ -115,12 +115,12 @@ def download_hypo_catalog(request, site_slug, catalog_type):
 
     # write header
     writer = csv.writer(response, lineterminator='\n')
-    headers = [field.name for field in get_model._meta.fields]
+    headers = [field.name for field in get_model._meta.fields[:-1]]
     writer.writerow(headers)
 
     # writing data
     for data in filter_instance.qs:
-        writer.writerow([getattr(data, field.name) for field in get_model._meta.fields])
+        writer.writerow([getattr(data, header) for header in headers])
     
     return response
 
