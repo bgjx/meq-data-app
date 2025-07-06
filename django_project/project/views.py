@@ -146,12 +146,12 @@ def download_picking_catalog(request, site_slug):
 
     # write header
     writer = csv.writer(response, lineterminator='\n')
-    headers = [field.name for field in get_model._meta.fields]
+    headers = [field.name for field in get_model._meta.fields[1:]]
     writer.writerow(headers)
 
     # writing data
     for data in filter_instance.qs:
-        writer.writerow([getattr(data, field.name) for field in get_model._meta.fields])
+        writer.writerow([getattr(data, header) for header in headers])
 
     return response
 
@@ -173,14 +173,14 @@ def download_station(request, site_slug):
 
     # write header 
     writer = csv.writer(response, lineterminator='\n')
-    headers = [field.name for field in get_model._meta.fields]
+    headers = [field.name for field in get_model._meta.fields[1:]]
     writer.writerow(headers)
 
     # writing data
     for data in get_model.objects.all():
-        writer.writerow([getattr(data, field.name) for field in get_model._meta.fields])
+        writer.writerow([getattr(data, header) for header in headers])
     
-    return response# Get the model reference
+    return response
 
 
 # CSV file read method
