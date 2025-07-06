@@ -4,15 +4,22 @@
 *.log
 
 # virutal env and .env
+venv/
+env/
 django_project/venv-django/
 fastapi_service/venv-fastapi/
 .env*
 
 # python cache files
 *.pyc
+django_project/__pycache__
 django_project/webpapp/__pycache__/
 django_project/frontpage/__pycache__/
 django_project/project/__pycache__/
 django_project/account/__pycache__/
 
 fastapi_service/__pycache__/
+fastapi_service/__pycache__/app
+
+# github
+.git

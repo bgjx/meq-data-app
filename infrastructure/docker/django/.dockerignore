@@ -5,15 +5,21 @@
 
 # virutal env and .env
 venv/
-django_project/venv-django
-fastapi_service/venv-fastapi
+env/
+django_project/venv-django/
+fastapi_service/venv-fastapi/
 .env*
 
 # python cache files
 *.pyo
 *.pyc
-frontpage/__pycache__/
-project/__pycache__/
+django_project/__pycache__
+django_project/webpapp/__pycache__/
+django_project/frontpage/__pycache__/
+django_project/project/__pycache__/
+django_project/account/__pycache__/
+fastapi_service/__pycache__/
+fastapi_service/__pycache__/app
 
 # github
 .git
