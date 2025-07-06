@@ -8,13 +8,24 @@
             <div class="card shadow">
                 <div class="card-body p-5">
                     <div class="upload-page">
-                        <h4>
-                            Upload a file for updating {{ site.name | upper }} database
-                        </h4>
-                        <br>
-                        <p> Before uploading make sure your .CSV files following this data structure</p>
-                        {{ data_structure }}
+                        <h5 class='mb-3'> Before uploading make sure your .CSV files following this data structure</h5>
+                        <div class= 'data-structure-container'>
+                            <ul class="nav nav-tabs">
+                                {% for tab in tabs %}
+                                    <li class="nav-item">
+                                        <button class="nav-link {% if tab.active %}active{% endif %}" data-tab="{{ tab.data_tab }}">{{ tab.label }}</button>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                            <div class="tab-contents-tab">
+                                {% include 'project/uploads/data-structure.html' with data_type='hypo' structure_data=data_structure.hypo active=True %}
+                                {% include 'project/uploads/data-structure.html' with data_type='picking' structure_data=data_structure.picking  %}
+                                {% include 'project/uploads/data-structure.html' with data_type='station' structure_data=data_structure.station  %}
+                            </div>
+                        </div>
 
+                        <!-- Upload Form -->
+                        <h5 class='mt-5'>Fill this form for uploading a file: </h5>
                         {% if form.errors %}
                             <div class="alert alert-danger">
                                 {% for field in form %}

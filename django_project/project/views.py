@@ -12,6 +12,7 @@ from project.utils import (get_hypocenter_catalog,
                            get_station,
                            get_merged_catalog,
                            analysis_engine)
+
 from . filters import hypo_table_filter, picking_table_filter, spatial_filter
 from . forms import UploadFormCatalogCSV
 from . data_cleanser import (clean_hypo_df,
@@ -24,7 +25,7 @@ from datetime import datetime, timedelta
 import pandas as pd
 import csv
 from io import TextIOWrapper
-from . config import REQUIREMENTS
+from . config import DATA_STRUCTURES, REQUIREMENTS
 import openai 
 
 # variable
@@ -114,12 +115,12 @@ def download_hypo_catalog(request, site_slug, catalog_type):
 
     # write header
     writer = csv.writer(response, lineterminator='\n')
-    headers = [field.name for field in get_model._meta.fields]
+    headers = [field.name for field in get_model._meta.fields[:-1]]
     writer.writerow(headers)
 
     # writing data
     for data in filter_instance.qs:
-        writer.writerow([getattr(data, field.name) for field in get_model._meta.fields])
+        writer.writerow([getattr(data, header) for header in headers])
     
     return response
 
@@ -223,6 +224,14 @@ def upload_form(request, site_slug):
     # Get the site models reference
     site = get_object_or_404(Site, slug=site_slug)
 
+    ## data structure views
+    # data structure tabs
+    data_structure_tabs = [
+        {'label': 'Hypo Catalog', 'data_tab': 'tab-hypo', 'active': True},
+        {'label': 'Picking Catalog', 'data_tab': 'tab-picking', 'active': False},
+        {'label': 'Station Catalog', 'data_tab': 'tab-station', 'active': False},
+    ]
+
     if request.method == 'POST' and 'confirm_upload' in request.POST:
         # confirm and save
         overwrite = request.POST.get('overwrite') == True
@@ -307,6 +316,7 @@ def upload_form(request, site_slug):
                         get_model.objects
                         .filter(source_id__in = df['source_id'].unique().tolist())
                         .values_list('source_id', flat=True)
+                        .distinct()
                     )
 
                     # update the upload models
@@ -393,6 +403,8 @@ def upload_form(request, site_slug):
     context ={
         'site': site,
         'form': form,
+        'tabs': data_structure_tabs,
+        'data_structure': DATA_STRUCTURES
     }
     
     return render(request, 'project/upload-form.html', context)

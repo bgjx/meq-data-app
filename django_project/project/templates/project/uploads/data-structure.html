@@ -1,0 +1,24 @@
+{% load static %}
+<div class="tab-content {% if active %}active{% endif %}" id="tab-{{ data_type }}">
+    <!-- data structure -->
+    <div class='data-structure'>
+        <div class="table-container">
+            <table class="table table-striped" style="width:100%">
+                <thead>
+                    <tr>
+                        {% for th in structure_data.header %}
+                            <th>{{ th }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        {% for td in structure_data.type %}
+                            <td>{{ td }}</td>
+                        {% endfor %}
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

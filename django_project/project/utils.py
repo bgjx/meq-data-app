@@ -1,5 +1,4 @@
 from django.apps import apps
-
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
@@ -7,77 +6,127 @@ from scipy.stats import linregress
 
 from . import config
 
-mapbox_access_token = 'pk.eyJ1IjoiZWRlbG8iLCJhIjoiY20zNG1zN3F5MDFjdzJsb3N4ZDJ1ZTR1byJ9.bgl0vpixXnhDKJ8SnW4PYA'
-
 # get hypocenter catalog
-def get_hypocenter_catalog(app_label, slug, catalog_type):
-    'Get hypocenter catalog from model.'
-    # Expected hypo catalog table name
+def get_hypocenter_catalog(app_label: str, slug: str, catalog_type: str) -> str:
+    """
+    Retrieve the hypocenter catalog model name for the specified app and catalog type.
+
+    Args:
+        app_label (str): The name of the Django app.
+        slug (str): Slug used in the catalog name.
+        catalog_type (str): The type of catalog to retrieve.
+
+    Returns:
+        str: The name of the model corresponding to the hypocenter catalog, or None if not found.
+    """
     table_name = f"{slug}_{catalog_type}_catalog"
-
-    # Get all models
     models = apps.get_app_config(app_label).get_models()
-
-    # Return the table objects and table name
     for model in models:
         if table_name in str(model._meta.db_table):
             return model.__name__
-    
     return None
 
 
-# get picking catalog
-def get_picking_catalog(app_label, slug):
-    'Get hypocenter catalog from model.'
-    # Expected hypo catalog table name
+def get_picking_catalog(app_label: str, slug: str) -> str:
+    """
+    Retrieve the picking catalog model name for the specified app.
+
+    Args:
+        app_label (str): The name of the Django app.
+        slug (str): Slug used in the catalog name.
+
+    Returns:
+        str: The name of the model corresponding to the picking catalog, or None if not found.
+    """
     table_name = f"{slug}_picking_catalog"
-
-    # Get all models
     models = apps.get_app_config(app_label).get_models()
-
-    # Return the table objects and table name
     for model in models:
         if table_name in str(model._meta.db_table):
             return model.__name__
-    
     return None
 
 
-# get merged catalog view for complete data analysis
-def get_merged_catalog(app_label, slug):
-    'Get full catalog by merging hypocenter, picking, and station.'
+def get_merged_catalog(app_label: str, slug: str) -> str:
+    """
+    Retrieve the merged catalog view model name for complete data analysis.
 
-    # Expected view merged table name
-    table_name = f"{slug}_catalog_merged_view" 
+    Args:
+        app_label (str): The name of the Django app.
+        slug (str): Slug used in the catalog name.
 
-    # Get all view merged models
+    Returns:
+        str: The name of the model corresponding to the merged catalog view, or None if not found.
+    """
+    table_name = f"{slug}_catalog_merged_view"
     models = apps.get_app_config(app_label).get_models()
-
-    # Return the table objects and table name
     for model in models:
         if table_name in str(model._meta.db_table):
             return model.__name__
-    
     return None
 
 
-def get_station(app_label, slug):
-    'Get station data from station model'
+def get_station(app_label: str, slug: str) -> str:
+    """
+    Retrieve the station data model name from the specified app.
 
-    # Expected station table name
-    table_name = f"{slug}_station" 
+    Args:
+        app_label (str): The name of the Django app.
+        slug (str): Slug used in the station name.
 
-    # Get all station models
+    Returns:
+        str: The name of the model corresponding to the station data, or None if not found.
+    """
+    table_name = f"{slug}_station"
     models = apps.get_app_config(app_label).get_models()
     for model in models:
         if table_name in model._meta.db_table:
             return model.__name__
-    
     return None
 
 
-def analysis_engine(df: pd.DataFrame, slug):
-    'Do data preprocessing and return the data to feed the plotly plots'
+# def get_data_structure(model):
+
+#     type_map = {
+#         'AutoField': 'Integer (PK)',
+#         'IntegerField': 'Integer',
+#         'FloatField': 'Float',
+#         'DateTimeField': 'DateTime',
+#         'CharField': 'String',
+#     }
+
+#     headers = []
+#     types = []
+
+#     for field in model._meta.fields:
+#         if 'location' in field.name:
+#             # skip location field (user don't provide it right away)
+#             continue
+        
+#         field_type = field.get_internal_type()
+#         type_alias = type_map[field_type]
+
+#         headers.append(field.name)
+#         types.append(type_alias)
+    
+#     return headers, types
+
+
+def analysis_engine(df: pd.DataFrame, slug: str) -> dict:
+    """
+    Perform data preprocessing and analysis on the provided DataFrame.
+
+    Args:
+        df (pd.DataFrame): The input DataFrame containing hypocenter and picking data.
+        slug (str): Slug used for identifying the specific dataset.
+
+    Returns:
+        dict: A dictionary containing various analytical results including general statistics,
+              overall daily intensities, station performance, Wadati profile data, and 
+              Gutenberg-Richter analysis results.
+
+    Raises:
+        ValueError: If the DataFrame is empty or if required columns are missing.
+    """
 
     # Check DataFrame integrity
     if df.empty:
