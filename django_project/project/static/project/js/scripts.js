@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
+
     // Sidebar expander
     const hamburger = document.querySelector("#toggle-btn");
     if (hamburger) {
@@ -83,4 +84,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // For upload preview table
     let preview_table = new DataTable('#preview-table');
+
+
+    // Pop up messages
+    const toastElList = [].slice.call(document.querySelectorAll('.toast'))
+    toastElList.map(function (toastEl) {
+        const toast = new bootstrap.Toast(toastEl)
+        toast.show()
+    })
 });
