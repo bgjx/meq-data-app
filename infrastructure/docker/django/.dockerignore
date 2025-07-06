@@ -13,6 +13,16 @@ fastapi_service/venv-fastapi/
 # python cache files
 *.pyo
 *.pyc
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+*.egg
+*.egg-info/
+dist/
+build/
+*.whl
+
 django_project/__pycache__
 django_project/webpapp/__pycache__/
 django_project/frontpage/__pycache__/
