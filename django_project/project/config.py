@@ -28,7 +28,7 @@ REQUIRED_COLUMNS_NAME = [
 DATA_STRUCTURES = {
     'hypo': {
         'header': REQUIRED_HYPO_COLUMNS_NAME,
-        'type': ['Integer (PK)', 'Float', 'Float', 'Float'
+        'type': ['Integer (PK)', 'Float', 'Float', 'Float',
                  'DateTime', 'Float', 'Integer', 'Float',
                  'Float', 'Float', 'Float', 'Float', 'String']
     },
@@ -39,7 +39,7 @@ DATA_STRUCTURES = {
     },
     'station': {
         'header': REQUIRED_STATION_COLUMNS_NAME,
-        'type': ['String', 'String', 'Float', 'Float', 'Float']
+        'type': ['String (FK)', 'String', 'Float', 'Float', 'Float']
     }
 }
 

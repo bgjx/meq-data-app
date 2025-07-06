@@ -403,7 +403,8 @@ def upload_form(request, site_slug):
     context ={
         'site': site,
         'form': form,
-        'tabs': data_structure_tabs
+        'tabs': data_structure_tabs,
+        'data_structure': DATA_STRUCTURES
     }
     
     return render(request, 'project/upload-form.html', context)

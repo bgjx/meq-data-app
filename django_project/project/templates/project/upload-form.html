@@ -23,9 +23,9 @@
                                 {% endfor %}
                             </ul>
                             <div class="tab-contents-tab">
-                                {% include 'project/uploads/data-structure.html' with data_type='hypo' structure_data=hypo_structure_data active=True %}
-                                {% include 'project/uploads/data-structure.html' with data_type='picking' structure_data=picking_structure_data  %}
-                                {% include 'project/uploads/data-structure.html' with data_type='station' structure_data=station_structure_data  %}
+                                {% include 'project/uploads/data-structure.html' with data_type='hypo' structure_data=data_structure.hypo active=True %}
+                                {% include 'project/uploads/data-structure.html' with data_type='picking' structure_data=data_structure.picking  %}
+                                {% include 'project/uploads/data-structure.html' with data_type='station' structure_data=data_structure.station  %}
                             </div>
                         </div> 
 
