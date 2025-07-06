@@ -361,7 +361,7 @@ def upload_form(request, site_slug):
                     conflicting_stations = list(
                         get_model.objects
                         .filter(station_code__in = df['station_code'].tolist())
-                        .values_list('source_id', flat=True)
+                        .values_list('station_code', flat=True)
                     )
 
                     # update the upload models
@@ -377,7 +377,7 @@ def upload_form(request, site_slug):
                     preview_data = df.head().to_dict(orient='records')
                     request.session['app_name'] = 'project'
                     request.session['model_name'] = model
-                    request.session['csv_file'] = df.to_dict(orient='records')
+                    request.session['csv_data'] = df.to_dict(orient='records')
                     request.session['lookup_fields'] = ['station_code']
 
                     context = {
