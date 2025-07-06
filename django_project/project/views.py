@@ -25,7 +25,7 @@ from datetime import datetime, timedelta
 import pandas as pd
 import csv
 from io import TextIOWrapper
-from . config import REQUIREMENTS
+from . config import DATA_STRUCTURES, REQUIREMENTS
 import openai 
 
 # variable
@@ -224,6 +224,8 @@ def upload_form(request, site_slug):
     # Get the site models reference
     site = get_object_or_404(Site, slug=site_slug)
 
+    ## data structure views
+    # data structure tabs
     data_structure_tabs = [
         {'label': 'Hypo Catalog', 'data_tab': 'tab-hypo', 'active': True},
         {'label': 'Picking Catalog', 'data_tab': 'tab-picking', 'active': False},

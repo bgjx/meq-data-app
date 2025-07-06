@@ -25,6 +25,25 @@ REQUIRED_COLUMNS_NAME = [
 ]
 
 # combine all requirements in one object
+DATA_STRUCTURES = {
+    'hypo': {
+        'header': REQUIRED_HYPO_COLUMNS_NAME,
+        'type': ['Integer (PK)', 'Float', 'Float', 'Float'
+                 'DateTime', 'Float', 'Integer', 'Float',
+                 'Float', 'Float', 'Float', 'Float', 'String']
+    },
+    'picking': {
+        'header': REQUIRED_PICKING_COLUMNS_NAME,
+        'type': [ 'Integer (FK)', 'String', 'DateTime', 'String',
+                 'String', 'DateTime', 'DateTime']
+    },
+    'station': {
+        'header': REQUIRED_STATION_COLUMNS_NAME,
+        'type': ['String', 'String', 'Float', 'Float', 'Float']
+    }
+}
+
+
 REQUIREMENTS = {
     'hypo': REQUIRED_HYPO_COLUMNS_NAME,
     'picking': REQUIRED_PICKING_COLUMNS_NAME,

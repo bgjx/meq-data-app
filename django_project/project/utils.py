@@ -84,6 +84,33 @@ def get_station(app_label: str, slug: str) -> str:
     return None
 
 
+# def get_data_structure(model):
+
+#     type_map = {
+#         'AutoField': 'Integer (PK)',
+#         'IntegerField': 'Integer',
+#         'FloatField': 'Float',
+#         'DateTimeField': 'DateTime',
+#         'CharField': 'String',
+#     }
+
+#     headers = []
+#     types = []
+
+#     for field in model._meta.fields:
+#         if 'location' in field.name:
+#             # skip location field (user don't provide it right away)
+#             continue
+        
+#         field_type = field.get_internal_type()
+#         type_alias = type_map[field_type]
+
+#         headers.append(field.name)
+#         types.append(type_alias)
+    
+#     return headers, types
+
+
 def analysis_engine(df: pd.DataFrame, slug: str) -> dict:
     """
     Perform data preprocessing and analysis on the provided DataFrame.
