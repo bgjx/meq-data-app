@@ -224,6 +224,12 @@ def upload_form(request, site_slug):
     # Get the site models reference
     site = get_object_or_404(Site, slug=site_slug)
 
+    data_structure_tabs = [
+        {'label': 'Hypo Catalog', 'data_tab': 'tab-hypo', 'active': True},
+        {'label': 'Picking Catalog', 'data_tab': 'tab-picking', 'active': False},
+        {'label': 'Station Catalog', 'data_tab': 'tab-station', 'active': False},
+    ]
+
     if request.method == 'POST' and 'confirm_upload' in request.POST:
         # confirm and save
         overwrite = request.POST.get('overwrite') == True
@@ -308,6 +314,7 @@ def upload_form(request, site_slug):
                         get_model.objects
                         .filter(source_id__in = df['source_id'].unique().tolist())
                         .values_list('source_id', flat=True)
+                        .distinct()
                     )
 
                     # update the upload models
@@ -394,6 +401,7 @@ def upload_form(request, site_slug):
     context ={
         'site': site,
         'form': form,
+        'tabs': data_structure_tabs
     }
     
     return render(request, 'project/upload-form.html', context)

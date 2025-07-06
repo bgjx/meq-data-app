@@ -13,7 +13,21 @@
                         </h4>
                         <br>
                         <p> Before uploading make sure your .CSV files following this data structure</p>
-                        {{ data_structure }}
+                        
+                        <div class= 'data-structure-container'>
+                            <ul class="nav nav-tabs">
+                                {% for tab in tabs %}
+                                    <li class="nav-item">
+                                        <button class="nav-link {% if tab.active %}active{% endif %}" data-tab="{{ tab.data_tab }}">{{ tab.label }}</button>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                            <div class="tab-contents-tab">
+                                {% include 'project/uploads/data-structure.html' with data_type='hypo' structure_data=hypo_structure_data active=True %}
+                                {% include 'project/uploads/data-structure.html' with data_type='picking' structure_data=picking_structure_data  %}
+                                {% include 'project/uploads/data-structure.html' with data_type='station' structure_data=station_structure_data  %}
+                            </div>
+                        </div> 
 
                         {% if form.errors %}
                             <div class="alert alert-danger">

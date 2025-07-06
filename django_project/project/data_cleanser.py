@@ -28,7 +28,7 @@ def clean_hypo_df(df:pd.DataFrame):
 
 # Data cleanser for picking catalog data
 def clean_picking_df(df:pd.DataFrame):
-    df = df[config.REQUIRED_PICKING_COLUMNS_NAME]
+    df = df[config.REQUIRED_PICKING_COLUMNS_NAME].copy()
 
     # convert columns data type
     df['source_id'] = pd.to_numeric(df['source_id'], errors='coerce').astype('Int64')
@@ -46,7 +46,7 @@ def clean_picking_df(df:pd.DataFrame):
 
 # Data cleanser for picking catalog data
 def clean_station_df(df:pd.DataFrame):
-    df = df[config.REQUIRED_STATION_COLUMNS_NAME]
+    df = df[config.REQUIRED_STATION_COLUMNS_NAME].copy()
 
     # convert columns data type
     df['station_code'] = df['station_code'].astype(str).where(df['station_code'].notnull(), None)
