@@ -55,13 +55,13 @@ ENV GUNICORN_WORKERS=3
 ENV GUNICORN_PORT=8000
 
 # Switch to non-root user
-USER appuser
+#USER appuser
 
 # Expose the application port
 EXPOSE 8000
 
 # Make entry file executable
-COPY --chown=appuser:appuser infrastructure/docker/django/entrypoint.prod.sh .
+COPY --chown=root:root infrastructure/docker/django/entrypoint.prod.sh .
 RUN chmod +x entrypoint.prod.sh 
 
 # health check (install curl first)
