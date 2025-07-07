@@ -51,9 +51,6 @@ WORKDIR /home/app/web
 # copy application code
 COPY --chown=appuser:appuser django_project/ .
 
-# copy entry file executable for django app
-COPY --chown=appuser:appuser infrastructure/docker/django/entrypoint.prod.sh .
-
 # Set environment variables to optimize Python
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
@@ -63,11 +60,12 @@ ENV GUNICORN_PORT=8000
 # Switch to non-root user
 USER appuser
 
-# Make entry file executable
-RUN chmod +x entrypoint.prod.sh 
-
 # Expose the application port
 EXPOSE 8000
+
+# Make entry file executable
+COPY --chown=appuser:appuser infrastructure/docker/django/entrypoint.prod.sh .
+RUN chmod +x entrypoint.prod.sh 
 
 # health check 
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \ 
