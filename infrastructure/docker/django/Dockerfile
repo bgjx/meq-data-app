@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install -y \
 
 # install the python dependencies 
 RUN pip install --upgrade pip 
-COPY ../../django_project/requirements.txt .
+COPY django_project/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt 
 
 ## Stage 2: Production Stage
@@ -49,11 +49,10 @@ COPY --from=builder /usr/local/bin/ /usr/local/bin/
 WORKDIR /home/app/web
 
 # copy application code
-COPY --chown=appuser:appuser ../../django_project/ .
+COPY --chown=appuser:appuser django_project/ .
 
 # copy entry file executable for django app
-COPY --chown=appuser:appuser ./entrypoint.prod.sh .
-
+COPY --chown=appuser:appuser infrastructure/docker/django/entrypoint.prod.sh .
 
 # Set environment variables to optimize Python
 ENV PYTHONDONTWRITEBYTECODE=1
