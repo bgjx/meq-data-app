@@ -155,7 +155,6 @@ jobs:
                 networks:
                   - app-network
             volumes:
-              postgres_data:
               static_volume:
               media_volume:
               log_volume:      
