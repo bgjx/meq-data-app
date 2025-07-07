@@ -10,6 +10,9 @@ django_project/venv-django/
 fastapi_service/venv-fastapi/
 .env*
 
+# Django specific
+django_project/db.sqlite3
+
 # python cache files
 *.pyo
 *.pyc
@@ -23,6 +26,13 @@ dist/
 build/
 *.whl
 
+# PostgreSQL and PostGis related
+*.sql
+*.sql.gz
+*.sql.dump
+*.psql
+pgdata/
+
 # github
 .git
 
@@ -32,3 +42,4 @@ build/
 # OS-generated files
 .DS_Store
 Thumbs.db
+
