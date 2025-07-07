@@ -12,9 +12,6 @@ ENV/
 *.env
 .env*
 
-# Django-specific
-../../django_project/db.sqlite3
-
 # PostgreSQL/PostGIS
 *.sql
 *.sql.gz
@@ -23,6 +20,7 @@ ENV/
 pgdata/
 
 # Other Project directories
+../../django_project/
 ../../fastapi_service/
 ../../documentation/
 ../../.github/
@@ -53,3 +51,10 @@ build/
 # OS-generated files
 .DS_Store
 Thumbs.db
+
+
+# Docker-related
+build/
+*.dockerignore
+docker-compose.yml.local
+*.container

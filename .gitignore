@@ -4,15 +4,42 @@
 *.log
 
 # virutal env and .env
+venv/
+env/
 django_project/venv-django/
 fastapi_service/venv-fastapi/
 .env*
 
-# python cache files
-*.pyc
-django_project/webpapp/__pycache__/
-django_project/frontpage/__pycache__/
-django_project/project/__pycache__/
-django_project/account/__pycache__/
+# Django specific
+django_project/db.sqlite3
 
-fastapi_service/__pycache__/
+# python cache files
+*.pyo
+*.pyc
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+*.egg
+*.egg-info/
+dist/
+build/
+*.whl
+
+# PostgreSQL and PostGis related
+*.sql
+*.sql.gz
+*.sql.dump
+*.psql
+pgdata/
+
+# github
+.git
+
+# IDE/Editor
+.vscode/
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+

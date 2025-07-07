@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install -y \
 
 # install the python dependencies 
 RUN pip install --upgrade pip 
-COPY requirements.txt .
+COPY ../../django_project/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt 
 
 ## Stage 2: Production Stage
@@ -49,7 +49,11 @@ COPY --from=builder /usr/local/bin/ /usr/local/bin/
 WORKDIR /home/app/web
 
 # copy application code
-COPY --chown=appuser:appuser . .
+COPY --chown=appuser:appuser ../../django_project/ .
+
+# copy entry file executable for django app
+COPY --chown=appuser:appuser ./entrypoint.prod.sh .
+
 
 # Set environment variables to optimize Python
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -60,12 +64,11 @@ ENV GUNICORN_PORT=8000
 # Switch to non-root user
 USER appuser
 
+# Make entry file executable
+RUN chmod +x entrypoint.prod.sh 
+
 # Expose the application port
 EXPOSE 8000
-
-# Make entry file executable
-COPY --chown=appuser:appuser entrypoint.prod.sh .
-RUN chmod +x entrypoint.prod.sh 
 
 # health check 
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \ 
