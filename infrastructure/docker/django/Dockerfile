@@ -65,11 +65,11 @@ COPY --chown=appuser:appuser infrastructure/docker/django/entrypoint.prod.sh .
 RUN chmod +x entrypoint.prod.sh 
 
 # health check (install curl first)
-RUN apt-get update && apt-get install -y curl \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+# RUN apt-get update && apt-get install -y curl \
+#     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \ 
-                CMD curl -f http://localhost:8000/health/ || exit 1
+# HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \ 
+#                 CMD curl -f http://localhost:8000/health/ || exit 1
 
 # Start the application using Gunicorn
 CMD ["./entrypoint.prod.sh"]
