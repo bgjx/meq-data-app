@@ -11,15 +11,24 @@ fastapi_service/venv-fastapi/
 .env*
 
 # python cache files
+*.pyo
 *.pyc
-django_project/__pycache__
-django_project/webpapp/__pycache__/
-django_project/frontpage/__pycache__/
-django_project/project/__pycache__/
-django_project/account/__pycache__/
-
-fastapi_service/__pycache__/
-fastapi_service/__pycache__/app
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+*.egg
+*.egg-info/
+dist/
+build/
+*.whl
 
 # github
 .git
+
+# IDE/Editor
+.vscode/
+
+# OS-generated files
+.DS_Store
+Thumbs.db
