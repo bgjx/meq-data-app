@@ -7,13 +7,13 @@
 venv/
 env/
 ENV/
-../../django_project/venv-django/
-../../fastapi_service/venv-fastapi/
+django_project/venv-django/
+fastapi_service/venv-fastapi/
 *.env
 .env*
 
 # Django-specific
-../../django_project/db.sqlite3
+django_project/db.sqlite3
 
 # PostgreSQL/PostGIS
 *.sql
@@ -23,13 +23,13 @@ ENV/
 pgdata/
 
 # Other Project directories
-../../fastapi_service/
-../../documentation/
-../../.github/
-../../.git/
-../../docker-compose.yml
-../../LICENSE
-../../README.md
+fastapi_service/
+documentation/
+.github/
+.git/
+docker-compose.yml
+LICENSE
+README.md
 
 # python/django cache files
 *.pyo

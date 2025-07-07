@@ -7,8 +7,8 @@
 venv/
 env/
 ENV/
-../../django_project/venv-django/
-../../fastapi_service/venv-fastapi/
+django_project/venv-django/
+fastapi_service/venv-fastapi/
 *.env
 .env*
 
@@ -20,14 +20,14 @@ ENV/
 pgdata/
 
 # Other Project directories
-../../django_project/
-../../fastapi_service/
-../../documentation/
-../../.github/
-../../.git/
-../../docker-compose.yml
-../../LICENSE
-../../README.md
+django_project/
+fastapi_service/
+documentation/
+.github/
+.git/
+docker-compose.yml
+LICENSE
+README.md
 
 # python/django cache files
 *.pyo

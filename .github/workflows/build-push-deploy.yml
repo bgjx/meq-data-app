@@ -47,7 +47,7 @@ jobs:
       - name: Build and push Django app
         uses: docker/build-push-action@v5
         with:
-          context: infrastructure/docker/django/
+          context: .
           file: infrastructure/docker/django/Dockerfile
           push: true
           tags: ${{ steps.set-tags.outputs.app_tag }},${{ steps.set-tags.outputs.app_tag_latest }}
@@ -57,7 +57,7 @@ jobs:
       - name: Build and push Nginx
         uses: docker/build-push-action@v5
         with:
-          context: infrastructure/docker/nginx/
+          context: .
           file: infrastructure/docker/nginx/Dockerfile.nginx
           push: true 
           tags: ${{ steps.set-tags.outputs.nginx_tag }},${{ steps.set-tags.outputs.nginx_tag_latest }}
