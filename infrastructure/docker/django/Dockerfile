@@ -35,10 +35,7 @@ RUN apt-get update && apt-get install -y \
 
 # create non-root user in production to prevent security issues
 RUN useradd -m -r appuser && \
-    mkdir -p    /home/app/web \ 
-                /home/app/web/staticfiles \ 
-                /home/app/web/media \
-                /home/app/web/logs && \
+    mkdir -p    /home/app/web/staticfiles /home/app/web/media /home/app/web/logs && \
     chown -R appuser:appuser /home/app/web
 
 # Copy the Python dependencies from the builder stage
@@ -67,9 +64,12 @@ EXPOSE 8000
 COPY --chown=appuser:appuser infrastructure/docker/django/entrypoint.prod.sh .
 RUN chmod +x entrypoint.prod.sh 
 
-# health check 
+# health check (install curl first)
+RUN apt-get update && apt-get install -y curl \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \ 
-                CMD curl -f http://localhost:${GUNICORN_PORT}/health/ || exit
+                CMD curl -f http://localhost:8000/health/ || exit 1
 
 # Start the application using Gunicorn
 CMD ["./entrypoint.prod.sh"]
