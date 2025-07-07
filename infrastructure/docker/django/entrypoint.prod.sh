@@ -14,7 +14,7 @@ chown -R appuser:appuser /home/app/web
 
 # Switch to appuser and run the app
 echo 'Switching to appuser and run the app...'
-exec su -s /bin/bash/ appuser -c "
+exec su -s /bin/bash appuser -c "
         echo 'Running database migrations...' &&
         python manage.py migrate --noinput &&
 
