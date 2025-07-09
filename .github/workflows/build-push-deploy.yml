@@ -146,10 +146,12 @@ jobs:
               nginx:
                 image: ${NGINX_TAG}
                 ports:
-                  - "8000:80"
+                  - "80:80"
+                  - "443:443"
                 volumes:
                   - static_volume:/home/app/web/staticfiles
                   - media_volume:/home/app/web/media
+                  - /etc/letsencrypt:/etc/letsencrypt:ro
                 depends_on:
                   - web
                 networks:
