@@ -68,8 +68,14 @@ jobs:
     needs: build-and-push-docker
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: List nginx config files
+        run: ls -l ./infrastructure/docker/nginx
+
       - name: Upload nginx configs to Droplet
-        uses: appleboy/scp-action@v0.1.4
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.DO_HOST }}
           username: ${{ secrets.DO_USER }}
