@@ -151,6 +151,7 @@ jobs:
                   - "80:80"
                   - "443:443"
                 volumes:
+                  - ./infrastructure/docker/nginx/active.conf:/etc/nginx/nginx.conf:ro
                   - static_volume:/home/app/web/staticfiles
                   - media_volume:/home/app/web/media
                   - certbot_webroot:/var/www/certbot
