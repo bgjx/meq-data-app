@@ -207,6 +207,9 @@ jobs:
             echo "docker-compose.yml created..."
 
             # Copy appropriate nginx config to active.conf
+            # Remove if active.conf accidentally a directory
+            [ -d ~/nginx-configs/active.conf ] && rm -rf ~/nginx-configs/active.conf
+
             if docker volume inspect letsencrypt_certs 2>/dev/null | grep -q quake-analytics.bgjx.pro; then
               echo "✅ SSL cert exists — using full HTTPS config"
               cp ~/nginx-configs/nginx-full-ssl.conf ~/nginx-configs/active.conf
