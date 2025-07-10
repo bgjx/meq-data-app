@@ -143,21 +143,45 @@ jobs:
                   - media_volume:/home/app/web/media
                 networks:
                   - app-network
+
+
               nginx:
                 image: ${NGINX_TAG}
                 ports:
                   - "80:80"
+                  - "443:443"
                 volumes:
                   - static_volume:/home/app/web/staticfiles
                   - media_volume:/home/app/web/media
+                  - certbot_webroot:/var/www/certbot
+                  - letsencrypt_certs:/etc/letsencrypt:ro
+                  - ssl_dhparam:/etc/letsencrypt/ssl-dhparams.pem:ro
                 depends_on:
                   - web
                 networks:
                   - app-network
+
+
+              certbot:
+                image: certbot/certbot:latest
+                volumes:
+                  - certbot_webroot:/var/www/certbot
+                  - letsencrypt_certs:/etc/letsencrypt
+                  - ssl_dhparam:/etc/letsencrypt/ssl-dhparams.pem
+                entrypoint: "/bin/sh -c 'trap exit TERM; while :; do sleep 3600 & wait $${!}; done'"
+                networks:
+                  - app-network
+
+
             volumes:
               static_volume:
               media_volume:
-              log_volume:      
+              log_volume:
+              certbot_webroot;
+              letsencrypt_certs:
+              ssl_dhparam:
+                
+                
             networks:
               app-network:
                 driver: bridge
