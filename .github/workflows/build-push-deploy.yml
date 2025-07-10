@@ -155,7 +155,7 @@ jobs:
                   - media_volume:/home/app/web/media
                   - certbot_webroot:/var/www/certbot
                   - letsencrypt_certs:/etc/letsencrypt:ro
-                  - ssl_dhparam:/etc/letsencrypt/ssl-dhparams.pem:ro
+                  - ssl_dhparam:/etc/letsencrypt/ssl_dhparam.pem:ro
                 depends_on:
                   - web
                 networks:
@@ -167,8 +167,8 @@ jobs:
                 volumes:
                   - certbot_webroot:/var/www/certbot
                   - letsencrypt_certs:/etc/letsencrypt
-                  - ssl_dhparam:/etc/letsencrypt/ssl-dhparams.pem
-                entrypoint: "/bin/sh -c 'trap exit TERM; while :; do sleep 3600 & wait $${!}; done'"
+                  - ssl_dhparam:/etc/letsencrypt/ssl_dhparam.pem
+                entrypoint: "/bin/sh -c 'trap exit TERM; while :; do sleep 3600 & wait $$!; done'"
                 networks:
                   - app-network
 
@@ -177,7 +177,7 @@ jobs:
               static_volume:
               media_volume:
               log_volume:
-              certbot_webroot;
+              certbot_webroot:
               letsencrypt_certs:
               ssl_dhparam:
                 
