@@ -82,7 +82,7 @@ jobs:
           key: ${{ secrets.DO_SSH_KEY }}
           source: "./infrastructure/docker/nginx/nginx-full-ssl.conf,./infrastructure/docker/nginx/nginx-no-ssl.conf"
           target: "~/nginx-configs"
-          strip_components: 3
+          strip_components: 4
 
       - name: Deploy to Droplet
         uses: appleboy/ssh-action@v1.0.3
