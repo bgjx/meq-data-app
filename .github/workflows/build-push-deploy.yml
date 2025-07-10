@@ -74,7 +74,7 @@ jobs:
           host: ${{ secrets.DO_HOST }}
           username: ${{ secrets.DO_USER }}
           key: ${{ secrets.DO_SSH_KEY }}
-          source: "infrastructure/docker/nginx/nginx-full-ssl.conf,infrastructure/docker/nginx/nginx-no-ssl.conf"
+          source: "./infrastructure/docker/nginx/nginx-full-ssl.conf,./infrastructure/docker/nginx/nginx-no-ssl.conf"
           target: "~/nginx-configs"
 
       - name: Deploy to Droplet
