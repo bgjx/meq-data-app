@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
 def validate_email_domain(email):
-    allowed_domains = ['supreme-energy.com']
+    allowed_domains = ['supreme-energy.com', 'gmail.com']
     email_domain = email.split('@')[-1]
     if email_domain not in allowed_domains:
         raise ValidationError(f"Email must be from one of these domains:{', '.join(allowed_domains)}")

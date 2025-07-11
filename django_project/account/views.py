@@ -8,6 +8,7 @@ from django.utils import timezone
 from datetime import timedelta
 from .forms import LoginForm, SignupForm
 from .models import UserProfile, EmailVerification
+from django.conf import settings
 
 def signup_view(request):
     msg = None
@@ -36,7 +37,7 @@ def signup_view(request):
             send_mail(
                 'Verify your Dashboard account',
                 f'Hi {user.username}, thank you for signing up! Click this link to verify your email: {verification_url}',
-                'settings.EMAIL_HOST_USER',
+                settings.DEFAULT_FROM_EMAIL,
                 [user.email],
                 fail_silently=False,
             )
