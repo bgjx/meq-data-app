@@ -150,7 +150,7 @@ jobs:
             version: '3.9'
             services:
               web:
-                image: ${APP_TAG}
+                image: bgjx/meq-data-app:v0.0.1
                 env_file:
                   - .env
                 volumes:
@@ -162,7 +162,7 @@ jobs:
 
 
               nginx:
-                image: ${NGINX_TAG}
+                image: bgjx/app-nginx:v0.0.1
                 ports:
                   - "80:80"
                   - "443:443"
@@ -170,9 +170,9 @@ jobs:
                   - ~/nginx-configs/active.conf:/etc/nginx/nginx.conf:ro
                   - static_volume:/home/app/web/staticfiles
                   - media_volume:/home/app/web/media
-                  - certbot_webroot:/var/www/certbot
+                  - /home/deploy/certbot:/var/www/certbot
                   - letsencrypt_certs:/etc/letsencrypt:ro
-                  - ssl_dhparam:/etc/letsencrypt/ssl_dhparam.pem:ro
+                  - ssl_dhparam:/etc/dhparams:ro
                 depends_on:
                   - web
                 networks:
@@ -182,9 +182,9 @@ jobs:
               certbot:
                 image: certbot/certbot:latest
                 volumes:
-                  - certbot_webroot:/var/www/certbot
+                  - /home/deploy/certbot:/var/www/certbot
                   - letsencrypt_certs:/etc/letsencrypt
-                  - ssl_dhparam:/etc/letsencrypt/ssl_dhparam.pem
+                  - ssl_dhparam:/etc/dhparams
                 entrypoint: "/bin/sh -c 'trap exit TERM; while :; do sleep 3600 & wait $$!; done'"
                 networks:
                   - app-network
@@ -202,6 +202,7 @@ jobs:
             networks:
               app-network:
                 driver: bridge
+
             EOF
 
             echo "docker-compose.yml created..."
