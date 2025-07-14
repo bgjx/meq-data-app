@@ -9,7 +9,6 @@
             <div class="card shadow">
                 <div class="card-body p-5">
                     <div class="upload-page">
-                        <h5 class='mb-3'> Before uploading make sure your .CSV files following this data structure</h5>
                         <div class= 'data-structure-container'>
                             <ul class="nav nav-tabs">
                                 {% for tab in tabs %}
@@ -26,7 +25,7 @@
                         </div>
 
                         <!-- Upload Form -->
-                        <h5 class='mt-5'>Fill this form for uploading a file: </h5>
+                        <h6 class='mt-5'>Fill this form for uploading a file: </h6>
                         {% if form.errors %}
                             <div class="alert alert-danger">
                                 {% for field in form %}
