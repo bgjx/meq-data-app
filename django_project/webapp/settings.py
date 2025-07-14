@@ -53,7 +53,7 @@ LOGGING = {
             'handlers': ['console', 'file'],
             'level': 'WARNING',
             'propagate': True,
-        } for logger_name in ('django', 'frontpage', 'project')   
+        } for logger_name in ('account', 'django', 'frontpage', 'project')   
     }
 }
 
