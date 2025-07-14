@@ -189,7 +189,6 @@ jobs:
               static_volume:
               media_volume:
               log_volume:
-              certbot_webroot:
               letsencrypt_certs:
               ssl_dhparam:
                 
