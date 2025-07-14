@@ -301,6 +301,7 @@ class SerdCatalogMergedView(models.Model):
 # File upload models
 class Updates(models.Model):
     id = models.AutoField(primary_key=True)
+    site_project = models.CharField(max_length=50, blank=True, null=True)
     username = models.CharField(max_length=25, blank=True, null=True)
     title = models.CharField(max_length=50, blank=True, null=True)
     type = models.CharField(max_length=25, blank=True, null=True)

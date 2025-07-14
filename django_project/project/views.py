@@ -274,6 +274,7 @@ def upload_form(request, site_slug):
 
                     # update the upload models
                     Updates.objects.create(
+                        site_project = site_slug,
                         username = request.user.username,
                         title = form.cleaned_data['title'],
                         type = f'{data_type} catalog',
@@ -321,6 +322,7 @@ def upload_form(request, site_slug):
 
                     # update the upload models
                     Updates.objects.create(
+                        site_project = site_slug,
                         username = request.user.username,
                         title = form.cleaned_data['title'],
                         type = "picking catalog",
@@ -366,6 +368,7 @@ def upload_form(request, site_slug):
 
                     # update the upload models
                     Updates.objects.create(
+                        site_project = site_slug,
                         username = request.user.username,
                         title = form.cleaned_data['title'],
                         type = "station data",
