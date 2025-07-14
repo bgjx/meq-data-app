@@ -60,7 +60,7 @@
                                                 {{ update.description }}
                                                 <br>
                                                 <span class='text-muted small'>
-                                                    {{ update.updated_at|date:"M d, H:i" }}
+                                                    {{update.site_project | upper}} site, {{ update.updated_at|date:"M d, H:i" }}
                                                 </span>
                                             </p>
                                         
