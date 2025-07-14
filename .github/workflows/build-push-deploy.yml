@@ -192,7 +192,6 @@ jobs:
               letsencrypt_certs:
               ssl_dhparam:
                 
-                
             networks:
               app-network:
                 driver: bridge
