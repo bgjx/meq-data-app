@@ -134,14 +134,9 @@ jobs:
             # Open AI API key
             OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
 
-            # Email services
-            EMAIL_HOST=smtp.sendgrid.net
-            EMAIL_PORT=587
-            EMAIL_USE_TLS=True
-            EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }}
-            EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}
-            DEFAULT_FROM_EMAIL=${{ secrets.EMAIL_DEFAULT }}
-            EOF
+            # Sengrid email services
+            SENDGRID_API_KEY=${{ secrets.SENDGRID_API_KEY }}
+            SENDGRID_FROM_EMAIL=Quake Analytics <info@bgjx.pro>
 
             echo "Environment variable (.env) created..."
 
@@ -210,7 +205,7 @@ jobs:
             # Copy appropriate nginx config to active.conf
             [ -d ~/nginx-configs/active.conf ] && rm -rf ~/nginx-configs/active.conf
 
-            if docker volume inspect letsencrypt_certs 2>/dev/null | grep -q quake-analytics.bgjx.pro; then
+            if docker volume inspect meq-data-app_letsencrypt_certs 2>/dev/null | grep -q quake-analytics.bgjx.pro; then
               echo "✅ SSL cert exists — using full HTTPS config"
               cp ~/nginx-configs/nginx-full-ssl.conf ~/nginx-configs/active.conf
             else
