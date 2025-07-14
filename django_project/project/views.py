@@ -167,8 +167,8 @@ def download_station(request, site_slug):
 
     # Http response
     response = HttpResponse(
-        content_type = "text# View functions for data download client/csv; charset=utf-8",
-         headers={"Content-Disposition": 'attachment; filename="station_download.csv"'}
+        content_type = "text/csv; charset=utf-8",
+        headers={"Content-Disposition": 'attachment; filename="station_download.csv"'}
     )
 
     # write header 
