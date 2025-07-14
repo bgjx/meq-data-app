@@ -30,16 +30,25 @@ DATA_STRUCTURES = {
         'header': REQUIRED_HYPO_COLUMNS_NAME,
         'type': ['Integer (PK)', 'Float', 'Float', 'Float',
                  'DateTime', 'Float', 'Integer', 'Float',
-                 'Float', 'Float', 'Float', 'Float', 'String']
+                 'Float', 'Float', 'Float', 'Float', 'String'],
+        'sample': [2741, -1.6425079, 101.1422201, 1430.98,
+                     '2023-01-20 19:11:19.260000', 0.0131338, 10, 292.576,
+                     849.696, 474.627, 569.438, 0.286, 'specimen']
     },
+
     'picking': {
         'header': REQUIRED_PICKING_COLUMNS_NAME,
         'type': [ 'Integer (FK)', 'String', 'DateTime', 'String',
-                 'String', 'DateTime', 'DateTime']
+                 'String', 'DateTime', 'DateTime'],
+        'sample': [ 3770, 'ML11', '2023-01-03 03:52:35.569630',
+                   '+', 'I', '2023-01-03 03:52:36.200560',
+                   '2023-01-03 03:52:44.200560']
     },
+    
     'station': {
         'header': REQUIRED_STATION_COLUMNS_NAME,
-        'type': ['String (FK)', 'String', 'Float', 'Float', 'Float']
+        'type': ['String (FK)', 'String', 'Float', 'Float', 'Float'],
+        'sample': ['ML09', 'ML', -1.618465946, 101.138134, 1270]
     }
 }
 

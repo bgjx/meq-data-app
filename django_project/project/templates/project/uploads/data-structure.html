@@ -7,15 +7,28 @@
             <table class="table table-striped" style="width:100%">
                 <thead>
                     <tr>
+                        <th> HEADER </th>
                         {% for th in structure_data.header %}
                             <th>{{ th }}</th>
                         {% endfor %}
                     </tr>
                 </thead>
                 <tbody>
+                    <!-- Data Type -->
                     <tr>
+                        <td> DATA TYPE </td>
                         {% for td in structure_data.type %}
                             <td>{{ td }}</td>
+                        {% endfor %}
+                    </tr>
+                    
+                </tbody>
+                <!-- Data Sample -->
+                <tbody>
+                    <tr>
+                        <td> DATA SAMPLE </td>
+                        {% for td in structure_data.sample %}
+                            <td> {{ td }} </td>
                         {% endfor %}
                     </tr>
                 </tbody>
