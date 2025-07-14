@@ -9,7 +9,6 @@ from datetime import timedelta
 from account.utils import send_email_via_sendgrid
 from account.forms import LoginForm, SignupForm
 from account.models import UserProfile, EmailVerification
-from django.conf import settings
 
 def signup_view(request):
     msg = None
@@ -35,12 +34,10 @@ def signup_view(request):
                 reverse('account:verify_email', kwargs={'token': token.token})
             )
 
-            send_mail(
-                'Verify your Dashboard account',
-                f'Hi {user.username}, thank you for signing up! Click this link to verify your email: {verification_url}',
-                settings.DEFAULT_FROM_EMAIL,
-                [user.email],
-                fail_silently=False,
+            send_email_via_sendgrid(
+                to_email = user.email,
+                subject= 'Verify your Dashboard account',
+                html_content=f' <p> Hi {user.username}, thank you for signing up! Click this link to verify your email: {verification_url}</p>',
             )
 
             return render(request, 'account/signup_success.html')
