@@ -2,12 +2,13 @@
 from django.contrib.auth import login, logout
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import Group
-from django.core.mail import send_mail
 from django.urls import reverse
 from django.utils import timezone
 from datetime import timedelta
-from .forms import LoginForm, SignupForm
-from .models import UserProfile, EmailVerification
+
+from account.utils import send_email_via_sendgrid
+from account.forms import LoginForm, SignupForm
+from account.models import UserProfile, EmailVerification
 from django.conf import settings
 
 def signup_view(request):
