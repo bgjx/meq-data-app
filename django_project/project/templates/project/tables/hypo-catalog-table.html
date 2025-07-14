@@ -78,6 +78,7 @@
     </div>
     <!-- Download Option -->
     <div class="download-section py-lg-3">
+        <p><i>(*) Not all fields are presented on this table</i></p>
         <p>Full hypocenter catalog in CSV file below</p>
         <a href="{% url 'project:download-hypo-catalog' site_slug=site.slug catalog_type=catalog_type %}?{{ request.GET.urlencode }}" class="btn btn-primary">
             Download CSV
