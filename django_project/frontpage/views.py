@@ -21,3 +21,7 @@ def frontpage(request):
     }
     
     return render(request, 'frontpage/frontpage.html', context=context)
+
+def donwload_updates(request):
+
+    return None
