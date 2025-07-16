@@ -33,6 +33,8 @@ Utilizing **Plotly JS**, it provides swift and interactive visualizations includ
 
 ---
 
+## Snapshots of Some Features
+
 
 
 ## Getting Started
