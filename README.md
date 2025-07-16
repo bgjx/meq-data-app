@@ -14,24 +14,26 @@ Utilizing **Plotly JS**, it provides swift and interactive visualizations includ
 
 ---
 
-## Features
+## Architecture and Scheme
+<div align='center'>
+    <img src='documentation/schematic.png'>
+</div>
+---
 
+## Features
+- Secure and robust Authentication and Authorization (role based feature).
+- Powerfull yet simple Admin page.
 - Interactive visualizations of microearthquake events.
 - Integration with a PostgreSQL/PostGIS database for effective geographical data handling.
 - Automated data querying and processing using Django ORM, Pandas and NumPy.
-- Powerful backend engine for data cleansing and processing with FastAPI (powered by NumPy, SciPy, Pandas, and custom algorithms) 
-- Vanilla JavaScript (fetch API) front-end interactions for real-time data updates and analysis.
+- Powerful backend engine for data cleansing and processing.
+- JavaScript (fetch API) front-end interactions for real-time data updates and analysis.
 - User-friendly interface for managing and navigating through data analysis tasks.
 - Dynamic data filtering, downloading, and updating (catalog, picking, stations, sites, etc.).
 
 ---
 
-## Architecture and Scheme
-<div align='center'>
-    <img src='documentation/schematic.png'>
-</div>
 
----
 
 ## Getting Started
 
