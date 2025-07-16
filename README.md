@@ -6,7 +6,7 @@
 
 ## Overview
 
-The **Microearthquake Monitoring Data Analysis Dashboard** is a web application built professionally with **Django** designed specifically for internal development and operational use. 
+The **Microearthquake Data Analytics Web App** is a web application built professionally with **Django** designed specifically for internal development and operational use. 
 
 This dashboard allows for the analysis and visualization of microearthquake data during routine monitoring. 
 
