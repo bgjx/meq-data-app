@@ -35,32 +35,38 @@ Utilizing **Plotly JS**, it provides swift and interactive visualizations includ
 ---
 
 ## Snapshots of Some Features
-1. Robust authentication
+### 1. Secure and Robust Authentication
+Manage user access, signup, login, reset password, prevent outsider from accessing internal organizations data.
 <div align='center'>
     <img src='documentation/feature_captures/loginpage.png'>
 </div>
 
-2. Upload form for instant manageable updates and collaborative application 
+### 2. Intuitive Upload Form for Real-Time Collaboration
+Quickly update data through a user-friendly form designed for seamless collaboration and manageable changes.
 <div align='center'>
     <img src='documentation/feature_captures/upload_form.png'>
 </div>
 
-3. Dynamic spatial filter
+### 3. Dynamic spatial filter
+Filter and explore data geographically with an interactive spatial filter.
 <div align='center'>
     <img src='documentation/feature_captures/filter.png'>
 </div>
 
-4. Interactive Data Visualizations and Analytics
+### 4. Interactive Data Visualizations & Analytics
+Gain insights through rich, interactive charts and analytics tools.
 <div align='center'>
     <img src='documentation/feature_captures/interactive.png'>
 </div>
 
-5. Powerful yet simple Django admin page
+### 5. Powerful Yet User-Friendly Django Admin Interface
+For easy, less technical (SQL) database management.
 <div align='center'>
     <img src='documentation/feature_captures/admin.png'>
 </div>
 
 And many more feature under continuous development...
+
 ---
 
 ## Getting Started
