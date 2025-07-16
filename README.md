@@ -21,11 +21,11 @@ Utilizing **Plotly JS**, it provides swift and interactive visualizations includ
 ---
 
 ## Features
-- Multisites project, make it easier for subsurface department or stakeholder to monitor their assets.
+- Multi-sites project, make it easier for subsurface department or stakeholder to monitor their assets.
 - Secure and robust Authentication and Authorization (role based feature).
-- Powerfull yet simple Admin page.
+- Powerful yet simple Admin page.
 - Interactive visualizations of microearthquake events.
-- Integration with a PostgreSQL/PostGIS database for effective geographical data handling, managing, and ensruing security.
+- Integration with a PostgreSQL/PostGIS database for effective geographical data handling, managing, and ensuring security.
 - Automated data querying and processing using Django ORM, Pandas and NumPy.
 - Powerful backend engine for data cleansing and processing.
 - JavaScript (fetch API) front-end interactions for real-time data updates and analysis.
