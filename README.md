@@ -1,4 +1,4 @@
-# Microearthquake Monitoring Data Analysis Dashboard
+# Microearthquake Data Analytics Web App
 
 <div align='center'>
     <img src='documentation/demo.gif'>
