@@ -21,7 +21,7 @@ Utilizing **Plotly JS**, it provides swift and interactive visualizations includ
 ---
 
 ## Features
-- Multi-sites project, make it easier for subsurface department or stakeholder to monitor their assets.
+- Multi-sites feature, make it easier for subsurface department, stakeholder, or project owner to monitor their assets.
 - Secure and robust Authentication and Authorization (role based feature).
 - Powerful yet simple Admin page.
 - Interactive visualizations of microearthquake events.
