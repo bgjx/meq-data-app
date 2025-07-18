@@ -59,13 +59,19 @@ Gain insights through rich, interactive charts and analytics tools.
     <img src='documentation/feature_captures/interactive.png'>
 </div>
 
-### 5. Powerful Yet User-Friendly Django Admin Interface
+### 6. Niche Earthquake Statistical Analytics
+The backend data processing engine takes care of specific earthquake analytics.
+<div align='center'>
+    <img src='documentation/feature_captures/statistical_analytics.png'>
+</div>
+
+### 6. Powerful Yet User-Friendly Django Admin Interface
 For easy, less technical (SQL) database management.
 <div align='center'>
     <img src='documentation/feature_captures/admin.png'>
 </div>
 
-And many more feature under continuous development...
+And many more features under continuous development...
 
 ---
 
@@ -73,9 +79,9 @@ And many more feature under continuous development...
 
 If you'd like to test this app using **Docker** on your local machine, the following instructions will help you set it up and run it locally.
 
-Please note that, due to data confidentiality policies, the database contents are not included—so the app will appear blank. Which means you also have to set the Admin setting and credentials manually.
+Please note that, due to data confidentiality policies, the database contents are not included, so the app will appear blank. Which means you also have to set the Admin settings and credentials manually.
 
-If you're interested in the database structure, feel free to contact me via email at [edelo.arham@gmail.com](mailto:edelo.arham@gmail.com), i will provide you full dummy database.
+If you're interested in the database structure, feel free to contact me via email at [edelo.arham@gmail.com](mailto:edelo.arham@gmail.com), developer will provide you full dummy database.
 
 ### Prerequisites
 
@@ -181,12 +187,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Technology Stacks
 
-- **Django**: For the framework, take advantages of robust, secure auth and powerfull Django ORM.
-- **FastAPI**: Lightnig-fast backend, serve API call for any data processing or Machine Learning service request with asynchronous capabilities.
+- **Django**: For the framework, take advantage of robust, secure auth and powerful Django ORM.
+- **FastAPI**: Lightning-fast backend, serve API calls for any data processing or Machine Learning service request with asynchronous capabilities.
 - **PostgreSQL/PostGIS**: For database/handling geographical data.
-- **AWS RDS**: Relational database cloud service for hosting postgreSQL.
+- **AWS RDS**: Relational database cloud service for hosting PostgreSQL.
 - **Plotly JS**: For rich interactive data visualizations front-end.
 - **Docker**: For containerizing the application.
 - **DigitalOcean Droplets**: For deployment.
 
-For more information on project usage, please refer to the codebase or contact the project maintainers to [edelo.arham@gmail.com](mailto:edelo.arham@gmail.com).
+For more information on project usage, please refer to the codebase or contact the project maintainers : [edelo.arham@gmail.com](mailto:edelo.arham@gmail.com).
