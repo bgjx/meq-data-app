@@ -10,7 +10,7 @@ The **Microearthquake Data Analytics Web App** is a web application built profes
 
 This dashboard allows for the analysis and visualization of microearthquake data during routine monitoring. 
 
-Utilizing **Plotly JS**, it provides swift and interactive visualizations including various plotting capabilities for efficient data analysis.
+Utilizing **Plotly JS**, it provides swift and interactive visualizations, including various plotting capabilities for efficient data analysis.
 
 ---
 
@@ -21,12 +21,12 @@ Utilizing **Plotly JS**, it provides swift and interactive visualizations includ
 ---
 
 ## Features
-- Multi-sites feature, make it easier for subsurface department, stakeholder, or project owner to monitor their assets.
-- Secure and robust Authentication and Authorization (role based feature).
+- Multi-site feature makes it easier for the  subsurface department, stakeholders, or project owner to monitor their assets.
+- Secure and robust Authentication and Authorization (role-based feature).
 - Powerful yet simple Admin page.
 - Interactive visualizations of microearthquake events.
 - Integration with a PostgreSQL/PostGIS database for effective geographical data handling, managing, and ensuring security.
-- Automated data querying and processing using Django ORM, Pandas and NumPy.
+- Automated data querying and processing using Django ORM, Pandas, and NumPy.
 - Powerful backend engine for data cleansing and processing.
 - JavaScript (fetch API) front-end interactions for real-time data updates and analysis.
 - User-friendly interface for managing and navigating through data analysis tasks.
@@ -36,7 +36,7 @@ Utilizing **Plotly JS**, it provides swift and interactive visualizations includ
 
 ## Snapshots of Some Features
 ### 1. Secure and Robust Authentication
-Manage user access, signup, login, reset password, prevent outsider from accessing internal organizations data.
+Manage user access, signup, login, reset password, and prevent outsider from accessing the internal organization's data.
 <div align='center'>
     <img src='documentation/feature_captures/loginpage.png'>
 </div>
@@ -60,7 +60,7 @@ Gain insights through rich, interactive charts and analytics tools.
 </div>
 
 ### 6. Niche Earthquake Statistical Analytics
-The backend data processing engine takes care of specific earthquake analytics.
+The backend data processing engine takes care of specific earthquake analytics, like the Gutenberg-Richter analysis we have here.
 <div align='center'>
     <img src='documentation/feature_captures/statistical_analytics.png'>
 </div>
@@ -81,7 +81,7 @@ If you'd like to test this app using **Docker** on your local machine, the follo
 
 Please note that, due to data confidentiality policies, the database contents are not included, so the app will appear blank. Which means you also have to set the Admin settings and credentials manually.
 
-If you're interested in the database structure, feel free to contact me via email at [edelo.arham@gmail.com](mailto:edelo.arham@gmail.com), developer will provide you full dummy database.
+If you're interested in the database structure, feel free to contact me via email at [edelo.arham@gmail.com](mailto:edelo.arham@gmail.com), the developer will provide you full dummy database.
 
 ### Prerequisites
 
@@ -191,7 +191,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **FastAPI**: Lightning-fast backend, serve API calls for any data processing or Machine Learning service request with asynchronous capabilities.
 - **PostgreSQL/PostGIS**: For database/handling geographical data.
 - **AWS RDS**: Relational database cloud service for hosting PostgreSQL.
-- **Plotly JS**: For rich interactive data visualizations front-end.
+- **Plotly JS**: For rich interactive data visualizations frontend.
 - **Docker**: For containerizing the application.
 - **DigitalOcean Droplets**: For deployment.
 
