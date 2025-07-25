@@ -11,7 +11,9 @@ from django.contrib.gis.measure import D
 
 import logging
 
+
 logger = logging.getLogger(__name__)
+
 
 # filter for hypocenter catalog table
 def hypo_table_filter(model_name):
@@ -98,7 +100,7 @@ def picking_table_filter(model_name):
     return PickTableFilter
 
 
-
+# dynamic spatial filter
 def spatial_filter(model_name):
     'Spatial filter, differ from table filter it uses view merged catalog in database'
     picked_model = apps.get_model('project', model_name)  
@@ -245,7 +247,7 @@ def spatial_filter(model_name):
         
         class Meta:
             model = picked_model
-            fields = ['radius', 'max_longitude']
+            fields = []
 
     return SpatialFilter
 
