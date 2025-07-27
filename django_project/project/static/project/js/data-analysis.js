@@ -87,8 +87,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // 2. Function for overall plot intensities
     function intensitiesOverallPlot(id, data){
 
-        // Purge 
-
         // Create hover text array
         const hoverTextDaily = data.x_values.map((x, i) =>
             `Date: ${x}<br> Events: ${data.y_bar[i]}`
