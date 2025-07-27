@@ -87,6 +87,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // 2. Function for overall plot intensities
     function intensitiesOverallPlot(id, data){
 
+        // Purge 
+
         // Create hover text array
         const hoverTextDaily = data.x_values.map((x, i) =>
             `Date: ${x}<br> Events: ${data.y_bar[i]}`
@@ -186,9 +188,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Plotly plot call
         try {
-            Plotly.newPlot(id, [barData, lineData], layout);
+            Plotly.react(id, [barData, lineData], layout);
         } catch (error) {
-            console.error('Plotly.newPlot failed:', error)
+            console.error('Plotly.react failed:', error)
         }
         
     };
@@ -290,9 +292,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Plotly plot call
         try {
-            Plotly.newPlot(id, [pPhaseData, sPhaseData], layout);
+            Plotly.react(id, [pPhaseData, sPhaseData], layout);
         } catch (error) {
-            console.error('Plotly.newPlot failed:', error)
+            console.error('Plotly.react failed:', error)
         };
     
     };
@@ -409,9 +411,9 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         try {
-            Plotly.newPlot(id, [ScatterWadati, regressionLine], layout);
+            Plotly.react(id, [ScatterWadati, regressionLine], layout);
         } catch (error) {
-            console.error('Plolty.NewPlot failed:', error)
+            console.error('Plolty.react failed:', error)
         };
     }
     
@@ -478,9 +480,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Plotly plot call
         try {
-            Plotly.newPlot(id, traces, layout);
+            Plotly.react(id, traces, layout);
         } catch (error) {
-            console.error('Plotly.newPlot failed:', error)
+            console.error('Plotly.react failed:', error)
         };
     };
 
@@ -583,9 +585,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Plotly plot call
         try {
-            Plotly.newPlot(id, [initHypo, relocHypo, station], layout, config);
+            Plotly.react(id, [initHypo, relocHypo, station], layout, config);
         } catch (error) {
-            console.error('Plotly.newPlot failed:', error)
+            console.error('Plotly.react failed:', error)
         };
     };  
 
@@ -652,9 +654,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Plotly plot call
         try {
-            Plotly.newPlot(id, [azimGap], layout);
+            Plotly.react(id, [azimGap], layout);
         } catch (error) {
-            console.error('Plotly.newPlot failed:', error)
+            console.error('Plotly.react failed:', error)
         };
     }
 
@@ -733,9 +735,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Plotly plot call
         try {
-            Plotly.newPlot(id, [initialRms, relocRms], layout);
+            Plotly.react(id, [initialRms, relocRms], layout);
         } catch (error) {
-            console.error('Plotly.newPlot failed:', error)
+            console.error('Plotly.react failed:', error)
         };
 
     }
@@ -858,9 +860,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Plotly plot call
         try {
-            Plotly.newPlot(id, [initHypo, relocHypo, station], layout);
+            Plotly.react(id, [initHypo, relocHypo, station], layout);
         } catch (error) {
-            console.error('Plotly.newPlot failed:', error)
+            console.error('Plotly.react failed:', error)
         };
     }
 
@@ -927,9 +929,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Plotly plot call
         try {
-            Plotly.newPlot(id, [magHist], layout);
+            Plotly.react(id, [magHist], layout);
         } catch (error) {
-            console.error('Plotly.newPlot failed:', error)
+            console.error('Plotly.react failed:', error)
         };
     }
 
@@ -1049,9 +1051,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Plotly plot call
         try {
-            Plotly.newPlot(id, [cumulativeCounts, nonCumulativeCounts, fittedLine, magnitudeCompleteness], layout);
+            Plotly.react(id, [cumulativeCounts, nonCumulativeCounts, fittedLine, magnitudeCompleteness], layout);
         } catch (error) {
-            console.error('Plotly.newPlot failed:', error)
+            console.error('Plotly.react failed:', error)
         };
 
     }
