@@ -20,5 +20,5 @@ urlpatterns = [
 
     path('<slug:site_slug>/data-analysis', views.data_analysis, name='data-analysis'),
 
-    path('<slug:site_slug>/analysis-data', AnalysisDataAPIView.as_view(), name='analysis-data'),
+    path('api/analysis/<slug:site_slug>', AnalysisDataAPIView.as_view(), name='analysis-data'),
 ]
