@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
-
     //  setup cache for fetched data (by creating new map object) 
     let cacheData = new Map();
 
@@ -18,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         const queryString = new URLSearchParams(filters).toString();
-        const url  = `${window.absUrl}get-analysis-data${queryString ? `?${queryString}` : ''}`
+        const url  = `${window.absUrl}analysis-data${queryString ? `?${queryString}` : ''}`
 
         try {
             const response = await fetch(url, {

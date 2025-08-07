@@ -495,7 +495,7 @@ def data_analysis(request, site_slug = None):
     return render(request, 'project/data-analysis.html', context)
 
 
-def get_analysis_data( request, site_slug=None):
+def analysis_data( request, site_slug=None):
     'API endpoint to fetch analysis data with spatial filters.'
 
     site = get_object_or_404(Site, slug= site_slug)
