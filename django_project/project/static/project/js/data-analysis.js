@@ -6,19 +6,21 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
-
     //  setup cache for fetched data (by creating new map object) 
     let cacheData = new Map();
 
     //  function to fetch analysis data with filters application 
     async function fetchAnalysisData(filters = {}) {
+
+        // Extract site slug
+        const siteSlug = window.absUrl.split("/")[2];
+
         const cacheKey = JSON.stringify(filters);
         if (cacheData.has(cacheKey)) {
             return cacheData.get(cacheKey)
         }
-
         const queryString = new URLSearchParams(filters).toString();
-        const url  = `${window.absUrl}get-analysis-data${queryString ? `?${queryString}` : ''}`
+        const url  = `/project/api/analysis/${siteSlug}${queryString ? `?${queryString}` : ''}`;
 
         try {
             const response = await fetch(url, {

@@ -1,3 +1,7 @@
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.apps import apps
@@ -495,27 +499,25 @@ def data_analysis(request, site_slug = None):
     return render(request, 'project/data-analysis.html', context)
 
 
-def get_analysis_data( request, site_slug=None):
-    'API endpoint to fetch analysis data with spatial filters.'
+# DRF Implementation for analysis data end point
+class AnalysisDataAPIView(APIView):
+    """
+    API endpoints to fetch analysis data with spatial filter using DRF
+    
+    """
+    def get(self, request, site_slug=None):
 
-    site = get_object_or_404(Site, slug= site_slug)
+        site = get_object_or_404(Site, slug= site_slug)
 
-    # Get merged catalog model name
-    model = get_merged_catalog('project', site_slug)
+        model = get_merged_catalog('project', site_slug)
+        get_model = apps.get_model('project', model)
 
-    # Get reference model
-    get_model = apps.get_model('project', model)
+        filter_class = spatial_filter(model)
+        filter_instance = filter_class(request.GET, queryset=get_model.objects.all())
+        queryset = filter_instance.qs 
 
-    # Apply spatial filter 
-    filter_class = spatial_filter(model)
-    filter_instance = filter_class(request.GET, queryset=get_model.objects.all())
-    queryset = filter_instance.qs 
+        df = pd.DataFrame.from_records(queryset.values())
+        processed_data = analysis_engine(df, site_slug)
 
-    # Create pandas DataFrame as input for data analysis
-    df = pd.DataFrame.from_records(queryset.values())
-
-    # Perform data analysis
-    processed_data = analysis_engine(df, site_slug)
-
-    return JsonResponse(processed_data)
+        return Response(processed_data, status=status.HTTP_200_OK)
 

@@ -1,4 +1,5 @@
 from django.urls import path
+from .views import AnalysisDataAPIView
 from . import views
 
 app_name = 'project'
@@ -19,5 +20,5 @@ urlpatterns = [
 
     path('<slug:site_slug>/data-analysis', views.data_analysis, name='data-analysis'),
 
-    path('<slug:site_slug>/get-analysis-data', views.get_analysis_data, name='get-analysis-data'),
+    path('api/analysis/<slug:site_slug>', AnalysisDataAPIView.as_view(), name='analysis-data'),
 ]

@@ -9,6 +9,7 @@ distro==1.9.0
 Django==5.2.3
 django-filter==25.1
 django-health-check==3.20.0
+djangorestframework==3.16.1
 ecdsa==0.19.1
 fontawesomefree==6.6.0
 future==1.0.0
