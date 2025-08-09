@@ -8,7 +8,7 @@ def validate_email_domain(email):
     allowed_domains = ['supreme-energy.com']
     email_domain = email.split('@')[-1]
     if email_domain not in allowed_domains:
-        raise ValidationError(f"Email must be from one of these domains:{', '.join(allowed_domains)}")
+        raise ValidationError(f"Email must be from one of these domains: {', '.join(allowed_domains)}")
 
 class LoginForm(AuthenticationForm):
     username = forms.CharField(
