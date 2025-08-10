@@ -14,11 +14,11 @@ urlpatterns = [
     path('<slug:site_slug>/download/station/', pages.download_station, name='download-station'),
 
     path('<slug:site_slug>/upload/', pages.upload_form, name='upload-form'),
-    # path('<slug:site_slug>/maps', views.meq_maps, name='meq-maps'),
-
-    # path('<slug:site_slug>/get-meq-data', views.get_meq_data, name='get-meq-data'),
 
     path('<slug:site_slug>/general-performance', pages.general_performance, name='general-performance'),
 
+    path('<slug:site_slug>/detail-analytics', pages.detail_analytics, name='detail-analytics'),
+
+    # API URL
     path('api/general-performance/<slug:site_slug>', api.GeneralPerformanceAPIView.as_view(), name='api-general-performance'),
 ]
