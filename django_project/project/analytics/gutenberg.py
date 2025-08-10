@@ -1,9 +1,32 @@
 import numpy as np
 import pandas as pd
 from scipy.stats import linregress
+from typing import Dict, Any
 
+def gutenberg_analysis(magnitude: pd.Series, bin_width: float = 0.1) -> Dict[str, Any]:
+    """
+    Perform Gutenberg-Richter analysis on a given series of earthquake magnitudes.
+    
+    This function implements the Gutenberg-Richter law to analyze the distribution of earthquake 
+    magnitudes. It computes cumulative and non-cumulative counts, fits a line to the cumulative counts,
+    and identifies a breakpoint for better fitting.
 
-def gutenberg_analysis(magnitude: pd.Series, bin_width: float = 0.1):
+    Parameters:
+    magnitude (pd.Series): A pandas Series containing earthquake magnitudes.
+    bin_width (float): The width of the bins to use for histogram calculation. Default is 0.1.
+
+    Returns:
+    Dict[str, Any]: A dictionary containing the results of the analysis, including:
+        - 'b_value': The slope of the fitted line (negative value as per Gutenberg-Richter).
+        - 'a_value': The intercept of the fitted line.
+        - 'b_value_stderr': Standard error of the slope.
+        - 'r_squared': R-squared value of the fit indicating goodness of fit.
+        - 'mc': Tuple containing the breakpoint magnitude and corresponding fitted log cumulative count.
+        - 'cumulative': Dictionary with keys 'x' and 'y' for the x and y values of the cumulative counts.
+        - 'non_cumulative': Dictionary with keys 'x' and 'y' for the x and y values of the non-cumulative counts.
+        - 'fitted_line': Dictionary with keys 'x' and 'y' for the x and y values of the fitted line.
+    """
+
     min_magnitude = np.round(np.floor(magnitude.min() / bin_width) * bin_width, 3)
     max_magnitude = np.round(np.ceil(magnitude.max() / bin_width) * bin_width, 3)
 
@@ -76,5 +99,3 @@ def gutenberg_analysis(magnitude: pd.Series, bin_width: float = 0.1):
             'y': fit_log_cumulative.tolist()
         }
     }
-
-
