@@ -1,7 +1,3 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.apps import apps
@@ -17,36 +13,20 @@ from project.utils import (get_hypocenter_catalog,
                            get_merged_catalog,
                            analysis_engine)
 
-from . filters import hypo_table_filter, picking_table_filter, spatial_filter
-from . forms import UploadFormCatalogCSV
-from . data_cleanser import (clean_hypo_df,
+from project.filters import hypo_table_filter, picking_table_filter, spatial_filter
+from project.forms import UploadFormCatalogCSV
+from project.data_cleanser import (clean_hypo_df,
                              clean_picking_df,
                              clean_station_df
                             )
 
-from analytics.base import validate_dataframe, preprocess_dataframe
-from analytics.general import (
-    compute_general_statistics,
-    compute_overall_daily_intensities,
-    compute_station_performance,
-    compute_time_series_performance,
-    retrieve_catalog_hypocenter
-)
-from analytics.wadati import compute_wadati_profile
-from analytics.gutenberg import gutenberg_analysis
-
 from datetime import datetime, timedelta
 import pandas as pd
 import csv
-from io import TextIOWrapper
-from . config import DATA_STRUCTURES, REQUIREMENTS
-import openai 
+from project.config import DATA_STRUCTURES, REQUIREMENTS
 
-# variable
 MAPBOX_API_TOKEN = settings.MAPBOX_API_TOKEN
 
-
-# Open AI data descriptor 
 
 # Function for page view renderer
 @login_required
@@ -449,38 +429,3 @@ def general_performance(request, site_slug = None):
     }
     
     return render(request, 'project/data-analysis.html', context)
-
-
-# DRF Implementation for analysis data end point
-class GeneralPerformanceAPIView(APIView):
-    """
-    API endpoints to fetch general performance of microearthquake monitoring.
-    """
-    def get(self, request, site_slug=None):
-
-        site = get_object_or_404(Site, slug= site_slug)
-
-        model = get_merged_catalog('project', site_slug)
-        get_model = apps.get_model('project', model)
-
-        filter_class = spatial_filter(model)
-        filter_instance = filter_class(request.GET, queryset=get_model.objects.all())
-        queryset = filter_instance.qs 
-
-        df = pd.DataFrame.from_records(queryset.values())
-
-        validated_df = validate_dataframe(df)
-
-        if validated_df:
-            hypocenter_df, picking_df = preprocess_dataframe(validated_df)
-
-            data = {
-                'general_statistic': compute_general_statistics(hypocenter_df, picking_df),
-                'overall_daily_intensities': compute_overall_daily_intensities(picking_df),
-                'hypocenter': retrieve_catalog_hypocenter(hypocenter_df, picking_df, site_slug)
-            }
-
-            return Response(data, status=status.HTTP_200_OK)
-        else:
-            return Response(None, status=status.HTTP_204_NO_CONTENT)
-

@@ -18,7 +18,7 @@ urlpatterns = [
 
     # path('<slug:site_slug>/get-meq-data', views.get_meq_data, name='get-meq-data'),
 
-    path('<slug:site_slug>/data-analysis', views.data_analysis, name='data-analysis'),
+    path('<slug:site_slug>/general-performance', views.general_performance, name='general-performance'),
 
-    path('api/general-performance/<slug:site_slug>', GeneralPerformanceAPIView.as_view(), name='general-performance'),
+    path('api/general-performance/<slug:site_slug>', GeneralPerformanceAPIView.as_view(), name='api-general-performance'),
 ]
