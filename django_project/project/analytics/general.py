@@ -4,7 +4,6 @@ from typing import Dict
 
 
 def compute_general_statistics(
-
     hypocenter_df: pd.DataFrame,
     picking_df: pd.DataFrame
     ) -> Dict[str, int]:
