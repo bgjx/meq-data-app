@@ -406,7 +406,7 @@ def upload_form(request, site_slug):
 
 
 def general_performance(request, site_slug = None):
-    'Generate views for data analysis page.'
+    'Generate views for general analysis page.'
     site = get_object_or_404(Site, slug=site_slug)
 
     # get current datetime
@@ -427,3 +427,24 @@ def general_performance(request, site_slug = None):
     }
     
     return render(request, 'project/general-performance.html', context)
+
+
+def detail_analytics(request, site_slug = None):
+    'Generate views for detail analytics page.'
+    site = get_object_or_404(Site, slug=site_slug)
+
+    # get current datetime
+    now = datetime.now()
+    now_str = now.strftime("%Y-%m-%d %H:%M:%S")
+
+    w_before = now - timedelta(days=7)
+    w_before_str = w_before.strftime("%Y-%m-%d %H:%M:%S") 
+
+    context = {
+                ''
+                'site': site,
+                'now_time': now_str,
+                'week_before_time': w_before_str
+    }
+    
+    return render(request, 'project/detail-analytics.html', context)
