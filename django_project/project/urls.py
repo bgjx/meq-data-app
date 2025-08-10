@@ -21,4 +21,6 @@ urlpatterns = [
 
     # API URL
     path('api/general-performance/<slug:site_slug>', api.GeneralPerformanceAPIView.as_view(), name='api-general-performance'),
+
+    path('api/detail-analytics/<slug:site_slug>', api.DetailAnalyticsAPIView.as_view(), name='api-detail-analytics')
 ]

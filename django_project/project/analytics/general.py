@@ -156,3 +156,32 @@ def retrieve_catalog_hypocenter(
         'norm_magnitude': ((hypocenter_df['magnitude'] - hypocenter_df['magnitude'].min()) 
                            / (hypocenter_df['magnitude'].max() - hypocenter_df['magnitude'].min())).fillna(hypocenter_df['magnitude'].median()).to_list()
     }
+
+
+def compute_hypocenter_rms_error(
+    hypocenter_df:pd.DataFrame, 
+    bin_width:float = 0.01,
+    max_error:float = 0.1
+    ) -> Dict[str, list]:
+    """
+    Compute rms error for both initial and reloc hypocenter catalog.
+
+    Args:
+      hypocenter_df (pd.DataFrame): DataFrame containing hypocenter information.
+      bin_width (0.01): Bin width (default is 0.01)
+
+    Returns:
+      Dict[str, list]: A dictionary containing rms error histogram value for initial and reloc hypocenter
+        bin_width and bin_edges
+    """
+    bin_edges = np.arange(0, (max_error + bin_width), bin_width)
+    hist_rms = {}
+    for hypo_type in ['reloc', 'init']:
+        rms_data = hypocenter_df[f'source_err_rms_s_{hypo_type}']
+        hist_counts, _ =  np.histogram(rms_data, bins=bin_edges)
+        hist_rms[hypo_type] = hist_counts.tolist()
+    
+    hist_rms['bin_width'] = bin_width
+    hist_rms['bin_edges'] = bin_edges
+
+    return hist_rms
