@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
 from django.apps import apps
 from django.conf import settings
 from django.contrib import messages
@@ -9,11 +9,9 @@ from frontpage.models import Site
 from project.models import Updates
 from project.utils import (get_hypocenter_catalog, 
                            get_picking_catalog,
-                           get_station,
-                           get_merged_catalog,
-                           analysis_engine)
+                           get_station)
 
-from project.filters import hypo_table_filter, picking_table_filter, spatial_filter
+from project.filters import hypo_table_filter, picking_table_filter
 from project.forms import UploadFormCatalogCSV
 from project.data_cleanser import (clean_hypo_df,
                              clean_picking_df,

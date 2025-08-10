@@ -2,6 +2,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
+from django.apps import apps
+from django.shortcuts import get_object_or_404
+
+import pandas as pd
+
+from frontpage.models import Site
+from project.filters import spatial_filter
 from analytics.base import validate_dataframe, preprocess_dataframe
 from analytics.general import (
     compute_general_statistics,
@@ -12,3 +19,36 @@ from analytics.general import (
 )
 from analytics.wadati import compute_wadati_profile
 from analytics.gutenberg import gutenberg_analysis
+from project.utils import get_merged_catalog
+
+class GeneralPerformanceAPIView(APIView):
+    """
+    API endpoints to fetch general performance of microearthquake monitoring.
+    """
+    def get(self, request, site_slug=None):
+
+        site = get_object_or_404(Site, slug= site_slug)
+
+        model = get_merged_catalog('project', site_slug)
+        get_model = apps.get_model('project', model)
+
+        filter_class = spatial_filter(model)
+        filter_instance = filter_class(request.GET, queryset=get_model.objects.all())
+        queryset = filter_instance.qs 
+
+        df = pd.DataFrame.from_records(queryset.values())
+
+        validated_df = validate_dataframe(df)
+
+        if validated_df:
+            hypocenter_df, picking_df = preprocess_dataframe(validated_df)
+
+            data = {
+                'general_statistic': compute_general_statistics(hypocenter_df, picking_df),
+                'overall_daily_intensities': compute_overall_daily_intensities(picking_df),
+                'hypocenter': retrieve_catalog_hypocenter(hypocenter_df, picking_df, site_slug)
+            }
+
+            return Response(data, status=status.HTTP_200_OK)
+        else:
+            return Response(None, status=status.HTTP_204_NO_CONTENT)
