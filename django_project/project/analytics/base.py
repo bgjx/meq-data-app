@@ -1,10 +1,8 @@
 from django.apps import apps
 
-import numpy as np
 import pandas as pd
-from typing import Optional, Dict, List, Tuple
+from typing import Tuple
 
-from django_project.project import utils
 from django_project.project import config
 
 def validate_dataframe(df:pd.DataFrame) -> None:
