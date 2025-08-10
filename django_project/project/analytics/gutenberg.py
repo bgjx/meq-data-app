@@ -26,7 +26,6 @@ def gutenberg_analysis(magnitude: pd.Series, bin_width: float = 0.1) -> Dict[str
         - 'non_cumulative': Dictionary with keys 'x' and 'y' for the x and y values of the non-cumulative counts.
         - 'fitted_line': Dictionary with keys 'x' and 'y' for the x and y values of the fitted line.
     """
-
     min_magnitude = np.round(np.floor(magnitude.min() / bin_width) * bin_width, 3)
     max_magnitude = np.round(np.ceil(magnitude.max() / bin_width) * bin_width, 3)
 
