@@ -1,6 +1,6 @@
 from django.urls import path
-from project.views import GeneralPerformanceAPIView
-from .views import pages
+from project.views.pages import pages
+from project.views.api import api
 
 app_name = 'project'
 
@@ -20,5 +20,5 @@ urlpatterns = [
 
     path('<slug:site_slug>/general-performance', pages.general_performance, name='general-performance'),
 
-    path('api/general-performance/<slug:site_slug>', GeneralPerformanceAPIView.as_view(), name='api-general-performance'),
+    path('api/general-performance/<slug:site_slug>', api.GeneralPerformanceAPIView.as_view(), name='api-general-performance'),
 ]

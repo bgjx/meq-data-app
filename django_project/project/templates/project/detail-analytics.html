@@ -1,5 +1,5 @@
 {% extends './base-project.html' %}
-{% block title %} Data Analysis {% endblock %}
+{% block title %} Detail Analytics {% endblock %}
 {% load static %}
 {% block content %}
     <section class="py-4 container">
@@ -9,7 +9,7 @@
                     <div class="card-body">
                         <div class="py-lg-3">
                             <h4 style="font-weight: 500;">
-                                {{site.name | upper}} Data Analysis
+                                {{site.name | upper}} MEQ Detail Analytics
                             </h4>
                         </div>
 
@@ -122,53 +122,13 @@
             </div>
         </div>
 
-        <!-- Stats preview -->
+        <!-- Station performances -->
         <div class="row py-lg-3">
             <div class="col">
                 <div class="card shadow">
                     <div class="card-body">
                         <div class="py-lg-3">
-                            <div class="head-stats" id = 'station-count'> 0 </div>
-                            <h5 class="stats-headline">
-                                Stations
-                            </h5>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card shadow">
-                    <div class="card-body">
-                        <div class="py-lg-3">
-                            <div class="head-stats" id = 'event-count'> 0 </div>
-                            <h5 class="stats-headline">
-                                Events
-                            </h5>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card shadow">
-                    <div class="card-body">
-                        <div class="py-lg-3">
-                            <div class="head-stats" id = 'phase-count'> 0 </div>
-                            <h5 class="stats-headline">
-                                Phases
-                            </h5>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Overall daily intensities -->
-        <div class="row py-lg-3">
-            <div class="col">
-                <div class="card shadow">
-                    <div class="card-body">
-                        <div class="py-lg-3">
-                            <div class="plot-analysis" id="daily-overall-intensities"></div>
+                            <div class="plot-analysis" id="time-series-performance"></div>
                         </div>
                     </div>
                 </div>
@@ -197,26 +157,13 @@
             </div>
         </div>
 
-        <!-- Station performances -->
+        <!-- Hypocenter 3D Plots -->
         <div class="row py-lg-3">
             <div class="col">
                 <div class="card shadow">
                     <div class="card-body">
                         <div class="py-lg-3">
-                            <div class="plot-analysis" id="time-series-performance"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Hypocenter 2D Plot (on MapBox)-->
-        <div class="row py-lg-3">
-            <div class="col">
-                <div class="card shadow">
-                    <div class="card-body">
-                        <div class="py-lg-3">
-                            <div class="plot-analysis" id="hypocenter-plot-2d-mapbox"></div>
+                            <div class="plot-analysis" id="hypocenter-plot-3d"></div>
                         </div>
                     </div>
                 </div>
@@ -245,20 +192,6 @@
             </div>
         </div>
 
-        <!-- Hypocenter 3D Plots -->
-        <div class="row py-lg-3">
-            <div class="col">
-                <div class="card shadow">
-                    <div class="card-body">
-                        <div class="py-lg-3">
-                            <div class="plot-analysis" id="hypocenter-plot-3d"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        
         <!--Magnitude and Gutenberg Analysis -->
         <div class="row py-lg-3">
             <div class="col">
@@ -288,5 +221,5 @@
         window.absUrl = '{{site.get_absolute_url}}';
         window.mapboxToken = '{{MAPBOX_TOKEN}}'
     </script>
-    <script defer src = "{% static 'project/js/data-analysis.js' %}" > </script>
+    <script defer src = "{% static 'project/js/detail-analytics.js' %}" > </script>
 {% endblock %}

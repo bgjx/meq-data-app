@@ -426,4 +426,4 @@ def general_performance(request, site_slug = None):
                 'MAPBOX_TOKEN': mapbox_access_token,
     }
     
-    return render(request, 'project/data-analysis.html', context)
+    return render(request, 'project/general-performance.html', context)

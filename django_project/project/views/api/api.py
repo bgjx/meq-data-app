@@ -52,3 +52,11 @@ class GeneralPerformanceAPIView(APIView):
             return Response(data, status=status.HTTP_200_OK)
         else:
             return Response(None, status=status.HTTP_204_NO_CONTENT)
+
+
+class DetailAnalyticsAPIView(APIView):
+    """
+    API endpoints to fetch detail analytics of microearthquake monitoring.
+    """
+    def get(self, request, site_slug=None)
+
