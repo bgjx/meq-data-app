@@ -14,9 +14,7 @@ from django.db.models import Model
 
 import logging
 
-
 logger = logging.getLogger(__name__)
-
 
 def hypo_table_filter(model_input: Type[Model]) -> Type[django_filters.FilterSet]:
     """
@@ -264,6 +262,3 @@ def spatial_filter(model_input: Type[Model]) -> Type[django_filters.FilterSet]:
             fields = []
 
     return SpatialFilter
-
-
-
