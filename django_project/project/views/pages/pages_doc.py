@@ -28,8 +28,7 @@ MAPBOX_API_TOKEN = settings.MAPBOX_API_TOKEN
 
 @login_required
 def project_site(request, site_slug: str = None) -> HttpResponse:
-    """
-    View function for the data explorer page.
+    """View function for the data explorer page.
 
     Args:
         request (HttpRequest): The HTTP request object.
@@ -78,8 +77,7 @@ def project_site(request, site_slug: str = None) -> HttpResponse:
 
 
 def download_hypo_catalog(request, site_slug: str, catalog_type: str) -> HttpResponse:
-    """
-    Download hypocenter catalog according to the site slug and catalog type.
+    """Download hypocenter catalog according to the site slug and catalog type.
 
     Args:
         request (HttpRequest): The HTTP request object.
@@ -110,8 +108,7 @@ def download_hypo_catalog(request, site_slug: str, catalog_type: str) -> HttpRes
 
 
 def download_picking_catalog(request, site_slug: str) -> HttpResponse:
-    """
-    Download picking catalog according to the site slug.
+    """Download picking catalog according to the site slug.
 
     Args:
         request (HttpRequest): The HTTP request object.
@@ -141,8 +138,7 @@ def download_picking_catalog(request, site_slug: str) -> HttpResponse:
 
 
 def download_station(request, site_slug: str) -> HttpResponse:
-    """
-    Download station data according to the site slug.
+    """Download station data according to the site slug.
 
     Args:
         request (HttpRequest): The HTTP request object.
@@ -170,8 +166,7 @@ def download_station(request, site_slug: str) -> HttpResponse:
 
 
 def read_csv_file(csv_file, data_type: str) -> pd.DataFrame:
-    """
-    Read a CSV file and validate its contents against required columns.
+    """Read a CSV file and validate its contents against required columns.
 
     Args:
         csv_file (str): The path to the CSV file.
@@ -198,15 +193,8 @@ def read_csv_file(csv_file, data_type: str) -> pd.DataFrame:
     return df
 
 
-def save_dataframe_to_db(
-    app_name: str,
-    model_name: str,
-    lookup_fields: list[str],
-    df: pd.DataFrame,
-    overwrite: bool = False
-    ) -> None:
-    """
-    Save the DataFrame to the database, updating or creating records as needed.
+def save_dataframe_to_db(app_name: str, model_name: str, lookup_fields: list[str], df: pd.DataFrame, overwrite: bool = False) -> None:
+    """Save the DataFrame to the database, updating or creating records as needed.
 
     Args:
         app_name (str): The name of the Django app.
@@ -233,8 +221,7 @@ def save_dataframe_to_db(
 
 
 def upload_form(request, site_slug: str) -> HttpResponse:
-    """
-    Upload form for updating the database.
+    """Upload form for updating the database.
 
     Args:
         request (HttpRequest): The HTTP request object.
@@ -418,8 +405,7 @@ def upload_form(request, site_slug: str) -> HttpResponse:
 
 
 def general_performance(request, site_slug: str = None) -> HttpResponse:
-    """
-    Generate views for general analysis page.
+    """Generate views for general analysis page.
 
     Args:
         request (HttpRequest): The HTTP request object.
@@ -451,8 +437,7 @@ def general_performance(request, site_slug: str = None) -> HttpResponse:
 
 
 def detail_analytics(request, site_slug: str = None) -> HttpResponse:
-    """
-    Generate views for detail analytics page.
+    """Generate views for detail analytics page.
 
     Args:
         request (HttpRequest): The HTTP request object.

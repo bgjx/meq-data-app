@@ -9,6 +9,9 @@ from django.contrib.gis.geos import Polygon
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
 
+from typing import Type
+from django.db.models import Model
+
 import logging
 
 
@@ -16,12 +19,11 @@ logger = logging.getLogger(__name__)
 
 
 # filter for hypocenter catalog table
-def hypo_table_filter(model_name):
-    picked_model = apps.get_model('project', model_name)
+def hypo_table_filter(model_input:Type[Model]):
 
     # get the data time scope
-    min_date = picked_model.objects.all().aggregate(min_date=Min('source_origin_dt'))['min_date']
-    max_date = picked_model.objects.all().aggregate(max_date=Max('source_origin_dt'))['max_date']
+    min_date = model_input.objects.all().aggregate(min_date=Min('source_origin_dt'))['min_date']
+    max_date = model_input.objects.all().aggregate(max_date=Max('source_origin_dt'))['max_date']
 
     # Inherit django filter class object
     class HypoTableFilter(django_filters.FilterSet):
@@ -52,7 +54,7 @@ def hypo_table_filter(model_name):
         )
         
         class Meta:
-            model = picked_model
+            model = model_input
             fields = []
     return HypoTableFilter
 
@@ -100,10 +102,8 @@ def picking_table_filter(model_name):
     return PickTableFilter
 
 
-# dynamic spatial filter
-def spatial_filter(model_name):
+def spatial_filter(model_input: Type[Model]):
     'Spatial filter, differ from table filter it uses view merged catalog in database'
-    picked_model = apps.get_model('project', model_name)  
 
     class SpatialFilter(django_filters.FilterSet):
         # Date Range Filters
@@ -246,7 +246,7 @@ def spatial_filter(model_name):
             return queryset
         
         class Meta:
-            model = picked_model
+            model = model_input
             fields = []
 
     return SpatialFilter
