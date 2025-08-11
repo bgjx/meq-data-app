@@ -7,8 +7,8 @@ from django.apps import apps
 import pandas as pd
 
 from project.filters import spatial_filter
-from analytics.base import validate_dataframe, preprocess_dataframe
-from analytics.general import (
+from project.analytics.base import validate_dataframe, preprocess_dataframe
+from project.analytics.general import (
     compute_general_statistics,
     compute_overall_daily_intensities,
     compute_station_performance,
@@ -16,8 +16,8 @@ from analytics.general import (
     retrieve_catalog_hypocenter,
     compute_hypocenter_rms_error
 )
-from analytics.wadati import compute_wadati_profile
-from analytics.gutenberg import gutenberg_analysis
+from project.analytics.wadati import compute_wadati_profile
+from project.analytics.gutenberg import gutenberg_analysis
 from project.utils import get_merged_catalog
 
 

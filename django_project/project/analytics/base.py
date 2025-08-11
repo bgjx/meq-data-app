@@ -3,7 +3,7 @@ from django.apps import apps
 import pandas as pd
 from typing import Tuple
 
-from django_project.project import config
+from project import config
 
 def validate_dataframe(df:pd.DataFrame) -> None:
     """
