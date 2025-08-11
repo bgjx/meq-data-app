@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let cacheData = new Map();
 
     //  function to fetch analysis data with filters application 
-    async function fetchAnalysisData(filters = {}) {
+    async function fetchData(filters = {}) {
 
         // Extract site slug
         const siteSlug = window.absUrl.split("/")[2];
@@ -346,7 +346,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const loadingSpinner = document.getElementById('loading-spinner');
             if (loadingSpinner) loadingSpinner.style.display = 'block';
             try {
-                const data = await fetchAnalysisData(filters);
+                const data = await fetchData(filters);
                 updateUI(data);
             } finally {
                 if (loadingSpinner) loadingSpinner.style.display = 'none';
@@ -368,7 +368,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (loadingSpinner) loadingSpinner.style.display = 'block';
 
                 try {
-                    const data = await fetchAnalysisData(filters);
+                    const data = await fetchData(filters);
                     updateUI(data);
                 } finally {
                     if (loadingSpinner) loadingSpinner.style.display = 'none';
@@ -380,7 +380,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     //  Initial data fetch (no filters)
     (async () => {
-        const data = await fetchAnalysisData();
+        const data = await fetchData();
         updateUI(data);
     })();
 

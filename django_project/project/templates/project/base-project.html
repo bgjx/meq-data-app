@@ -92,13 +92,13 @@
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a href="{% url 'project:general-performance' %}" class="sidebar-link">
+                    <a href="{% url 'project:general-performance' site_slug=site.slug %}" class="sidebar-link">
                         <i class="fa-solid fa-chart-simple"></i>
                         <span> General Performance </span>
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a href="{% url 'project:data-analysis' site_slug=site.slug %}" class="sidebar-link">
+                    <a href="{% url 'project:detail-analytics' site_slug=site.slug %}" class="sidebar-link">
                         <i class="fa-solid fa-chart-line"></i>
                         <span> Detail Analytics </span>
                     </a>

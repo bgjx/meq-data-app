@@ -9,7 +9,7 @@
                     <div class="card-body">
                         <div class="py-lg-3">
                             <h4 style="font-weight: 500;">
-                                {{site.name | upper}} General Monitoring Performance
+                                {{site.name | upper}} Monitoring Performance
                             </h4>
                         </div>
 
@@ -103,7 +103,7 @@
                                             <button class="btn btn-primary " type="submit">Apply Filter</button>
                                         </form>
                                         <div class="filter-clear">
-                                           <a href="{% url 'project:data-analysis' site_slug=site.slug %}">clear filters</a> 
+                                           <a href="{% url 'project:general-performance' site_slug=site.slug %}">clear filters</a> 
                                         </div>
                                     </div>
                                 </div>

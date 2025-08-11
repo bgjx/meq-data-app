@@ -35,20 +35,17 @@ class GeneralPerformanceAPIView(APIView):
 
         df = pd.DataFrame.from_records(queryset.values())
 
-        validated_df = validate_dataframe(df)
+        validate_dataframe(df)
 
-        if not validated_df:
-            return Response({}, status=status.HTTP_200_OK)
-
-        hypocenter_df, picking_df = preprocess_dataframe(validated_df)
+        hypocenter_df, picking_df = preprocess_dataframe(df)
 
         data = {
-            'general_statistic': compute_general_statistics(hypocenter_df, picking_df),
-            'overall_daily_intensities': compute_overall_daily_intensities(picking_df),
+            'general_statistics': compute_general_statistics(hypocenter_df, picking_df),
+            'overall_daily_intensities': compute_overall_daily_intensities(hypocenter_df),
             'hypocenter': retrieve_catalog_hypocenter(hypocenter_df, picking_df, site_slug)
         }
 
-        return Response(None, status=status.HTTP_204_NO_CONTENT)
+        return Response(data, status=status.HTTP_200_OK)
 
 
 class DetailAnalyticsAPIView(APIView):
@@ -65,12 +62,9 @@ class DetailAnalyticsAPIView(APIView):
 
         df = pd.DataFrame.from_records(queryset.values())
 
-        validated_df = validate_dataframe(df)
-
-        if not validated_df:
-            return Response({}, status=status.HTTP_200_OK)
+        validate_dataframe(df)
         
-        hypocenter_df, picking_df = preprocess_dataframe(validated_df)
+        hypocenter_df, picking_df = preprocess_dataframe(df)
         magnitude_series = hypocenter_df['magnitude'].dropna()
 
         data = {
