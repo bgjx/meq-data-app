@@ -3,7 +3,6 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from django.apps import apps
-from django.shortcuts import get_object_or_404
 
 import pandas as pd
 
@@ -37,18 +36,18 @@ class GeneralPerformanceAPIView(APIView):
 
         validated_df = validate_dataframe(df)
 
-        if validated_df:
-            hypocenter_df, picking_df = preprocess_dataframe(validated_df)
+        if not validated_df:
+            return Response({}, status=status.HTTP_200_OK)
 
-            data = {
-                'general_statistic': compute_general_statistics(hypocenter_df, picking_df),
-                'overall_daily_intensities': compute_overall_daily_intensities(picking_df),
-                'hypocenter': retrieve_catalog_hypocenter(hypocenter_df, picking_df, site_slug)
-            }
+        hypocenter_df, picking_df = preprocess_dataframe(validated_df)
 
-            return Response(data, status=status.HTTP_200_OK)
-        else:
-            return Response(None, status=status.HTTP_204_NO_CONTENT)
+        data = {
+            'general_statistic': compute_general_statistics(hypocenter_df, picking_df),
+            'overall_daily_intensities': compute_overall_daily_intensities(picking_df),
+            'hypocenter': retrieve_catalog_hypocenter(hypocenter_df, picking_df, site_slug)
+        }
+
+        return Response(None, status=status.HTTP_204_NO_CONTENT)
 
 
 class DetailAnalyticsAPIView(APIView):
@@ -67,25 +66,26 @@ class DetailAnalyticsAPIView(APIView):
 
         validated_df = validate_dataframe(df)
 
-        if validated_df:
-            hypocenter_df, picking_df = preprocess_dataframe(validated_df)
-            magnitude_series = hypocenter_df['magnitude'].dropna()
+        if not validated_df:
+            return Response({}, status=status.HTTP_200_OK)
+        
+        hypocenter_df, picking_df = preprocess_dataframe(validated_df)
+        magnitude_series = hypocenter_df['magnitude'].dropna()
 
 
-            data = {
-                'time_series_performance': compute_time_series_performance(picking_df),
-                'station_performance': compute_station_performance(picking_df),
-                'wadati_profile': compute_wadati_profile(picking_df),
-                'hypocenter': retrieve_catalog_hypocenter(hypocenter_df, picking_df, site_slug),
-                'gap_histogram': {'gap': hypocenter_df['gap_init'].dropna().tolist()},
-                'rms_error': compute_hypocenter_rms_error(hypocenter_df),
-                'magnitude_histogram': {'magnitude':magnitude_series.tolist()},
-                'gutenberg_analysis': gutenberg_analysis(magnitude_series)
-            }
+        data = {
+            'time_series_performance': compute_time_series_performance(picking_df),
+            'station_performance': compute_station_performance(picking_df),
+            'wadati_profile': compute_wadati_profile(picking_df),
+            'hypocenter': retrieve_catalog_hypocenter(hypocenter_df, picking_df, site_slug),
+            'gap_histogram': {'gap': hypocenter_df['gap_init'].dropna().tolist()},
+            'rms_error': compute_hypocenter_rms_error(hypocenter_df),
+            'magnitude_histogram': {'magnitude':magnitude_series.tolist()},
+            'gutenberg_analysis': gutenberg_analysis(magnitude_series)
+        }
 
-            return Response(data, status=status.HTTP_200_OK)
-        else:
-            return Response(data, status=status.HTTP_204_NO_CONTENT)
+        return Response(data, status=status.HTTP_200_OK)
+
 
 
 
