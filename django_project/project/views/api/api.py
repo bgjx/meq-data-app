@@ -2,10 +2,6 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from django.apps import apps
-
-from project.filters import spatial_filter
-
 from project.analytics.services import (
     analyze_general_performance,
     analyze_detail_analytics

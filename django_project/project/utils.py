@@ -1,5 +1,8 @@
 from django.apps import apps
 from project.filters import spatial_filter
+from django.db.models import Model, QuerySet
+from typing import Type, Dict
+
 
 def get_hypocenter_catalog(app_label: str, slug: str, catalog_type: str) -> str:
     """
@@ -78,7 +81,18 @@ def get_station(app_label: str, slug: str) -> str:
     return None
 
 
-def get_filtered_queryset(model, filters):
+def get_filtered_queryset(model: Type[Model], filters: Dict[str, str]) -> QuerySet:
+    """
+    Retrieve a filtered queryset based on the provided model and filters.
+
+    Args:
+        model (Type[Model]): The Django model class to query.
+        filters (Dict[str, str])): A dictionary of filter criteria.
+
+    Returns:
+        QuerySet: A queryset containing the filtered results.
+    """
     filter_class = spatial_filter(model)
     filter_instance = filter_class(filters, queryset=model.objects.all())
     return filter_instance.qs
+
