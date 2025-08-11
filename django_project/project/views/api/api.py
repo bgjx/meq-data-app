@@ -4,8 +4,6 @@ from rest_framework import status
 
 from django.apps import apps
 
-import pandas as pd
-
 from project.filters import spatial_filter
 
 from project.analytics.services import (
@@ -13,7 +11,7 @@ from project.analytics.services import (
     analyze_detail_analytics
 )
 
-from project.utils import get_merged_catalog
+from project.utils import get_merged_catalog, get_filtered_queryset
 
 
 class GeneralPerformanceAPIView(APIView):
@@ -22,11 +20,10 @@ class GeneralPerformanceAPIView(APIView):
     """
     def get(self, request, site_slug=None):
         model = get_merged_catalog('project', site_slug)
-        get_model = apps.get_model('project', model)
+        if not model:
+            Response({"error": "Requested catalog not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        filter_class = spatial_filter(model)
-        filter_instance = filter_class(request.GET, queryset=get_model.objects.all())
-        queryset = filter_instance.qs
+        queryset= get_filtered_queryset(model, request.GET)
 
         try:
             data = analyze_general_performance(queryset, site_slug)
@@ -43,11 +40,10 @@ class DetailAnalyticsAPIView(APIView):
     """
     def get(self, request, site_slug=None):
         model = get_merged_catalog('project', site_slug)
-        get_model = apps.get_model('project', model)
-
-        filter_class = spatial_filter(model)
-        filter_instance = filter_class(request.GET, queryset=get_model.objects.all())
-        queryset = filter_instance.qs
+        if not model:
+            return Response({"error": "Requested catalog not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        queryset = get_filtered_queryset(model, request.GET)
 
         try:
             data = analyze_detail_analytics(queryset, site_slug)

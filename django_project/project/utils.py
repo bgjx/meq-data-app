@@ -1,4 +1,5 @@
 from django.apps import apps
+from project.filters import spatial_filter
 
 def get_hypocenter_catalog(app_label: str, slug: str, catalog_type: str) -> str:
     """
@@ -54,7 +55,7 @@ def get_merged_catalog(app_label: str, slug: str) -> str:
     models = apps.get_app_config(app_label).get_models()
     for model in models:
         if table_name in str(model._meta.db_table):
-            return model.__name__
+            return model
     return None
 
 
@@ -75,3 +76,9 @@ def get_station(app_label: str, slug: str) -> str:
         if table_name in model._meta.db_table:
             return model.__name__
     return None
+
+
+def get_filtered_queryset(model, filters):
+    filter_class = spatial_filter(model)
+    filter_instance = filter_class(filters, queryset=model.objects.all())
+    return filter_instance.qs
