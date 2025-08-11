@@ -20,7 +20,7 @@ position: relative;
     padding: 20px;
     min-height: 100vh;
     width: 100%;
-    overflow: hidden;
+    overflow: visible;
     transition: all 0.35s ease-in-out;
 }
 
@@ -210,6 +210,12 @@ ul.search-input{
 
 .filter-item {
     margin-bottom: 1rem;
+}
+
+.sticky-panel {
+    position: sticky;
+    top: 0;
+    z-index: 1030;
 }
 
 

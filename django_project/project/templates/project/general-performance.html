@@ -3,23 +3,17 @@
 {% load static %}
 {% block content %}
     <section class="py-4 container">
-        <div class="row py-lg-3">
+        <div class="row py-lg-3 sticky-panel">
             <div class="col">
                 <div class="card shadow">
                     <div class="card-body">
-                        <div class="py-lg-3">
-                            <h4 style="font-weight: 500;">
-                                {{site.name | upper}} Monitoring Performance
-                            </h4>
-                        </div>
-
                         <!-- Filter console -->
                         <div class="form-container">
                             <div class="card">
                                 <!-- Filter header -->
                                 <div class="card-header" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="true" aria-controls="filterCollapse" style="cursor: pointer;" >
                                     <div class="d-flex align-items-center">
-                                        <h6 style="font-weight: 500;"> Filters Console</h6>
+                                        <h6 class="m-0" style="font-weight: 500;"> Filters Console</h6>
                                         <button class="btn btn-link p-0 ms-auto" type="button" aria-label="Toggle filter form">
                                             <i class="bi bi-chevron-down"></i>
                                         </button>
@@ -119,6 +113,21 @@
         <div id = 'loading-spinner' class="text-center justify-content-center" style="display: none">
             <div class="spinner-border text-secondary" role="status">
                 <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+
+        <!-- Headlines -->
+        <div class="row py-lg-3">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <div class="py-lg-6">
+                            <h5 class="mb-0" style="font-weight: 500;">
+                                {{site.name | upper}} Monitoring Performance
+                            </h5>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
