@@ -20,6 +20,7 @@ from analytics.wadati import compute_wadati_profile
 from analytics.gutenberg import gutenberg_analysis
 from project.utils import get_merged_catalog
 
+
 class GeneralPerformanceAPIView(APIView):
     """
     API endpoints to fetch general performance of microearthquake monitoring.
@@ -71,7 +72,6 @@ class DetailAnalyticsAPIView(APIView):
         
         hypocenter_df, picking_df = preprocess_dataframe(validated_df)
         magnitude_series = hypocenter_df['magnitude'].dropna()
-
 
         data = {
             'time_series_performance': compute_time_series_performance(picking_df),
