@@ -2,6 +2,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
+from django.db.models import Min , Max
+
 from project.analytics.services import (
     analyze_general_performance,
     analyze_detail_analytics
@@ -19,14 +21,18 @@ class GeneralPerformanceAPIView(APIView):
         if not model:
             Response({"error": "Requested catalog not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        queryset= get_filtered_queryset(model, request.GET)
+        queryset = get_filtered_queryset(model, request.GET)
 
         try:
             data = analyze_general_performance(queryset, site_slug)
         except ValueError as e:
             return Response({"error":str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-
+        data["time_range"] = {
+            "min_time" : queryset.aggregate(Min("source_origin_dt_init"))["source_origin_dt_init__min"],
+            "max_time" : queryset.aggregate(Max("source_origin_dt_init"))["source_origin_dt_init__max"]
+        }
+        
         return Response(data, status=status.HTTP_200_OK)
 
 
@@ -45,6 +51,12 @@ class DetailAnalyticsAPIView(APIView):
             data = analyze_detail_analytics(queryset, site_slug)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+        data["time_range"] = {
+            "min_time" : queryset.aggregate(Min("source_origin_dt_init"))["source_origin_dt_init__min"],
+            "max_time" : queryset.aggregate(Max("source_origin_dt_init"))["source_origin_dt_init__max"]
+        }
+        
 
         return Response(data, status=status.HTTP_200_OK)
 
