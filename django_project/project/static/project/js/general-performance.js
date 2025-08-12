@@ -62,6 +62,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // List of functions for plots and animation
 
+    // Function for performance header
+    function headerText(id, data){
+        const element = document.getElementById(id);
+        if (!element){
+            console.log(`Element with id ${id} not found`);
+            return;
+        }
+
+        const minTime = new Date(data.min_datetime);
+        const maxTime = new Date(data.max_datetime);
+
+        // Format the dates
+        const options = {year:'numeric', month: 'short', day:'numeric'};
+        const formattedMin = minTime.toLocaleDateString(undefined, options);
+        const formattedMax = maxTime.toLocaleDateString(undefined, options);
+
+        // Header text
+        const siteName = "{{ site.name | upper }}";
+        element.textContent = `${siteName} Monitoring Performance from ${formattedMin} to ${formattedMax}`;
+    }
+
+
     //  Function to animate counting
     function animateCount(id, endValue, duration=1000) {
         const element = document.getElementById(id);
@@ -309,9 +331,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // get data
+        const time_range = data.time_range;
         const gen_stats = data.general_statistics;
         const daily_intensities = data.overall_daily_intensities;
         const hypocenter = data.hypocenter;
+
+        // crate the header text
+        headerText('general-performance-header', time_range);
 
         // call animateCount for each statistic
         animateCount('station-count', gen_stats.total_stations, 3000);
