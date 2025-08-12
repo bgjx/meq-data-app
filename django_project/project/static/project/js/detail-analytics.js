@@ -61,6 +61,27 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // List of functions for plots and animation
+    
+    // Function for performance header
+    function headerText(id, data){
+        const element = document.getElementById(id);
+        if (!element){
+            console.log(`Element with id ${id} not found`);
+            return;
+        }
+
+        const minTime = new Date(data.min_datetime);
+        const maxTime = new Date(data.max_datetime);
+
+        // Format the dates
+        const options = {year:'numeric', month: 'short', day:'numeric'};
+        const formattedMin = minTime.toLocaleDateString(undefined, options);
+        const formattedMax = maxTime.toLocaleDateString(undefined, options);
+
+        // Header text
+        const siteName = data.site
+        element.textContent = `${siteName} Detail Analytics from ${formattedMin} to ${formattedMax}`;
+    }
 
     // Function for station performances (Bar plots)
     function stationPerformanceBar(id, data){
@@ -828,8 +849,8 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Get data
-
+        // get data
+        const time_range = data.time_range;
         const station_performance = data.station_performance;
         const wadati_profile =  data.wadati_profile;
         const time_series_station_performance = data.time_series_performance;
@@ -838,6 +859,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const rms_error = data.rms_error;
         const magnitude_hist = data.magnitude_histogram;
         const gutenberg_analysis = data.gutenberg_analysis;
+
+        // create header text
+        headerText('detail-analytics-header', time_range)
 
         // create plot for station performance
         stationPerformanceBar('station-performance', station_performance);

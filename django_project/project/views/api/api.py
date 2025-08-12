@@ -29,6 +29,7 @@ class GeneralPerformanceAPIView(APIView):
             return Response({"error":str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         data["time_range"] = {
+            "site": str.upper(site_slug),
             "min_datetime" : queryset.aggregate(Min("source_origin_dt_init"))["source_origin_dt_init__min"],
             "max_datetime" : queryset.aggregate(Max("source_origin_dt_init"))["source_origin_dt_init__max"]
         }
@@ -53,6 +54,7 @@ class DetailAnalyticsAPIView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
         data["time_range"] = {
+            "site": str.upper(site_slug),
             "min_datetime" : queryset.aggregate(Min("source_origin_dt_init"))["source_origin_dt_init__min"],
             "max_datetime" : queryset.aggregate(Max("source_origin_dt_init"))["source_origin_dt_init__max"]
         }

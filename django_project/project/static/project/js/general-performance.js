@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const formattedMax = maxTime.toLocaleDateString(undefined, options);
 
         // Header text
-        const siteName = "{{ site.name | upper }}";
+        const siteName = data.site
         element.textContent = `${siteName} Monitoring Performance from ${formattedMin} to ${formattedMax}`;
     }
 
