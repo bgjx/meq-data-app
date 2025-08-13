@@ -20,7 +20,11 @@ urlpatterns = [
     path('<slug:site_slug>/detail-analytics', pages.detail_analytics, name='detail-analytics'),
 
     # API URL
-    path('api/hypcenter-catalog/<slug:site_slug>', api.HypocenterTableAPIView.as_view(), name='api-hypocenter-catalog'),
+    path('api/hypocenter-table-data/<slug:site_slug>/<str:catalog_type>', api.HypocenterTableDataAPIView.as_view(), name='api-hypocenter-table-data'),
+
+    path('api/picking-table-data/<slug:site_slug>', api.PickingTableDataAPIView.as_view(), name='api-picking-table-data'),
+
+    path('api/station-table-data/<slug:site_slug>', api.StationTableDataAPIView.as_view(), name='api-station-table-data'),
 
     path('api/general-performance/<slug:site_slug>', api.GeneralPerformanceAPIView.as_view(), name='api-general-performance'),
 

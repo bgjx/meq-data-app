@@ -18,7 +18,7 @@ from project.utils import (
     get_filtered_queryset
 )
 
-class HypocenterTableAPIView(APIView):
+class HypocenterTableDataAPIView(APIView):
     """
     API endpoints to fetch hypocenter data for table UI.
     """
@@ -46,11 +46,11 @@ class HypocenterTableAPIView(APIView):
         return Response({"data":data}, status=status.HTTP_200_OK)
 
 
-class PickingTableAPIView(APIView):
+class PickingTableDataAPIView(APIView):
     """
     API endpoints to fetch picking data for table UI.
     """
-    def get(self, request, catalog_type:str, site_slug:str=None) -> HttpResponse:
+    def get(self, request, site_slug:str=None) -> HttpResponse:
         model = get_picking_catalog('project', site_slug)
         if not model:
             Response({"error": "Requested data not found"}, status=status.HTTP_404_NOT_FOUND)
@@ -73,11 +73,11 @@ class PickingTableAPIView(APIView):
         return Response({"data":data}, status=status.HTTP_200_OK)
 
 
-class StationTableAPIView(APIView):
+class StationTableDataAPIView(APIView):
     """
     API endpoints to fetch station data for table UI.
     """
-    def get(self, request, catalog_type: str, site_slug:str=None) -> HttpResponse:
+    def get(self, request, site_slug:str=None) -> HttpResponse:
         model = get_station('project', site_slug)
         if not model:
             Response({"error":"Requested data not found"}, status=status.HTTP_404_NOT_FOUND)
