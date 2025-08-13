@@ -1,5 +1,8 @@
 from django.apps import apps
-from project.filters import spatial_filter
+from project.filters import (
+    hypo_table_filter,
+    picking_table_filter,
+    spatial_filter)
 from django.db.models import Model, QuerySet
 from typing import Type, Dict
 
@@ -81,7 +84,11 @@ def get_station(app_label: str, slug: str) -> str:
     return None
 
 
-def get_filtered_queryset(model: Type[Model], filters: Dict[str, str]) -> QuerySet:
+def get_filtered_queryset(
+    model: Type[Model],
+    filters: Dict[str, str],
+    filter_type: str = 'spatial_filter'
+    ) -> QuerySet:
     """
     Retrieve a filtered queryset based on the provided model and filters.
 
@@ -92,7 +99,17 @@ def get_filtered_queryset(model: Type[Model], filters: Dict[str, str]) -> QueryS
     Returns:
         QuerySet: A queryset containing the filtered results.
     """
-    filter_class = spatial_filter(model)
+    filter_collections = {
+        'hypocenter_table_filter': hypo_table_filter,
+        'picking_table_filter': picking_table_filter,
+        'spatial_filter': spatial_filter
+    }
+
+    filter = filter_collections.get(filter_type)
+    if not filter:
+        raise KeyError(f"Invalid filter type '{filter_type}'. Available filter: {', '.join(filter_collections.keys())}")
+
+    filter_class = filter(model)
     filter_instance = filter_class(filters, queryset=model.objects.all())
     return filter_instance.qs
 

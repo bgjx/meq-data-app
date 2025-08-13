@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -10,6 +11,14 @@ from project.analytics.services import (
 )
 
 from project.utils import get_merged_catalog, get_filtered_queryset
+
+
+class HypocenterTableAPIView(APIView):
+    """
+    API endpoints to fetch hypocenter table of microearthquake monitoring.
+    """
+    def get(self, request, catalog_type:str, site_slug:str = None) -> HttpResponse:
+
 
 
 class GeneralPerformanceAPIView(APIView):
