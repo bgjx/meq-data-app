@@ -55,24 +55,12 @@
                     <th>source_longitude</th>
                     <th>source_depth_m</th>
                     <th>source_origin_dt</th>
-                    <th>source_err_rms_s</th> <!-- Unified header name -->
+                    <th>source_err_rms_s</th>
                     <th>magnitude</th>
                     <th>remarks</th>
                 </tr>
             </thead>
             <tbody>
-                {% for ev in hypo_table_data %}
-                    <tr>
-                        <td>{{ ev.source_id }}</td>
-                        <td>{{ ev.source_lat | floatformat:7 }}</td>
-                        <td>{{ ev.source_lon | floatformat:7 }}</td>
-                        <td>{{ ev.source_depth_m | floatformat:3 }}</td>
-                        <td>{{ ev.source_origin_dt | date:"Y-m-d H:i:s.u" }}</td>
-                        <td>{{ ev.source_err_rms_s | floatformat:3 }}</td>
-                        <td>{{ ev.magnitude | floatformat:3 }}</td>
-                        <td>{{ ev.remarks }}</td>
-                    </tr>
-                {% endfor %}
             </tbody>
         </table>
     </div>
