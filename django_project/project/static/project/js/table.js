@@ -1,49 +1,6 @@
 // Table functionalities
 document.addEventListener('DOMContentLoaded', function() {
-    // check global variable 
-    if (typeof window.absUrl === 'undefined'){
-        console.error("Missing global variable: absUrl");
-        return;
-    }
-
     let tableInstances = {};
-    const tabs = document.querySelectorAll(".nav-tabs li button");
-    const tabContent = document.querySelectorAll(".tab-contents-tab .tab-content");
-    
-    // setup cache for fetched data (by creating new map object)
-    let cacheData = new Map();
-
-    // function to fetch analysis data with filters application
-    async function fetchData(filters = {}, catalogType, siteSlug){
-        const cacheKey = JSON.stringify(filters);
-        if (cacheData.has(cacheKey)) {
-            return cacheData.get(cacheKey)
-        }
-
-        const queryString = new URLSearchParams(filters).toString();
-        const url = `/project/api/hypocenter-table-data/${siteSlug}/${catalogType}${queryString ? `?${queryString}` : ''}`;
-
-        try {
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken'),
-                },
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            cacheData.set(cacheKey, data);
-            return data;
-        } catch (error) {
-            console.error('Error fetching hypocenter table data:', error)
-            return null;
-        }
-    }
 
     // Helper function to get CSRF token from cookies
     function getCookie(name) {
@@ -72,11 +29,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Function to initialize a DataTable with server-side mode
-    function initServerTable(tableEl, catalogType, siteSlug) {
+    function initServerTable(tableEl) {
         const tableId = tableEl.getAttribute("id")
-        
-        // Avoid re-initializing if already done
         if (tableInstances[tableId]) {
+            return;
+        }
+
+        const apiUrl = tableEl.dataset.apiUrl;
+        if (!apiUrl){
+            console.error(`Missing data-api url from table ${tableId}`)
             return;
         }
 
@@ -88,7 +49,6 @@ document.addEventListener('DOMContentLoaded', function() {
             return num.toFixed(precision);
         }
 
-        const apiUrl = `/project/api/hypocenter-table-data/${siteSlug}/${catalogType}`;
         tableInstances[tableId] = new DataTable(tableEl, {
             processing: true,
             serverSide: true,
@@ -164,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const siteSlug = activeTable?.dataset.siteSlug;
 
                 if (catalogType && siteSlug) {
-                    const data = await fetchData(filters, catalogType, siteSlug);
+                    // const data = await fetchData(filters, catalogType, siteSlug);
                     updateTable(catalogType, siteSlug);
                 }
             } finally {
@@ -193,7 +153,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     const siteSlug = activeTable?.dataset.siteSlug;
 
                     if (catalogType && siteSlug) {
-                        const data = await fetchData(filters, catalogType, siteSlug);
                         updateTable(catalogType, siteSlug);
                     }
                 } finally {
@@ -203,13 +162,9 @@ document.addEventListener('DOMContentLoaded', function() {
         );
     });
 
-    // // Initial data fetch (no filters)
-    // (async () =>  {
-    //     const data = await fetchData();
-    //     updateTable(data);
-    // })();
-
-    // Initialize DataTables for the tables in the active tab on load    
+    // Initialize DataTables for the tables in the active tab on load 
+    const tabs = document.querySelectorAll(".nav-tabs li button");
+    const tabContent = document.querySelectorAll(".tab-contents-tab .tab-content");
     const activeTab = document.querySelector(".nav-tabs li button.active");
     if (activeTab) {
         const activeIndex = Array.from(tabs).indexOf(activeTab);

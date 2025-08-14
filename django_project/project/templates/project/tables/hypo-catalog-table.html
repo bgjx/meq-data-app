@@ -47,7 +47,7 @@
 
     <!-- Table -->
     <div class="table-container">
-        <table id="table-{{ catalog_type }}" data-catalog-type="{{ catalog_type }}" data-site-slug="{{ site.slug }}"class="table table-striped" style="width:100%">
+        <table id="table-{{ catalog_type }}" data-api-url="{% url 'project:api-hypocenter-table-data' site_slug=site.slug catalog_type=catalog_type %}" data-catalog-type="{{ catalog_type }}" data-site-slug="{{ site.slug }}"class="table table-striped" style="width:100%">
             <thead>
                 <tr>
                     <th>source_id</th>
