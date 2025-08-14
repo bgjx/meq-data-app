@@ -14,21 +14,21 @@
         <!-- Collapsible card body -->
         <div id='filterCollapse' class="collapse show">
             <div class="card-body">
-                <form method="get" class="py-lg-3">
+                <form id="filter-form" method="get" class="py-lg-3">
                     <div class="form-explorer">
                         <!-- Start date label  -->
                         <div class="form-input ">
                             <div class="filter-type"> Time Filter </div>
-                            <div class="col">
-                                <div class="form-label"> Start (UTC)</div>
+                            <div class="filter-item">
+                                <label for="start_date" class="form-label"> Start (UTC)</label>
                                 <div class="input">
-                                    {{picking_date_filter.form.picking_start_date}}
+                                    <input type="text" name="start_date", id="start_date" placeholder={{week_before_time}}/>
                                 </div>
                             </div>
-                            <div class="col py-lg-3">
-                                <div class="form-label"> End (UTC)</div>
+                            <div class="filter-item">
+                                <label for="end_date" class="form-label"> End (UTC)</label>
                                 <div class="input">
-                                    {{picking_date_filter.form.picking_end_date}}
+                                    <input type="text" name="end_date", id="end_date" placeholder={{now_time}}/>
                                 </div>
                             </div>
                         </div>

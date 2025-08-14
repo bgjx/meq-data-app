@@ -61,7 +61,7 @@
                         <h4 style="font-weight: 500;">
                             {{ site.name | upper }} Picking Catalog
                         </h4>
-                        {% include 'project/tables/picking-catalog-table.html' with picking_table_data=picking_table picking_date_filter=picking_date_filter %}
+                        {% include 'project/tables/picking-catalog-table.html' %}
                     </div>
                 </div>
             </div>
@@ -86,5 +86,6 @@
 
 </section>
 <!-- Embed absUrl for API calls -->
-<script defer src = "{% static 'project/js/table.js' %}" > </script>
+<script defer src = "{% static 'project/js/hypo-table.js' %}" > </script>
+<script defer src = "{% static 'project/js/picking-table.js' %}" > </script>
 {% endblock %}

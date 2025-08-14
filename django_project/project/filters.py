@@ -58,36 +58,18 @@ def picking_table_filter(model_input: Type[Model]) -> Type[django_filters.Filter
     Returns:
         Type[django_filters.FilterSet]: A FilterSet class configured for the given model.
     """
-    min_date = model_input.objects.aggregate(min_date=Min('p_arrival_dt'))['min_date']
-    max_date = model_input.objects.aggregate(max_date=Max('p_arrival_dt'))['max_date']
 
     class PickTableFilter(django_filters.FilterSet):
-        picking_start_date = DateTimeFilter(
-            field_name="p_arrival_dt",
-            lookup_expr="gte",
-            label="Start Date",
-            widget=forms.DateInput(
-                attrs={
-                    'type': 'text',
-                    'min': min_date.strftime('%Y-%m-%d %H:%M:%S') if min_date else '',
-                    'max': max_date.strftime('%Y-%m-%d %H:%M:%S') if max_date else '',
-                    'placeholder': min_date.strftime('%Y-%m-%d %H:%M:%S') if min_date else ''
-                },
-            ),
+        start_date = DateTimeFilter(
+            field_name="p_arrival_dt", 
+            lookup_expr="gte", 
+            label="Start Date"
         )
         
-        picking_end_date = DateTimeFilter(
+        end_date = DateTimeFilter(
             field_name="p_arrival_dt",
-            lookup_expr="lte",
-            label="End Date",
-            widget=forms.DateInput(
-                attrs={
-                    'type': 'text',
-                    'min': min_date.strftime('%Y-%m-%d %H:%M:%S') if min_date else '',
-                    'max': max_date.strftime('%Y-%m-%d %H:%M:%S') if max_date else '',
-                    'placeholder': max_date.strftime('%Y-%m-%d %H:%M:%S') if max_date else ''
-                },
-            ),
+            lookup_expr="lte", 
+            label="End Date"
         )
 
         class Meta:
