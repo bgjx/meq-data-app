@@ -53,7 +53,7 @@ class HypocenterTableDataAPIView(APIView):
         order_dir = request.GET.get('order[0][dir]', 'asc')
         columns = [
             'source_id', 'source_lat', 'source_lon', 'source_depth_m',
-            'source_origin_dt', 'source_err_rms_s', 'magnitude', 'remarks'
+            'source_origin_dt', 'magnitude', 'remarks'
         ]
 
         if order_column_index and order_column_index.isdigit():
@@ -63,7 +63,6 @@ class HypocenterTableDataAPIView(APIView):
             queryset = queryset.order_by(order_field)
 
         paginator = self.pagination_class()
-        print(paginator)
         page = paginator.paginate_queryset(queryset, request, view=self)
 
         # serialize data
@@ -74,7 +73,6 @@ class HypocenterTableDataAPIView(APIView):
                 "source_lon": obj.source_lon,
                 "source_depth_m": obj.source_depth_m,
                 "source_origin_dt": obj.source_origin_dt,
-                "source_err_rms_s": obj.source_err_rms_s,
                 "magnitude": obj.magnitude,
                 "remarks": obj.remarks
             } for obj in page

@@ -80,6 +80,14 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+        // Rendering function
+        function formatDecimal(data, precision){
+            if (data === null && data === undefined && data === '') return '';
+            let num = parseFloat(data);
+            if (isNaN(num)) return '';
+            return num.toFixed(precision);
+        }
+
         const apiUrl = `/project/api/hypocenter-table-data/${siteSlug}/${catalogType}`;
         tableInstances[tableId] = new DataTable(tableEl, {
             processing: true,
@@ -112,12 +120,11 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             columns: [
                 {data: "source_id"},
-                {data: "source_lat"},
-                {data: "source_lon"},
-                {data: "source_depth_m"},
+                {data: "source_lat", render: function(data) {return formatDecimal(data, 5); }},
+                {data: "source_lon", render: function(data) {return formatDecimal(data, 5); }},
+                {data: "source_depth_m", render: function(data) {return formatDecimal(data, 3); }},
                 {data: "source_origin_dt"},
-                {data: "source_err_rms_s"},
-                {data: "magnitude"},
+                {data: "magnitude", render: function(data) {return formatDecimal(data, 3); }},
                 {data: "remarks"}
 
             ]
