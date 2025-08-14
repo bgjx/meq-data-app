@@ -6,14 +6,15 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
+    let tableInstances = {};
+    const tabs = document.querySelectorAll(".nav-tabs li button");
+    const tabContent = document.querySelectorAll(".tab-contents-tab .tab-content");
+    
     // setup cache for fetched data (by creating new map object)
     let cacheData = new Map();
 
     // function to fetch analysis data with filters application
-    async function fetchData(filters = {}){
-        // Extract site slug
-        const siteSlug = window.absUrl.split("/")[2];
-
+    async function fetchData(filters = {}, catalogType, siteSlug){
         const cacheKey = JSON.stringify(filters);
         if (cacheData.has(cacheKey)) {
             return cacheData.get(cacheKey)
@@ -48,26 +49,18 @@ document.addEventListener('DOMContentLoaded', function() {
     function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(':');
+            const cookies = document.cookie.split(';');
             for (let i = 0; i < cookies.length; i++) {
                 const cookie = cookies[i].trim();
                 if (cookie.substring(0, name.length + 1) === (name + '=')) {
                     cookieValue = decodeURIComponent(cookie.substring(name.length + 1))
+                    break
 
                 }
             }
         }
         return cookieValue;
     }
-
-    // Function to update table
-    function updateTable(data){
-        if (!data.data){
-            console.error('Invalid or missing data')
-            return;
-        }
-    }
-
 
     // Debounce function to limit frequent API calls
     function debounce(func, wait){
@@ -78,61 +71,6 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
 
-    //  Handle filter form submission
-    const filterForm = document.getElementById('filter-form');
-    if (filterForm) {
-        filterForm.addEventListener('submit', async(event) => {
-            event.preventDefault();
-            const formData = new FormData(filterForm);
-            const filters = Object.fromEntries(formData);
-
-            // Show loading indicator
-            const loadingSpinner = document.getElementById('loading-spinner');
-            if (loadingSpinner) loadingSpinner.style.display = 'block';
-            try{
-                const data = await fetchData(filters);
-                updateTable(data);
-            } finally {
-                if (loadingSpinner) loadingSpinner.style.display = 'none';
-            }
-        });
-    }
-
-    // Handle real-time filter changes(e.g., for slider or inputs)
-    const filterInputs = document.querySelectorAll('#filter-form input');
-    filterInputs.forEach((input) => {
-        input.addEventListener(
-            'input',
-            debounce(async() => {
-                const formData = new FormData(filterForm);
-                const filters = Object.fromEntries(formData);
-
-                const loadingSpinner = document.getElementById('laoding-spinner');
-
-                if (loadingSpinner) loadingSpinner.style.display = 'block';
-
-                try {
-                    const data = await fetchData(filters);
-                    updateTable(data);
-                } finally {
-                    if (loadingSpinner) loadingSpinner.style.display = 'none';
-                }
-            }, 500)
-        );
-    });
-
-    // Initial data fetch (no filters)
-    (async () =>  {
-        const data = await fetchData();
-        updateTable(data);
-    })();
-
-
-
-    const tabs = document.querySelectorAll(".nav-tabs li button");
-    const tabContent = document.querySelectorAll(".tab-contents-tab .tab-content");
-    let tableInstances = {};
-
     // Function to initialize a DataTable with server-side mode
     function initServerTable(tableEl, catalogType, siteSlug) {
         const tableId = tableEl.getAttribute("id")
@@ -142,14 +80,35 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+        const apiUrl = `/project/api/hypocenter-table-data/${siteSlug}/${catalogType}`;
         tableInstances[tableId] = new DataTable(tableEl, {
             processing: true,
             serverSide: true,
+            searching: true,
+            ordering: true,
+            pageLength: 10,
             ajax: {
-                url: `api/hypocenter-table-data/${siteSlug}/${catalogType}`,
+                url: apiUrl,
+                type: 'GET',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
                 data: function (d) {
-                    return d;
-                }
+                    // Add extra filter params from your filter form
+                    const formData = new FormData(document.getElementById('filter-form'));
+                    const filters = Object.fromEntries(formData);
+                    // console.log('AJAX params:', { ...d, ...filters });
+                    Object.assign(d, filters);
+                },
+                error: function(xhr, error, thrown){
+                    console.error('DataTables AJAX error:', {
+                        status: xhr.status,
+                        url:apiUrl,
+                        response:xhr.responseText,
+                        error, 
+                        thrown
+                    });
+                },
             },
             columns: [
                 {data: "source_id"},
@@ -165,17 +124,94 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Update table function (triggers DataTable reload with filters)
+    function updateTable(catalogType, siteSlug){
+        const tableId = `table-${catalogType}`;
+        const tableInstance = tableInstances[tableId];
+        if (tableInstance) {
+            tableInstance.ajax.reload();
+        } else {
+            console.error(`Table instance for ${tableId} not found`);
+        }
+    }
 
-    // Initialize DataTables for the tables in the active tab on load
+    //  Handle filter form submission
+    const filterForm = document.getElementById('filter-form');
+    if (filterForm) {
+        filterForm.addEventListener('submit', async(event) => {
+            event.preventDefault();
+            const formData = new FormData(filterForm);
+            const filters = Object.fromEntries(formData);
+
+            // Show loading indicator
+            const loadingSpinner = document.getElementById('loading-spinner');
+            if (loadingSpinner) loadingSpinner.style.display = 'block';
+
+
+            try{
+                // Extract catalogType and siteSlug from context (e.g., active tab or table dataset)
+                const activeTab = document.querySelector(".nav-tabs li button.active");
+                const activeIndex = Array.from(tabs).indexOf(activeTab);
+                const activeTable = tabContent[activeIndex]?.querySelector(".table-container table");
+                const catalogType = activeTable?.dataset.catalogType;
+                const siteSlug = activeTable?.dataset.siteSlug;
+
+                if (catalogType && siteSlug) {
+                    const data = await fetchData(filters, catalogType, siteSlug);
+                    updateTable(catalogType, siteSlug);
+                }
+            } finally {
+                if (loadingSpinner) loadingSpinner.style.display = 'none';
+            }
+        });
+    }
+
+    // Handle real-time filter changes(e.g., for datetime inputs)
+    const filterInputs = document.querySelectorAll('#filter-form input');
+    filterInputs.forEach((input) => {
+        input.addEventListener(
+            'input',
+            debounce(async() => {
+                const formData = new FormData(filterForm);
+                const filters = Object.fromEntries(formData);
+
+                const loadingSpinner = document.getElementById('loading-spinner');
+                if (loadingSpinner) loadingSpinner.style.display = 'block';
+
+                try {
+                    const activeTab = document.querySelector(".nav-tabs li button.active");
+                    const activeIndex = Array.from(tabs).indexOf(activeTab);
+                    const activeTable = tabContent[activeIndex]?.querySelector(".table-container table");
+                    const catalogType = activeTable?.dataset.catalogType;
+                    const siteSlug = activeTable?.dataset.siteSlug;
+
+                    if (catalogType && siteSlug) {
+                        const data = await fetchData(filters, catalogType, siteSlug);
+                        updateTable(catalogType, siteSlug);
+                    }
+                } finally {
+                    if (loadingSpinner) loadingSpinner.style.display = 'none';
+                }
+            }, 500)
+        );
+    });
+
+    // // Initial data fetch (no filters)
+    // (async () =>  {
+    //     const data = await fetchData();
+    //     updateTable(data);
+    // })();
+
+    // Initialize DataTables for the tables in the active tab on load    
     const activeTab = document.querySelector(".nav-tabs li button.active");
     if (activeTab) {
         const activeIndex = Array.from(tabs).indexOf(activeTab);
         if (tabContent[activeIndex]) {
             const activeTables = tabContent[activeIndex].querySelectorAll(".table-container table");
             activeTables.forEach(function(table) {
-                // Pass catalogType and siteSlug based on your context
                 const catalogType = table.dataset.catalogType;
                 const siteSlug = table.dataset.siteSlug;
+                table.setAttribute('id', `table-${catalogType}`);
                 initServerTable(table, catalogType, siteSlug);
             });
         }
@@ -194,19 +230,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 activeTables.forEach(function(table) {
                     const catalogType = table.dataset.catalogType;
                     const siteSlug = table.dataset.siteSlug;
-                    initServerTable(table, catalogType, siteSlug);
+                    table.setAttribute('id', `table-${catalogType}`)
+                    initServerTable(table, catalogType, siteSlug)
                 });
             }
         });
     });
-
-    // For picking table
-    let picking_table = new DataTable('#picking-table');
-
-    // For station table
-    let station_table = new DataTable('#station-table');
-
-    // For upload preview table
-    let preview_table = new DataTable('#preview-table');
 
 });

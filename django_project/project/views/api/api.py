@@ -63,6 +63,7 @@ class HypocenterTableDataAPIView(APIView):
             queryset = queryset.order_by(order_field)
 
         paginator = self.pagination_class()
+        print(paginator)
         page = paginator.paginate_queryset(queryset, request, view=self)
 
         # serialize data

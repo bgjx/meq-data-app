@@ -44,8 +44,8 @@
                         </li>
                     </ul>
                     <div class="tab-contents-tab">
-                        {% include 'project/tables/hypo-catalog-table.html' with catalog_type='relocated' hypo_table_data=hypo_table_relocated hypo_date_filter=hypo_date_filter_relocated  active=True %}
-                        {% include 'project/tables/hypo-catalog-table.html' with catalog_type='initial' hypo_table_data=hypo_table_initial hypo_date_filter=hypo_date_filter_initial  %}
+                        {% include 'project/tables/hypo-catalog-table.html' with catalog_type='relocated' active=True %}
+                        {% include 'project/tables/hypo-catalog-table.html' with catalog_type='initial'  %}
                     </div>
                 </div>
             </div>
