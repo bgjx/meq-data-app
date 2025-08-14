@@ -14,7 +14,7 @@
         <!-- Collapsible card body -->
         <div id='filterCollapse' class="collapse show">
             <div class="card-body">
-                <form id="filter-form" method="get" class="py-lg-3">
+                <form id="filter-form-picking" method="get" class="py-lg-3">
                     <div class="form-explorer">
                         <!-- Start date label  -->
                         <div class="form-input ">
@@ -44,9 +44,16 @@
     </div>
 </div>
 
+<!-- Loading Spinner -->
+<div id = 'loading-spinner' class="text-center justify-content-center" style="display: none">
+    <div class="spinner-border text-secondary" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+
 <!-- Table -->
 <div class="table-container">
-    <table id="picking-table" class="table table-striped" style="width:100%">
+    <table id="table-picking" data-api-url="{% url 'project:api-picking-table-data' site_slug=site.slug %}" class="table table-striped" style="width:100%">
         <thead>
             <tr>
                 <th>source_id</th>
@@ -58,19 +65,6 @@
                 <th>coda_dt</th>
             </tr>
         </thead>
-        <tbody>
-            {% for ev in picking_table_data %}
-                <tr>
-                    <td>{{ ev.source_id }}</td>
-                    <td>{{ ev.station_code }}</td>
-                    <td>{{ ev.p_arrival_dt | date:"Y-m-d H:i:s.u" }}</td>
-                    <td>{{ ev.p_polarity}}</td>
-                    <td>{{ ev.p_onset }}</td>
-                    <td>{{ ev.s_arrival_dt | date:"Y-m-d H:i:s.u" }}</td>
-                    <td>{{ ev.coda_dt | date:"Y-m-d H:i:s.u" }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
     </table>
 </div>
 

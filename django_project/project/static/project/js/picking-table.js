@@ -42,12 +42,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Rendering function
-        function formatDecimal(data, precision){
-            if (data === null && data === undefined && data === '') return '';
-            let num = parseFloat(data);
-            if (isNaN(num)) return '';
-            return num.toFixed(precision);
-        }
+        // function formatDecimal(data, precision){
+        //     if (data === null && data === undefined && data === '') return '';
+        //     let num = parseFloat(data);
+        //     if (isNaN(num)) return '';
+        //     return num.toFixed(precision);
+        // }
 
         tableInstances[tableId] = new DataTable(tableEl, {
             processing: true,
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 data: function (d) {
                     // Add extra filter params from your filter form
-                    const formData = new FormData(document.getElementById('filter-form'));
+                    const formData = new FormData(document.getElementById('filter-form-picking'));
                     const filters = Object.fromEntries(formData);
                     // console.log('AJAX params:', { ...d, ...filters });
                     Object.assign(d, filters);
@@ -80,20 +80,20 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             columns: [
                 {data: "source_id"},
-                {data: "source_lat", render: function(data) {return formatDecimal(data, 5); }},
-                {data: "source_lon", render: function(data) {return formatDecimal(data, 5); }},
-                {data: "source_depth_m", render: function(data) {return formatDecimal(data, 3); }},
-                {data: "source_origin_dt"},
-                {data: "magnitude", render: function(data) {return formatDecimal(data, 3); }},
-                {data: "remarks"}
+                {data: "station_code"},
+                {data: "p_arrival_dt"},
+                {data: "p_polarity"},
+                {data: "p_onset"},
+                {data: "p_arrival_dt"},
+                {data: "coda_dt"}
 
             ]
         });
     }
 
     // Update table function (triggers DataTable reload with filters)
-    function updateTable(catalogType){
-        const tableId = `table-${catalogType}`;
+    function updateTable(tableEl){
+        const tableId = tableEl.getAttribute('id')
         const tableInstance = tableInstances[tableId];
         if (tableInstance) {
             tableInstance.ajax.reload();
@@ -103,27 +103,19 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     //  Handle filter form submission
-    const filterForm = document.getElementById('filter-form');
+    const filterForm = document.getElementById('filter-form-picking');
     if (filterForm) {
         filterForm.addEventListener('submit', async(event) => {
             event.preventDefault();
-            const formData = new FormData(filterForm);
-            const filters = Object.fromEntries(formData);
 
             // Show loading indicator
             const loadingSpinner = document.getElementById('loading-spinner');
             if (loadingSpinner) loadingSpinner.style.display = 'block';
 
-
-            try{
-                // Extract catalogType 
-                const activeTab = document.querySelector(".nav-tabs li button.active");
-                const activeIndex = Array.from(tabs).indexOf(activeTab);
-                const activeTable = tabContent[activeIndex]?.querySelector(".table-container table");
-                const catalogType = activeTable?.dataset.catalogType;
-
-                if (catalogType) {
-                    updateTable(catalogType);
+            try {
+                const tableEl = document.getElementById('table-picking');
+                if (tableEl) {
+                    updateTable(tableEl);
                 }
             } finally {
                 if (loadingSpinner) loadingSpinner.style.display = 'none';
@@ -132,25 +124,19 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Handle real-time filter changes(e.g., for datetime inputs)
-    const filterInputs = document.querySelectorAll('#filter-form input');
+    const filterInputs = document.querySelectorAll('#filter-form-picking input');
     filterInputs.forEach((input) => {
         input.addEventListener(
             'input',
             debounce(async() => {
-                const formData = new FormData(filterForm);
-                const filters = Object.fromEntries(formData);
 
                 const loadingSpinner = document.getElementById('loading-spinner');
                 if (loadingSpinner) loadingSpinner.style.display = 'block';
 
                 try {
-                    const activeTab = document.querySelector(".nav-tabs li button.active");
-                    const activeIndex = Array.from(tabs).indexOf(activeTab);
-                    const activeTable = tabContent[activeIndex]?.querySelector(".table-container table");
-                    const catalogType = activeTable?.dataset.catalogType;
-
-                    if (catalogType) {
-                        updateTable(catalogType);
+                    const tableEl = document.getElementById('table-picking');
+                    if (tableEl) {
+                        updateTable(tableEl);
                     }
                 } finally {
                     if (loadingSpinner) loadingSpinner.style.display = 'none';
@@ -159,39 +145,11 @@ document.addEventListener('DOMContentLoaded', function() {
         );
     });
 
-    // Initialize DataTables for the tables in the active tab on load 
-    const tabs = document.querySelectorAll(".nav-tabs li button");
-    const tabContent = document.querySelectorAll(".tab-contents-tab .tab-content");
-    const activeTab = document.querySelector(".nav-tabs li button.active");
-    if (activeTab) {
-        const activeIndex = Array.from(tabs).indexOf(activeTab);
-        if (tabContent[activeIndex]) {
-            const activeTables = tabContent[activeIndex].querySelectorAll(".table-container table");
-            activeTables.forEach(function(table) {
-                const catalogType = table.dataset.catalogType;
-                table.setAttribute('id', `table-${catalogType}`);
-                initServerTable(table);
-            });
-        }
+    // Initialize DataTables for the tables in the active tab on load
+    const pickingTableEl = document.getElementById('table-picking');
+    if (pickingTableEl) {
+        initServerTable(pickingTableEl);
     }
 
-    tabs.forEach((tab, index) => {
-        tab.addEventListener("click", () => {
-            tabContent.forEach(content => content.classList.remove('active'));
-            tabs.forEach(t => t.classList.remove("active"));
-
-            if (tabContent[index]) {
-                tabContent[index].classList.add("active");
-                tabs[index].classList.add("active");
-
-                const activeTables = tabContent[index].querySelectorAll(".table-container table");
-                activeTables.forEach(function(table) {
-                    const catalogType = table.dataset.catalogType;
-                    table.setAttribute('id', `table-${catalogType}`)
-                    initServerTable(table)
-                });
-            }
-        });
-    });
 
 });

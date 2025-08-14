@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 data: function (d) {
                     // Add extra filter params from your filter form
-                    const formData = new FormData(document.getElementById('filter-form'));
+                    const formData = new FormData(document.getElementById('filter-form-hypo'));
                     const filters = Object.fromEntries(formData);
                     // console.log('AJAX params:', { ...d, ...filters });
                     Object.assign(d, filters);
@@ -103,17 +103,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     //  Handle filter form submission
-    const filterForm = document.getElementById('filter-form');
+    const filterForm = document.getElementById('filter-form-hypo');
     if (filterForm) {
         filterForm.addEventListener('submit', async(event) => {
             event.preventDefault();
-            const formData = new FormData(filterForm);
-            const filters = Object.fromEntries(formData);
 
             // Show loading indicator
             const loadingSpinner = document.getElementById('loading-spinner');
             if (loadingSpinner) loadingSpinner.style.display = 'block';
-
 
             try{
                 // Extract catalogType 
@@ -132,13 +129,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Handle real-time filter changes(e.g., for datetime inputs)
-    const filterInputs = document.querySelectorAll('#filter-form input');
+    const filterInputs = document.querySelectorAll('#filter-form-hypo input');
     filterInputs.forEach((input) => {
         input.addEventListener(
             'input',
             debounce(async() => {
-                const formData = new FormData(filterForm);
-                const filters = Object.fromEntries(formData);
 
                 const loadingSpinner = document.getElementById('loading-spinner');
                 if (loadingSpinner) loadingSpinner.style.display = 'block';

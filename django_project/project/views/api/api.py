@@ -101,19 +101,15 @@ class PickingTableDataAPIView(APIView):
         if search_value:
             queryset = queryset.filter(
                 Q(source_id__icontains=search_value) |
-                Q(source_lat__icontains=search_value) |
-                Q(source_lon__icontains=search_value) |
-                Q(source_depth_m__icontains=search_value) |
-                Q(magnitude__icontains=search_value) |
-                Q(remarks__icontains=search_value)
+                Q(station_code__icontains=search_value)
             )
         
         # ordering from DataTables
         order_column_index = request.GET.get('order[0][column]')
         order_dir = request.GET.get('order[0][dir]', 'asc')
         columns = [
-            'source_id', 'source_lat', 'source_lon', 'source_depth_m',
-            'source_origin_dt', 'magnitude', 'remarks'
+            'source_id', 'station_code', 'p_arrival_dt', 'p_polarity',
+            'p_onset', 's_arrival_dt', 'coda_dt'
         ]
 
         if order_column_index and order_column_index.isdigit():
@@ -129,43 +125,16 @@ class PickingTableDataAPIView(APIView):
         data = [
             {
                 "source_id": obj.source_id,
-                "source_lat": obj.source_lat,
-                "source_lon": obj.source_lon,
-                "source_depth_m": obj.source_depth_m,
-                "source_origin_dt": obj.source_origin_dt,
-                "magnitude": obj.magnitude,
-                "remarks": obj.remarks
-            } for obj in page
-        ]
-
-        return paginator.get_paginated_response(data)
-
-
-class PickingTableDataAPIView(APIView):
-    """
-    API endpoints to fetch picking data for table UI.
-    """
-    def get(self, request, site_slug:str=None) -> HttpResponse:
-        model = get_picking_catalog('project', site_slug)
-        if not model:
-            Response({"error": "Requested data not found"}, status=status.HTTP_404_NOT_FOUND)
-        
-        queryset = get_filtered_queryset(model, request.GET, 'picking_table_filter')
-
-        # serialize data 
-        data = [
-            {
-                "source_id": obj.source_id,
                 "station_code": obj.station_code,
                 "p_arrival_dt": obj.p_arrival_dt,
                 "p_polarity": obj.p_polarity,
                 "p_onset": obj.p_onset,
                 "s_arrival_dt": obj.s_arrival_dt,
                 "coda_dt": obj.coda_dt
-            } for obj in queryset
+            } for obj in page
         ]
 
-        return Response({"data":data}, status=status.HTTP_200_OK)
+        return paginator.get_paginated_response(data)
 
 
 class StationTableDataAPIView(APIView):
