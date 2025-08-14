@@ -41,36 +41,13 @@ def project_site(request, site_slug: str = None) -> HttpResponse:
     
     site = get_object_or_404(Site, slug=site_slug)
 
-    catalog_types = [
-        {'type': 'relocated', 'download_url': 'download-relocated'},
-        {'type': 'initial', 'download_url': 'download-initial'}
-    ]
-
     context = {'site': site}
-    
-    # hypocenter data
-    for catalog in catalog_types:
-        catalog_type = catalog['type']
-        model_hypo = get_hypocenter_catalog('project', site_slug, catalog_type)
-        hypo_filter_class = hypo_table_filter(model_hypo)
-        hypo_filter_instance = hypo_filter_class(request.GET, queryset=model_hypo.objects.all())
-        context[f'hypo_table_{catalog_type}'] = hypo_filter_instance.qs
-        context[f'hypo_date_filter_{catalog_type}'] = hypo_filter_instance
-    
-    # picking data
-    model_picking = get_picking_catalog('project', site_slug)
-    picking_filter_class = picking_table_filter(model_picking)
-    picking_filter_instance = picking_filter_class(request.GET, queryset=model_picking.objects.all())
-    context['picking_table'] = picking_filter_instance.qs
-    context['picking_date_filter'] = picking_filter_instance
-
-    # station data
     model_station = get_station('project', site_slug)
 
     # check role user (Admins or Guest)
     is_admin = request.user.groups.filter(name='Admins').exists()
 
-    # update context
+    # update context temporary stations tables
     context['station_table'] = model_station.objects.all()
     context['is_admin'] = is_admin
 
