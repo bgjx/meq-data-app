@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Update table function (triggers DataTable reload with filters)
-    function updateTable(catalogType, siteSlug){
+    function updateTable(catalogType){
         const tableId = `table-${catalogType}`;
         const tableInstance = tableInstances[tableId];
         if (tableInstance) {
@@ -116,16 +116,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
             try{
-                // Extract catalogType and siteSlug from context (e.g., active tab or table dataset)
+                // Extract catalogType 
                 const activeTab = document.querySelector(".nav-tabs li button.active");
                 const activeIndex = Array.from(tabs).indexOf(activeTab);
                 const activeTable = tabContent[activeIndex]?.querySelector(".table-container table");
                 const catalogType = activeTable?.dataset.catalogType;
-                const siteSlug = activeTable?.dataset.siteSlug;
 
-                if (catalogType && siteSlug) {
-                    // const data = await fetchData(filters, catalogType, siteSlug);
-                    updateTable(catalogType, siteSlug);
+                if (catalogType) {
+                    updateTable(catalogType);
                 }
             } finally {
                 if (loadingSpinner) loadingSpinner.style.display = 'none';
@@ -150,10 +148,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     const activeIndex = Array.from(tabs).indexOf(activeTab);
                     const activeTable = tabContent[activeIndex]?.querySelector(".table-container table");
                     const catalogType = activeTable?.dataset.catalogType;
-                    const siteSlug = activeTable?.dataset.siteSlug;
 
-                    if (catalogType && siteSlug) {
-                        updateTable(catalogType, siteSlug);
+                    if (catalogType) {
+                        updateTable(catalogType);
                     }
                 } finally {
                     if (loadingSpinner) loadingSpinner.style.display = 'none';
@@ -172,9 +169,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const activeTables = tabContent[activeIndex].querySelectorAll(".table-container table");
             activeTables.forEach(function(table) {
                 const catalogType = table.dataset.catalogType;
-                const siteSlug = table.dataset.siteSlug;
                 table.setAttribute('id', `table-${catalogType}`);
-                initServerTable(table, catalogType, siteSlug);
+                initServerTable(table);
             });
         }
     }
@@ -191,9 +187,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 const activeTables = tabContent[index].querySelectorAll(".table-container table");
                 activeTables.forEach(function(table) {
                     const catalogType = table.dataset.catalogType;
-                    const siteSlug = table.dataset.siteSlug;
                     table.setAttribute('id', `table-${catalogType}`)
-                    initServerTable(table, catalogType, siteSlug)
+                    initServerTable(table)
                 });
             }
         });
