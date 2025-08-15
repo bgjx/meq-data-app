@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         const queryString = new URLSearchParams(filters).toString();
         const url  = `/project/api/general-performance/${siteSlug}${queryString ? `?${queryString}` : ''}`;
-
+        console.log(url);
         try {
             const response = await fetch(url, {
                 method: 'GET',
@@ -406,7 +406,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     //  Initial data fetch (no filters)
     (async () => {
-        const data = await fetchData();
+        const time_range = window.timeRange;
+        const defaultFilters = {
+            // start_date : time_range.before_time,
+            // end_date: time_range.now_time,
+            start_date : '',
+            end_date: ''
+        };
+        const data = await fetchData(defaultFilters);
         updateUI(data);
     })();
 

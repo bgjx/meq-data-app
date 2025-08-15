@@ -19,6 +19,7 @@ from project.data_cleanser import (clean_hypo_df,
                             )
 
 from datetime import datetime, timedelta
+import json
 import pandas as pd
 import csv
 from project.config import DATA_STRUCTURES, REQUIREMENTS
@@ -410,17 +411,19 @@ def general_performance(request, site_slug: str = None) -> HttpResponse:
 
     # get current datetime
     now = datetime.now()
-    now_str = now.strftime("%Y-%m-%d %H:%M:%S")
+    now_str = now.strftime("%Y-%m-%d")
 
-    w_before = now - timedelta(days=7)
-    w_before_str = w_before.strftime("%Y-%m-%d %H:%M:%S") 
+    before = now - timedelta(days=30)
+    before_str = before.strftime("%Y-%m-%d") 
 
     mapbox_access_token = MAPBOX_API_TOKEN
 
     context = {
         'site': site,
-        'now_time': now_str,
-        'week_before_time': w_before_str,
+        'time_range': json.dumps({
+            'now_time': now_str,
+            'before_time': before_str,
+        }),
         'MAPBOX_TOKEN': mapbox_access_token,
     }
     

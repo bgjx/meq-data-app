@@ -201,7 +201,8 @@
     <!-- Embed absUrl for API calls -->
     <script>
         window.absUrl = '{{site.get_absolute_url}}';
-        window.mapboxToken = '{{MAPBOX_TOKEN}}'
+        window.mapboxToken = '{{MAPBOX_TOKEN}}';
+        window.timeRange = {{ time_range | safe}}
     </script>
     <script defer src = "{% static 'project/js/general-performance.js' %}" > </script>
 {% endblock %}
