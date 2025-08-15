@@ -6,7 +6,7 @@
             <!-- Filter header -->
             <div class="card-header" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="true" aria-controls="filterCollapse" style="cursor: pointer;" >
                 <div class="d-flex align-items-center">
-                    <h6 style="font-weight: 500;"> Filters Console</h6>
+                    <h6 class="m-0" style="font-weight: 500;"> Filters Console</h6>
                     <button class="btn btn-link p-0 ms-auto" type="button" aria-label="Toggle filter form">
                         <i class="bi bi-chevron-down"></i>
                     </button>
@@ -15,21 +15,21 @@
             <!-- Collapsible card body -->
             <div id='filterCollapse' class="collapse show">
                 <div class="card-body">
-                    <form method="get" class="py-lg-3">
+                    <form id="filter-form-hypo" method="get" class="py-lg-3">
                         <div class="form-explorer">
                             <!-- Start date label  -->
                             <div class="form-input ">
                                 <div class="filter-type"> Time Filter </div>
-                                <div class="col">
-                                    <div class="form-label"> Start (UTC)</div>
+                                <div class="filter-item">
+                                    <label for="start_date" class="form-label"> Start (UTC)</label>
                                     <div class="input">
-                                        {{hypo_date_filter.form.hypo_start_date}}
+                                        <input type="text" name="start_date", id="start_date" placeholder="2024-09-01"/>
                                     </div>
                                 </div>
-                                <div class="col py-lg-3">
-                                    <div class="form-label"> End (UTC)</div>
+                                <div class="filter-item">
+                                    <label for="end_date" class="form-label"> End (UTC)</label>
                                     <div class="input">
-                                        {{hypo_date_filter.form.hypo_end_date}}
+                                        <input type="text" name="end_date", id="end_date" placeholder="2024-10-30"/>
                                     </div>
                                 </div>
                             </div>
@@ -45,9 +45,16 @@
         </div>
     </div>
 
+    <!-- Loading Spinner -->
+    <div id = 'loading-spinner' class="text-center justify-content-center" style="display: none">
+        <div class="spinner-border text-secondary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+
     <!-- Table -->
     <div class="table-container">
-        <table class="table table-striped" style="width:100%">
+        <table id="table-{{ catalog_type }}" data-api-url="{% url 'project:api-hypocenter-table-data' site_slug=site.slug catalog_type=catalog_type %}" data-catalog-type="{{ catalog_type }}" data-site-slug="{{ site.slug }}"class="table table-striped" style="width:100%">
             <thead>
                 <tr>
                     <th>source_id</th>
@@ -55,25 +62,10 @@
                     <th>source_longitude</th>
                     <th>source_depth_m</th>
                     <th>source_origin_dt</th>
-                    <th>source_err_rms_s</th> <!-- Unified header name -->
                     <th>magnitude</th>
                     <th>remarks</th>
                 </tr>
             </thead>
-            <tbody>
-                {% for ev in hypo_table_data %}
-                    <tr>
-                        <td>{{ ev.source_id }}</td>
-                        <td>{{ ev.source_lat | floatformat:7 }}</td>
-                        <td>{{ ev.source_lon | floatformat:7 }}</td>
-                        <td>{{ ev.source_depth_m | floatformat:3 }}</td>
-                        <td>{{ ev.source_origin_dt | date:"Y-m-d H:i:s.u" }}</td>
-                        <td>{{ ev.source_err_rms_s | floatformat:3 }}</td>
-                        <td>{{ ev.magnitude | floatformat:3 }}</td>
-                        <td>{{ ev.remarks }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
         </table>
     </div>
     <!-- Download Option -->

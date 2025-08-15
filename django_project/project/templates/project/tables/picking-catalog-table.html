@@ -5,7 +5,7 @@
         <!-- Filter header -->
         <div class="card-header" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="true" aria-controls="filterCollapse" style="cursor: pointer;" >
             <div class="d-flex align-items-center">
-                <h6 style="font-weight: 500;"> Filters Console</h6>
+                <h6 class="m-0" style="font-weight: 500;"> Filters Console</h6>
                 <button class="btn btn-link p-0 ms-auto" type="button" aria-label="Toggle filter form">
                     <i class="bi bi-chevron-down"></i>
                 </button>
@@ -14,21 +14,21 @@
         <!-- Collapsible card body -->
         <div id='filterCollapse' class="collapse show">
             <div class="card-body">
-                <form method="get" class="py-lg-3">
+                <form id="filter-form-picking" method="get" class="py-lg-3">
                     <div class="form-explorer">
                         <!-- Start date label  -->
                         <div class="form-input ">
                             <div class="filter-type"> Time Filter </div>
-                            <div class="col">
-                                <div class="form-label"> Start (UTC)</div>
+                            <div class="filter-item">
+                                <label for="start_date" class="form-label"> Start (UTC)</label>
                                 <div class="input">
-                                    {{picking_date_filter.form.picking_start_date}}
+                                    <input type="text" name="start_date", id="start_date" placeholder="2024-09-01"/>
                                 </div>
                             </div>
-                            <div class="col py-lg-3">
-                                <div class="form-label"> End (UTC)</div>
+                            <div class="filter-item">
+                                <label for="end_date" class="form-label"> End (UTC)</label>
                                 <div class="input">
-                                    {{picking_date_filter.form.picking_end_date}}
+                                    <input type="text" name="end_date", id="end_date" placeholder="2024-10-30"/>
                                 </div>
                             </div>
                         </div>
@@ -44,9 +44,16 @@
     </div>
 </div>
 
+<!-- Loading Spinner -->
+<div id = 'loading-spinner' class="text-center justify-content-center" style="display: none">
+    <div class="spinner-border text-secondary" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+
 <!-- Table -->
 <div class="table-container">
-    <table id="picking-table" class="table table-striped" style="width:100%">
+    <table id="table-picking" data-api-url="{% url 'project:api-picking-table-data' site_slug=site.slug %}" class="table table-striped" style="width:100%">
         <thead>
             <tr>
                 <th>source_id</th>
@@ -58,19 +65,6 @@
                 <th>coda_dt</th>
             </tr>
         </thead>
-        <tbody>
-            {% for ev in picking_table_data %}
-                <tr>
-                    <td>{{ ev.source_id }}</td>
-                    <td>{{ ev.station_code }}</td>
-                    <td>{{ ev.p_arrival_dt | date:"Y-m-d H:i:s.u" }}</td>
-                    <td>{{ ev.p_polarity}}</td>
-                    <td>{{ ev.p_onset }}</td>
-                    <td>{{ ev.s_arrival_dt | date:"Y-m-d H:i:s.u" }}</td>
-                    <td>{{ ev.coda_dt | date:"Y-m-d H:i:s.u" }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
     </table>
 </div>
 

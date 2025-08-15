@@ -1,0 +1,233 @@
+{% extends './base-project.html' %}
+{% block title %} Detail Analytics {% endblock %}
+{% load static %}
+{% block content %}
+    <section class="py-4 container">
+        <div class="row py-lg-3 sticky-panel">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-body">
+
+                        <!-- Filter console -->
+                        <div class="form-container">
+                            <div class="card">
+                                <!-- Filter header -->
+                                <div class="card-header" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="true" aria-controls="filterCollapse" style="cursor: pointer;" >
+                                    <div class="d-flex align-items-center">
+                                        <h6 style="font-weight: 500;"> Filters Console</h6>
+                                        <button class="btn btn-link p-0 ms-auto" type="button" aria-label="Toggle filter form">
+                                            <i class="bi bi-chevron-down"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- Collapsible card body -->
+                                <div id='filterCollapse' class="collapse show">
+                                    <div class="card-body">
+                                        <form id = "filter-form" method="get" class="py-lg-3">
+                                            <div class="form-explorer">
+                                                <div class="form-input"></div>
+                                                <!-- spatial filter -->
+                                                <!-- Rectangular filter -->
+                                                <div class="form-input ">
+                                                    <div class="filter-type"> Rectangular Filter </div>
+                                                    <div class="filter-item">
+                                                        <label for="min-latitude" class="form-label"> Min latitude </label>
+                                                        <div class="input">
+                                                            <input type="number" name="min_latitude" id="min_latitude" placeholder="0.00" min="-90" max="90" step="any">
+                                                        </div>
+                                                    </div>
+                                                    <div class="filter-item">
+                                                        <label for="max-latitude" class="form-label"> Max latitude </label>
+                                                        <div class="input">
+                                                            <input type="number" name="max_latitude" id="max_latitude" placeholder="0.00" min="-90" max="90" step="any">
+                                                        </div>
+                                                    </div>
+                                                    <div class="filter-item">
+                                                        <label for="min-longitude" class="form-label"> Min longitude </label>
+                                                        <div class="input">
+                                                            <input type="number" name="min_longitude" id="min_longitude" placeholder="90.00" min="-180" max="180" step="any">
+                                                        </div>
+                                                    </div>
+                                                    <div class="filter-item">
+                                                        <label for="max-longitude" class="form-label"> Max longitude </label>
+                                                        <div class="input">
+                                                            <input type="number" name="max_longitude" id="max_longitude" placeholder="90.00" min="-180" max="180" step="any">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- circular filter  -->
+                                                <div class="form-input ">
+                                                    <div class="filter-type"> Circular Filter </div>
+                                                    <div class="filter-item">
+                                                        <label for="center-latitude" class="form-label"> Center latitude </label>
+                                                        <div class="input">
+                                                            <input type="number" name="center_latitude" id="center_latitude" placeholder="0.00" min="-90" max="90" step="any">
+                                                        </div>
+                                                    </div>
+                                                    <div class="filter-item">
+                                                        <label for="center-longitude" class="form-label"> Center longitude </label>
+                                                        <div class="input">
+                                                            <input type="number" name="center_longitude" id="center_longitude" placeholder="90.00" min="-180" max="180" step="any">
+                                                        </div>
+                                                    </div>
+                                                    <div class="filter-item">
+                                                        <label for="radius" class="form-label"> Radius (km) </label>
+                                                        <div class="input">
+                                                            <input type="number" name="radius" id="radius" placeholder="5" min="0" step="any"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- date filter -->
+                                                <div class="form-input ">
+                                                    <div class="filter-type"> Time Filter </div>
+                                                    <div class="filter-item">
+                                                        <label for="start_date" class="form-label"> Start (UTC)</label>
+                                                        <div class="input">
+                                                            <input type="text" name="start_date", id="start_date" placeholder={{week_before_time}}/>
+                                                        </div>
+                                                    </div>
+                                                    <div class="filter-item">
+                                                        <label for="end_date" class="form-label"> End (UTC)</label>
+                                                        <div class="input">
+                                                            <input type="text" name="end_date", id="end_date" placeholder={{now_time}}/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Submit button  -->
+                                            <button class="btn btn-primary " type="submit">Apply Filter</button>
+                                        </form>
+                                        <div class="filter-clear">
+                                           <a href="{% url 'project:detail-analytics' site_slug=site.slug %}">clear filters</a> 
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>  
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div id = 'loading-spinner' class="text-center justify-content-center" style="display: none">
+            <div class="spinner-border text-secondary" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+
+        <!-- Headlines -->
+        <div class="row py-lg-3">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <div class="py-lg-6">
+                            <h5 id="detail-analytics-header" class="mb-0" style="font-weight: 500;">
+                                loading detail analytics...
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hypocenter 3D Plots -->
+        <div class="row py-lg-3">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <div class="py-lg-3">
+                            <div class="plot-analysis" id="hypocenter-plot-3d"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Station performances -->
+        <div class="row py-lg-3">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <div class="py-lg-3">
+                            <div class="plot-analysis" id="time-series-performance"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Overall stations performance -->
+        <div class="row py-lg-3">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <div class="py-lg-3">
+                            <div class="plot-analysis" id="station-performance"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <div class="py-lg-3">
+                            <div class="plot-analysis" id="wadati-profile"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Azimuthal Gap Histogram plots and Errors Analysis -->
+        <div class="row py-lg-3">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <div class="py-lg-3">
+                            <div class="plot-analysis" id="gap-histogram"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <div class="py-lg-3">
+                            <div class="plot-analysis" id="rms-error"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Magnitude and Gutenberg Analysis -->
+        <div class="row py-lg-3">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <div class="py-lg-3">
+                            <div class="plot-analysis" id="magnitude-histogram"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <div class="py-lg-3">
+                            <div class="plot-analysis" id="gutenberg-richter-analysis"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- Embed absUrl for API calls -->
+    <script>
+        window.absUrl = '{{site.get_absolute_url}}';
+    </script>
+    <script defer src = "{% static 'project/js/detail-analytics.js' %}" > </script>
+{% endblock %}
