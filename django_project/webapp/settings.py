@@ -154,8 +154,12 @@ WSGI_APPLICATION = 'webapp.wsgi.application'
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
-        'rest_framework.renderers.BrowsableAPIRenderer'
+        'rest_framework.renderers.BrowsableAPIRenderer',
     ],
+
+    'DEFAULT_AUTHENTICATION_CLASS':[
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ]
 }
 
 # Database
