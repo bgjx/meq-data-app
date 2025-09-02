@@ -162,6 +162,32 @@ REST_FRAMEWORK = {
     ]
 }
 
+# REDIS
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': [
+            'redis://127.0.0.1:26379/0',
+            'redis://127.0.0.1:26380/0',
+            'redis://127.0.0.1:26381/0',
+        ],
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.SentinelClient',
+            'MASTER_NAME': 'mymaster',
+            'SENTINEL_KWARGS': {
+                'socket_timeout': 0.1,
+            },
+            'CONNECTION_POOL_KWARGS': {
+                'max_connections': 100,
+                'retry_on_timeout': True,
+            },
+            'SERIALIZER': 'django_redis.serializers.json.JSONSerializer',
+            'COMPRESSOR': 'django_redis.compressors.zlib.ZlibCompressor'
+        },
+        'KEY_PREFIX': 'myapp',
+    }
+}
+
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
